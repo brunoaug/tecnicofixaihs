@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Técnicos IHS e FIXA — Cobertura por Área</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:    #0d1117;
+  --ink2:   #161b24;
+  --ink3:   #1e2535;
+  --line:   #262d3d;
+  --line2:  #2e3650;
+  --soft:   #8892a4;
+  --body:   #c9d1e0;
+  --bright: #f0f4ff;
+  --cyan:   #00c8ef;
+  --orange: #ff6340;
+  --green:  #2ecc71;
+  --gold:   #f5c542;
+  --violet: #b57bee;
+  --shift-am-bg:   #0f2233;
+  --shift-am-line: #1a3a50;
+  --shift-pm-bg:   #1e0f2e;
+  --shift-pm-line: #341a4a;
+  --r: 10px;
+  --r-sm: 6px;
+  --font-mono: 'Space Mono', monospace;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--ink); color: var(--body); font-family: var(--font-body); font-size: 14px; line-height: 1.6; min-height: 100vh; overflow-x: hidden; }
+body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0; background-image: linear-gradient(rgba(0,200,239,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(0,200,239,0.025) 1px, transparent 1px); background-size: 48px 48px; }
+
+/* ── TOP BAR ── */
+.topbar { position: sticky; top: 0; z-index: 100; background: rgba(13,17,23,0.92); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); padding: 0 28px; display: flex; align-items: center; gap: 14px; height: 56px; }
+.back-btn { display: inline-flex; align-items: center; gap: 7px; padding: 6px 14px; border-radius: var(--r-sm); background: var(--ink3); border: 1px solid var(--line2); color: var(--body); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; text-decoration: none; transition: background .15s, border-color .15s, color .15s; flex-shrink: 0; }
+.back-btn:hover { background: var(--line2); border-color: var(--cyan); color: var(--cyan); }
+.back-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.topbar-div { width: 1px; height: 24px; background: var(--line); flex-shrink: 0; }
+.topbar-title { font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--bright); letter-spacing: 0.04em; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topbar-tabs { display: flex; gap: 4px; margin-left: auto; }
+.tab-btn { padding: 5px 14px; border-radius: var(--r-sm); background: transparent; border: 1px solid transparent; color: var(--soft); font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; cursor: pointer; text-transform: uppercase; transition: all .15s; }
+.tab-btn:hover { color: var(--body); border-color: var(--line2); }
+.tab-btn.active { background: var(--cyan); color: var(--ink); border-color: var(--cyan); }
+
+/* ── PAGE STRUCTURE ── */
+.page { display: none; }
+.page.active { display: block; }
+.wrap { max-width: 1360px; margin: 0 auto; padding: 32px 28px 80px; position: relative; z-index: 1; }
+
+/* ── PAGE HEADER ── */
+.page-header { padding: 40px 28px 32px; border-bottom: 1px solid var(--line); position: relative; z-index: 1; background: linear-gradient(180deg, rgba(0,200,239,0.04) 0%, transparent 100%); }
+.page-header-inner { max-width: 1360px; margin: 0 auto; }
+.live-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(0,200,239,0.08); border: 1px solid rgba(0,200,239,0.2); border-radius: 20px; padding: 3px 12px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 14px; }
+.live-badge::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--cyan); animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.page-title { font-size: clamp(24px, 3.5vw, 42px); font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; color: var(--bright); margin-bottom: 8px; }
+.page-title em { font-style: normal; color: var(--cyan); }
+.page-sub { font-size: 13px; color: var(--soft); }
+
+/* ── STATS ── */
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-bottom: 28px; }
+.stat-box { background: var(--ink2); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; }
+.stat-num { font-family: var(--font-mono); font-size: 26px; font-weight: 700; color: var(--bright); line-height: 1; margin-bottom: 4px; }
+.stat-num.cy { color: var(--cyan); } .stat-num.co { color: var(--orange); } .stat-num.cg { color: var(--green); } .stat-num.ca { color: var(--gold); }
+.stat-lbl { font-size: 11px; color: var(--soft); font-weight: 500; }
+
+/* ── COSME PANEL ── */
+.cosme-panel { background: var(--ink2); border: 1px solid var(--line); border-radius: var(--r); padding: 24px 28px; margin-bottom: 32px; position: relative; overflow: hidden; }
+.cosme-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--cyan), var(--orange)); }
+.panel-label { font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); margin-bottom: 14px; }
+.cosme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-bottom: 24px; }
+.cosme-item { background: var(--ink3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; }
+.cosme-code { font-family: var(--font-mono); font-size: 10px; color: var(--orange); font-weight: 700; margin-bottom: 3px; }
+.cosme-name { font-size: 13px; font-weight: 600; color: var(--bright); }
+.areas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.area-item { display: flex; align-items: center; gap: 9px; background: var(--ink3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 9px 13px; font-size: 13px; }
+.area-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.area-coord { margin-left: auto; font-size: 10.5px; color: var(--soft); font-family: var(--font-mono); white-space: nowrap; }
+
+/* ── SECTION HEAD ── */
+.sec-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; margin-top: 44px; }
+.sec-head:first-of-type { margin-top: 0; }
+.area-pill { display: inline-flex; align-items: center; padding: 4px 14px; border-radius: 20px; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; }
+.p-oeste   { background: rgba(255,99,64,0.12);  color: var(--orange); border: 1px solid rgba(255,99,64,0.25); }
+.p-baixada { background: rgba(46,204,113,0.1);  color: var(--green);  border: 1px solid rgba(46,204,113,0.22); }
+.p-rj      { background: rgba(0,200,239,0.1);   color: var(--cyan);   border: 1px solid rgba(0,200,239,0.22); }
+.sec-label { font-size: 17px; font-weight: 700; color: var(--bright); letter-spacing: -0.02em; }
+.sec-rule  { flex: 1; height: 1px; background: var(--line); }
+
+/* ── SHIFT GRID ── */
+.shift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 860px) { .shift-grid { grid-template-columns: 1fr; } }
+.shift-block { border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); }
+.shift-head { display: flex; align-items: center; gap: 10px; padding: 12px 18px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.05em; cursor: pointer; user-select: none; }
+.s-am .shift-head { background: var(--shift-am-bg); color: var(--cyan); border-bottom: 1px solid var(--shift-am-line); }
+.s-pm .shift-head { background: var(--shift-pm-bg); color: var(--violet); border-bottom: 1px solid var(--shift-pm-line); }
+.shift-toggle { margin-left: auto; font-size: 10px; transition: transform .2s; }
+.shift-block.collapsed .shift-toggle { transform: rotate(-90deg); }
+.shift-body { background: var(--ink2); padding: 14px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; transition: max-height .3s ease, opacity .2s ease, padding .3s ease; }
+.shift-block.collapsed .shift-body { max-height: 0 !important; opacity: 0; padding-top: 0; padding-bottom: 0; }
+
+/* ── TECH CARD ── */
+.tech-card { background: var(--ink3); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 12px 14px; transition: border-color .15s, transform .12s; }
+.tech-card:hover { border-color: var(--line2); transform: translateX(2px); }
+.tech-card.vacation { opacity: 0.5; border-style: dashed; }
+.tech-card.highlighted { border-color: var(--gold) !important; background: rgba(245,197,66,0.05) !important; }
+.tc-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 5px; }
+.tc-name { font-size: 13px; font-weight: 600; color: var(--bright); flex: 1; line-height: 1.3; }
+.badge { font-family: var(--font-mono); font-size: 8.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.05em; text-transform: uppercase; }
+.bv { background: rgba(245,197,66,0.1); color: var(--gold); border: 1px solid rgba(245,197,66,0.25); }
+.bf { background: rgba(0,200,239,0.1); color: var(--cyan); border: 1px solid rgba(0,200,239,0.2); }
+.bc { background: rgba(255,99,64,0.1); color: var(--orange); border: 1px solid rgba(255,99,64,0.2); }
+.br { background: rgba(46,204,113,0.1); color: var(--green); border: 1px solid rgba(46,204,113,0.2); }
+.bm { background: rgba(181,123,238,0.1); color: var(--violet); border: 1px solid rgba(181,123,238,0.2); }
+.bp { background: rgba(245,197,66,0.1); color: var(--gold); border: 1px solid rgba(245,197,66,0.25); }
+.tc-desc { font-size: 11.5px; color: var(--soft); line-height: 1.5; margin-bottom: 7px; }
+.nbh-wrap { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.nbh { font-family: var(--font-mono); font-size: 9px; padding: 2px 7px; border-radius: 4px; cursor: default; letter-spacing: 0.03em; }
+.nm { background: rgba(0,200,239,0.07); border: 1px solid rgba(0,200,239,0.15); color: rgba(0,200,239,0.85); }
+.ns { background: rgba(181,123,238,0.07); border: 1px solid rgba(181,123,238,0.15); color: rgba(181,123,238,0.8); }
+.nd { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: var(--soft); }
+.nbh.lit { background: rgba(245,197,66,0.18); border-color: rgba(245,197,66,0.4); color: var(--gold); }
+.codes-wrap { display: flex; flex-wrap: wrap; gap: 4px; }
+.code { font-family: var(--font-mono); font-size: 9px; padding: 1px 6px; border-radius: 3px; background: rgba(0,200,239,0.05); border: 1px solid rgba(0,200,239,0.12); color: rgba(0,200,239,0.6); }
+
+/* ── ALERT / NOTE ── */
+.alert-block { display: flex; align-items: flex-start; gap: 10px; background: rgba(181,123,238,0.06); border: 1px solid rgba(181,123,238,0.2); border-radius: var(--r-sm); padding: 12px 16px; font-size: 12.5px; color: #d4acff; margin-bottom: 16px; line-height: 1.55; }
+.note-block { background: rgba(245,197,66,0.04); border: 1px solid rgba(245,197,66,0.15); border-radius: var(--r-sm); padding: 14px 18px; margin-top: 16px; }
+.note-title { font-family: var(--font-mono); font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+.note-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.note-list li { font-size: 12.5px; color: #b0b7c8; padding-left: 18px; position: relative; line-height: 1.5; }
+.note-list li::before { content: '→'; position: absolute; left: 0; color: var(--gold); font-size: 11px; }
+.note-list li strong { color: var(--bright); }
+
+/* ── BAIRROS PAGE ── */
+.bairros-ctrl { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+.fchip { padding: 5px 14px; border-radius: 20px; cursor: pointer; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; border: 1px solid var(--line); background: var(--ink3); color: var(--soft); transition: all .15s; }
+.fchip:hover { border-color: var(--line2); color: var(--body); }
+.fchip.fa { border-color: var(--cyan); color: var(--cyan); background: rgba(0,200,239,0.08); }
+.fchip.fo { border-color: var(--orange); color: var(--orange); background: rgba(255,99,64,0.08); }
+.fchip.fb { border-color: var(--green); color: var(--green); background: rgba(46,204,113,0.08); }
+.fchip.fr { border-color: var(--cyan); color: var(--cyan); background: rgba(0,200,239,0.08); }
+.b-count { margin-left: auto; font-family: var(--font-mono); font-size: 10px; color: var(--soft); }
+.search-bar { position: relative; flex: 1; min-width: 200px; max-width: 320px; }
+.search-bar input { width: 100%; background: var(--ink3); border: 1px solid var(--line2); border-radius: var(--r-sm); padding: 8px 14px 8px 36px; font-family: var(--font-body); font-size: 13px; color: var(--bright); outline: none; transition: border-color .15s; }
+.search-bar input:focus { border-color: var(--cyan); }
+.search-bar input::placeholder { color: var(--soft); }
+.search-bar .si { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--soft); pointer-events: none; font-size: 14px; }
+.sdrop { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: var(--ink2); border: 1px solid var(--line2); border-radius: var(--r-sm); z-index: 50; max-height: 260px; overflow-y: auto; box-shadow: 0 8px 32px rgba(0,0,0,.6); display: none; }
+.sdrop.open { display: block; }
+.sd-item { display: flex; align-items: center; gap: 9px; padding: 9px 14px; cursor: pointer; border-bottom: 1px solid var(--line); transition: background .1s; }
+.sd-item:last-child { border-bottom: none; }
+.sd-item:hover { background: var(--ink3); }
+.sd-bname { font-size: 12.5px; font-weight: 500; color: var(--bright); flex: 1; }
+.sd-tech  { font-family: var(--font-mono); font-size: 9.5px; color: var(--cyan); }
+.bairros-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 6px; }
+.brow { display: flex; align-items: center; gap: 9px; background: var(--ink2); border: 1px solid var(--line); border-radius: var(--r-sm); padding: 8px 12px; transition: border-color .12s; }
+.brow:hover { border-color: var(--line2); }
+.brow.hide { display: none; }
+.bdot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.bname { font-size: 12.5px; font-weight: 500; color: var(--bright); flex: 1; }
+.btech { font-family: var(--font-mono); font-size: 9.5px; color: var(--soft); text-align: right; line-height: 1.3; max-width: 140px; }
+
+/* ── ANIM ── */
+.fi { opacity: 0; transform: translateY(14px); transition: opacity .4s ease, transform .4s ease; }
+.fi.vis { opacity: 1; transform: none; }
+
+@media (max-width: 600px) {
+  .topbar { padding: 0 16px; gap: 10px; }
+  .topbar-tabs .tab-btn { padding: 5px 10px; font-size: 9px; }
+  .wrap { padding: 20px 16px 60px; }
+  .page-header { padding: 28px 16px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <a href="index.html" class="back-btn">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Voltar
+  </a>
+  <div class="topbar-div"></div>
+  <span class="topbar-title">Técnicos IHS &amp; FIXA</span>
+  <div class="topbar-tabs">
+    <button class="tab-btn active" data-pg="equipes">Equipes</button>
+    <button class="tab-btn" data-pg="bairros">Bairros</button>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="page-header-inner">
+    <div class="live-badge">Operações em Tempo Real</div>
+    <h1 class="page-title">Técnicos <em>IHS e FIXA</em></h1>
+    <p class="page-sub">Distribuição de equipes e cobertura por área — Rio de Janeiro / ES / Campos</p>
+  </div>
+</header>
+
+<!-- ════════ PAGE EQUIPES ════════ -->
+<div class="page active" id="page-equipes">
+<div class="wrap">
+
+  <div class="stats-row fi">
+    <div class="stat-box"><div class="stat-num cy">26</div><div class="stat-lbl">Técnicos Ativos</div></div>
+    <div class="stat-box"><div class="stat-num co">3</div><div class="stat-lbl">Áreas FIXA</div></div>
+    <div class="stat-box"><div class="stat-num cg">2</div><div class="stat-lbl">Turnos / Área</div></div>
+    <div class="stat-box"><div class="stat-num ca">2</div><div class="stat-lbl">Em Férias</div></div>
+  </div>
+
+  <div class="cosme-panel fi">
+    <p class="panel-label">📋 Cosme Grupos no Genesis — Por Área</p>
+    <div class="cosme-grid">
+      <div class="cosme-item"><div class="cosme-code">C1</div><div class="cosme-name">Jackeline</div></div>
+      <div class="cosme-item"><div class="cosme-code">C2</div><div class="cosme-name">Hudson e Vinicius</div></div>
+      <div class="cosme-item"><div class="cosme-code">C3</div><div class="cosme-name">Jesse James</div></div>
+      <div class="cosme-item"><div class="cosme-code">C4</div><div class="cosme-name">Merielem</div></div>
+    </div>
+    <p class="panel-label">🗂️ Áreas e Coordenações</p>
+    <div class="areas-grid">
+      <div class="area-item"><div class="area-dot" style="background:var(--cyan)"></div>Grande RJ<span class="area-coord">Jackeline (Coord.)</span></div>
+      <div class="area-item"><div class="area-dot" style="background:var(--green)"></div>Baixada<span class="area-coord">Vinicius (FMT/FMO)</span></div>
+      <div class="area-item"><div class="area-dot" style="background:var(--orange)"></div>Oeste<span class="area-coord">Alan do Vale</span></div>
+      <div class="area-item"><div class="area-dot" style="background:var(--gold)"></div>Interior<span class="area-coord">Jesse James</span></div>
+      <div class="area-item"><div class="area-dot" style="background:var(--violet)"></div>ES e Campos<span class="area-coord">Merielem</span></div>
+      <div class="area-item"><div class="area-dot" style="background:var(--soft)"></div>Predial<span class="area-coord">Marcio Benedito e Diego</span></div>
+    </div>
+  </div>
+
+  <!-- OESTE -->
+  <div class="sec-head fi"><span class="area-pill p-oeste">Oeste</span><span class="sec-label">FIXA</span><div class="sec-rule"></div></div>
+  <div class="shift-grid fi">
+    <div class="shift-block s-am" id="oa">
+      <div class="shift-head" onclick="toggleShift('oa')"><span>☀️</span> 08:00 — 17:00<span class="shift-toggle">▼</span></div>
+      <div class="shift-body">
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Agnaldo</span></div><div class="tc-desc">Campo Grande / Recreio dos Bandeirantes / Curicica e adjacências</div><div class="nbh-wrap"><span class="nbh nm">Campo Grande</span><span class="nbh nm">Recreio dos Bandeirantes</span><span class="nbh nm">Curicica</span><span class="nbh nd">Guaratiba</span><span class="nbh nd">Cosmos</span><span class="nbh nd">Inhoaíba</span><span class="nbh nd">Santíssimo</span><span class="nbh nd">Senador Camará</span></div><div class="codes-wrap"><span class="code">RJCG</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Luciano Rocha da Silva</span></div><div class="tc-desc">Campo Grande / Recreio</div><div class="nbh-wrap"><span class="nbh nm">Campo Grande</span><span class="nbh nm">Recreio dos Bandeirantes</span><span class="nbh nd">Vargem Grande</span><span class="nbh nd">Vargem Pequena</span><span class="nbh nd">Grumari</span><span class="nbh nd">Barra de Guaratiba</span></div><div class="codes-wrap"><span class="code">RJCG</span><span class="code">RJBT</span><span class="code">RJBA</span><span class="code">RJSZ</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Leonardo Paulino</span></div><div class="tc-desc">Santa Cruz e adjacências</div><div class="nbh-wrap"><span class="nbh nm">Santa Cruz</span><span class="nbh nm">Paciência</span><span class="nbh nm">Sepetiba</span><span class="nbh nm">Itaguaí</span><span class="nbh nd">Jardim Guandu</span><span class="nbh nd">São Jorge</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Eder Luiz</span></div><div class="tc-desc">Barra da Tijuca / Recreio</div><div class="nbh-wrap"><span class="nbh nm">Barra da Tijuca</span><span class="nbh nm">Recreio dos Bandeirantes</span><span class="nbh nd">Joá</span><span class="nbh nd">São Conrado</span><span class="nbh nd">Itanhangá</span><span class="nbh nd">Camorim</span></div><div class="codes-wrap"><span class="code">RJBT</span><span class="code">RJBA</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Danilo Eduardo</span></div><div class="tc-desc">Jacarepaguá / Taquara / Tanque / Pechincha / Curicica / Anil / Freguesia</div><div class="nbh-wrap"><span class="nbh nm">Jacarepaguá</span><span class="nbh nm">Taquara</span><span class="nbh nm">Tanque</span><span class="nbh nm">Pechincha</span><span class="nbh nm">Anil</span><span class="nbh nm">Freguesia (Jacarepaguá)</span><span class="nbh nd">Praça Seca</span><span class="nbh nd">Gardênia Azul</span><span class="nbh nd">Cidade de Deus</span><span class="nbh nd">Sulacap</span><span class="nbh nd">Magalhães Bastos</span></div><div class="codes-wrap"><span class="code">RJJP</span><span class="code">CUR</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Ivson de Jesus</span></div><div class="tc-desc">Bangu / Realengo / Deodoro / adjacências</div><div class="nbh-wrap"><span class="nbh nm">Bangu</span><span class="nbh nm">Realengo</span><span class="nbh nm">Deodoro</span><span class="nbh nd">Padre Miguel</span><span class="nbh nd">Senador Vasconcelos</span><span class="nbh nd">Vila Kennedy</span><span class="nbh nd">Vila Militar</span><span class="nbh nd">Gericinó</span></div><div class="codes-wrap"><span class="code">RJBG</span><span class="code">RJPV</span><span class="code">RJMD</span></div></div>
+      </div>
+    </div>
+    <div class="shift-block s-pm" id="op">
+      <div class="shift-head" onclick="toggleShift('op')"><span>🌙</span> 15:00 — 00:00<span class="shift-toggle">▼</span></div>
+      <div class="shift-body">
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Leandro de Jesus Cardoso</span></div><div class="tc-desc">Campo Grande e Santa Cruz / adjacências</div><div class="nbh-wrap"><span class="nbh nm">Campo Grande</span><span class="nbh nm">Santa Cruz</span><span class="nbh nd">Paciência</span><span class="nbh nd">Inhoaíba</span><span class="nbh nd">Cosmos</span><span class="nbh nd">Santíssimo</span></div><div class="codes-wrap"><span class="code">RJCG</span><span class="code">RJSZ</span></div></div>
+        <div class="tech-card vacation"><div class="tc-row"><span class="tc-name">Denis Oliveira Lavrador</span><span class="badge bv">FÉRIAS</span></div><div class="tc-desc">Santa Cruz / Itaguaí / Guaratiba / Bangu / Realengo / Deodoro</div><div class="nbh-wrap"><span class="nbh nm">Santa Cruz</span><span class="nbh nm">Itaguaí</span><span class="nbh nm">Guaratiba</span><span class="nbh nm">Bangu</span><span class="nbh nm">Realengo</span><span class="nbh nm">Deodoro</span><span class="nbh nd">Sepetiba</span><span class="nbh nd">Pedra de Guaratiba</span></div><div class="codes-wrap"><span class="code">RJBG</span><span class="code">RJPV</span><span class="code">RJMD</span><span class="code">RJ09</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Francisco Orcino</span></div><div class="tc-desc">Barra / Pechincha / Recreio / Taquara / Jacarepaguá / Tanque / Curicica / Anil</div><div class="nbh-wrap"><span class="nbh nm">Barra da Tijuca</span><span class="nbh nm">Pechincha</span><span class="nbh nm">Recreio dos Bandeirantes</span><span class="nbh nm">Taquara</span><span class="nbh nm">Freguesia (Jacarepaguá)</span><span class="nbh nm">Tanque</span><span class="nbh nm">Curicica</span><span class="nbh nm">Anil</span><span class="nbh nd">Jacarepaguá</span><span class="nbh nd">Vargem Grande</span><span class="nbh nd">Camorim</span></div><div class="codes-wrap"><span class="code">RJBT</span><span class="code">RJBA</span><span class="code">RJJP</span><span class="code">CUR</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="note-block fi"><p class="note-title">⚠️ Observações — Divisão Padrão</p><ul class="note-list"><li><strong>Campo Grande:</strong> Agnaldo e Luciano</li><li><strong>Bangu / Realengo:</strong> Ivson</li><li><strong>Santa Cruz:</strong> Leonardo Paulino</li></ul></div>
+
+  <!-- BAIXADA -->
+  <div class="sec-head fi" style="margin-top:44px"><span class="area-pill p-baixada">Baixada</span><span class="sec-label">FIXA</span><div class="sec-rule"></div></div>
+  <div class="alert-block fi"><span style="font-size:15px;flex-shrink:0;margin-top:1px">⚡</span><div><strong>OLT:</strong> Acionar <strong>Vanessa</strong> — não utiliza escada e não atende MSAN. &nbsp;<strong>Agregador de Meriti:</strong> Acionar residente <strong>Aurélio</strong> (atua no local).</div></div>
+  <div class="shift-grid fi">
+    <div class="shift-block s-am" id="ba">
+      <div class="shift-head" onclick="toggleShift('ba')"><span>☀️</span> 08:00 — 17:00<span class="shift-toggle">▼</span></div>
+      <div class="shift-body">
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Michael</span></div><div class="tc-desc">Mesquita / Nilópolis / Anchieta / São João de Meriti / Barros Filho / Coelho da Rocha / Guadalupe / Olinda / Pavuna — Fixa e IHS</div><div class="nbh-wrap"><span class="nbh nm">Mesquita</span><span class="nbh nm">Nilópolis</span><span class="nbh nm">Anchieta</span><span class="nbh nm">São João de Meriti</span><span class="nbh nm">Barros Filho</span><span class="nbh nm">Coelho da Rocha</span><span class="nbh nm">Guadalupe</span><span class="nbh nm">Pavuna</span><span class="nbh nd">Vilar dos Teles</span><span class="nbh nd">Chatuba</span><span class="nbh nd">Éden</span></div><div class="codes-wrap"><span class="code">GDL</span><span class="code">NIL</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Cremildo</span></div><div class="tc-desc">Nova Iguaçu / Queimados / Belford Roxo / Japeri / adjacências — Fixa e IHS</div><div class="nbh-wrap"><span class="nbh nm">Nova Iguaçu</span><span class="nbh nm">Queimados</span><span class="nbh nm">Belford Roxo</span><span class="nbh nm">Japeri</span><span class="nbh nd">Comendador Soares</span><span class="nbh nd">Austin</span><span class="nbh nd">Cabuçu</span><span class="nbh nd">Seropédica</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Vanessa</span><span class="badge bf">FTTH</span></div><div class="tc-desc">Duque de Caxias / adjacências — <em style="color:var(--soft)">não usa escada / não atende MSAN</em></div><div class="nbh-wrap"><span class="nbh nm">Duque de Caxias</span><span class="nbh nm">25 de Agosto</span><span class="nbh nm">Jardim Primavera</span><span class="nbh nd">Campos Elíseos</span><span class="nbh nd">Saracuruna</span><span class="nbh nd">Parque Duque</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Valter Neves</span><span class="badge bc">FTTC</span></div><div class="tc-desc">Pavuna / Jardim América / Duque de Caxias / adjacências — Fixa e IHS</div><div class="nbh-wrap"><span class="nbh nm">Pavuna</span><span class="nbh nm">Jardim América (Baixada)</span><span class="nbh nm">Duque de Caxias</span><span class="nbh nd">Acari</span><span class="nbh nd">Costa Barros</span></div></div>
+        <div class="tech-card vacation"><div class="tc-row"><span class="tc-name">Marcelo Caetano</span><span class="badge bv">FÉRIAS</span></div><div class="tc-desc">Duque de Caxias (cobertura: Valter Neves) — Fixa e IHS</div><div class="nbh-wrap"><span class="nbh nm">Duque de Caxias</span><span class="nbh nd">Xerém</span><span class="nbh nd">Imbariê</span><span class="nbh nd">Gramacho</span></div></div>
+      </div>
+    </div>
+    <div class="shift-block s-pm" id="bp">
+      <div class="shift-head" onclick="toggleShift('bp')"><span>🌙</span> 15:00 — 00:00<span class="shift-toggle">▼</span></div>
+      <div class="shift-body">
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Anderson dos Santos</span></div><div class="tc-desc">Mesquita / Anchieta / São João de Meriti / Duque de Caxias / Coelho da Rocha / Guadalupe / Olinda / Pavuna</div><div class="nbh-wrap"><span class="nbh nm">Mesquita</span><span class="nbh nm">Anchieta</span><span class="nbh nm">São João de Meriti</span><span class="nbh nm">Duque de Caxias</span><span class="nbh nm">Guadalupe</span><span class="nbh nm">Pavuna</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Tiago Ângelo</span></div><div class="tc-desc">Nova Iguaçu / Nilópolis / Belford Roxo / Queimados / Japeri / adjacências</div><div class="nbh-wrap"><span class="nbh nm">Nova Iguaçu</span><span class="nbh nm">Nilópolis</span><span class="nbh nm">Belford Roxo</span><span class="nbh nm">Queimados</span><span class="nbh nm">Japeri</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="note-block fi"><p class="note-title">⚠️ Observações</p><ul class="note-list"><li>Pontos da <strong>Pavuna</strong> próximos à Baixada — técnicos se organizam entre si.</li><li>Sem problema em acionamentos cruzados entre a <strong>Baixada</strong> e áreas limítrofes.</li></ul></div>
+
+  <!-- GRANDE RJ -->
+  <div class="sec-head fi" style="margin-top:44px"><span class="area-pill p-rj">Grande RJ</span><span class="sec-label">FIXA</span><div class="sec-rule"></div></div>
+  <div class="shift-grid fi">
+    <div class="shift-block s-am" id="ra">
+      <div class="shift-head" onclick="toggleShift('ra')"><span>☀️</span> 08:00 — 17:00<span class="shift-toggle">▼</span></div>
+      <div class="shift-body">
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Carlos Miranda</span><span class="badge br">RESIDENTE</span></div><div class="tc-desc">FTS / Central Ana Neri e Rocha</div><div class="nbh-wrap"><span class="nbh nm">Ana Neri</span><span class="nbh nm">Rocha</span><span class="nbh nm">Fonseca Teles</span><span class="nbh nd">Piedade</span><span class="nbh nd">Pilares</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">José Duque</span></div><div class="tc-desc">Cascadura / Madureira / Rocha Miranda / Bento Ribeiro / Vila da Penha / Penha Circular / Brás de Pina / Oswaldo Cruz / Vila Valqueire</div><div class="nbh-wrap"><span class="nbh nm">Cascadura</span><span class="nbh nm">Madureira</span><span class="nbh nm">Rocha Miranda</span><span class="nbh nm">Bento Ribeiro</span><span class="nbh nm">Vila da Penha</span><span class="nbh nm">Penha Circular</span><span class="nbh nm">Brás de Pina</span><span class="nbh nm">Oswaldo Cruz</span><span class="nbh nd">Honório Gurgel</span><span class="nbh nd">Turiaçu</span><span class="nbh nd">Vaz Lobo</span><span class="nbh nd">Cavalcanti</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Alex Cunha</span></div><div class="tc-desc">Bento Ribeiro / Madureira / Oswaldo Cruz / Campinho / Colégio</div><div class="nbh-wrap"><span class="nbh nm">Bento Ribeiro</span><span class="nbh nm">Madureira</span><span class="nbh nm">Oswaldo Cruz</span><span class="nbh nm">Campinho</span><span class="nbh nm">Colégio</span><span class="nbh nd">Vaz Lobo</span><span class="nbh nd">Engenheiro Leal</span><span class="nbh nd">Turiaçu</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Adenilson Avelino</span><span class="badge bp">FTTH ★</span></div><div class="tc-desc">Méier / Del Castilho / Cachambi / DDC — <em style="color:var(--gold)">chamados FTTH prioridade</em></div><div class="nbh-wrap"><span class="nbh nm">Méier</span><span class="nbh nm">Del Castilho</span><span class="nbh nm">Cachambi</span><span class="nbh nm">Água Santa</span><span class="nbh nm">Encantado</span><span class="nbh nd">Todos os Santos</span><span class="nbh nd">Lins de Vasconcelos</span><span class="nbh nd">Abolição</span><span class="nbh nd">Inhaúma</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Gustavo Cabral</span><span class="badge bc">FTTC ★</span></div><div class="tc-desc">São Cristóvão / Méier / Cachambi / Jacarezinho / DDC — <em style="color:var(--orange)">chamados FTTC prioridade</em></div><div class="nbh-wrap"><span class="nbh nm">São Cristóvão</span><span class="nbh nm">Méier</span><span class="nbh nm">Cachambi</span><span class="nbh nm">Jacarezinho</span><span class="nbh nm">Tijuca</span><span class="nbh nd">Mangueira</span><span class="nbh nd">Benfica</span><span class="nbh nd">Caju</span><span class="nbh nd">Catumbi</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Flavio Borges</span></div><div class="tc-desc">Quintino / São Cristóvão / Benfica / Eng. de Dentro / Lins / Todos os Santos / Abolição / Cachambi / Méier / Riachuelo</div><div class="nbh-wrap"><span class="nbh nm">Quintino Bocaiúva</span><span class="nbh nm">Benfica</span><span class="nbh nm">Engenho de Dentro</span><span class="nbh nm">Lins de Vasconcelos</span><span class="nbh nm">Todos os Santos</span><span class="nbh nm">Abolição</span><span class="nbh nm">Riachuelo</span><span class="nbh nd">Engenho Novo</span><span class="nbh nd">Piedade</span><span class="nbh nd">Sampaio</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Moises Alves</span></div><div class="tc-desc">Humaitá / Leblon / Laranjeiras / Jardim Botânico / Lagoa / Zona Sul / Centro</div><div class="nbh-wrap"><span class="nbh nm">Humaitá</span><span class="nbh nm">Leblon</span><span class="nbh nm">Laranjeiras</span><span class="nbh nm">Jardim Botânico</span><span class="nbh nm">Lagoa</span><span class="nbh nm">Ipanema</span><span class="nbh nm">Copacabana</span><span class="nbh nm">Botafogo</span><span class="nbh nm">Flamengo</span><span class="nbh nd">Catete</span><span class="nbh nd">Cosme Velho</span><span class="nbh nd">Gávea</span><span class="nbh nd">Vidigal</span><span class="nbh nd">Urca</span><span class="nbh nd">Leme</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">João Paulo</span></div><div class="tc-desc">Niterói / São Gonçalo</div><div class="nbh-wrap"><span class="nbh nm">Niterói</span><span class="nbh nm">Icaraí</span><span class="nbh nm">São Gonçalo</span><span class="nbh nd">Ingá</span><span class="nbh nd">Fonseca</span><span class="nbh nd">Barreto</span><span class="nbh nd">Alcântara</span><span class="nbh nd">Itaipu</span><span class="nbh nd">Piratininga</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Uiliam Alves</span></div><div class="tc-desc">Central / São Cristóvão</div><div class="nbh-wrap"><span class="nbh nm">Centro (RJ)</span><span class="nbh nm">São Cristóvão</span><span class="nbh nd">Cidade Nova</span><span class="nbh nd">Estácio</span><span class="nbh nd">Santa Teresa</span><span class="nbh nd">Lapa</span><span class="nbh nd">Saúde</span><span class="nbh nd">Gamboa</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Orlando Ferreira</span></div><div class="tc-desc">Centro / São Gonçalo</div><div class="nbh-wrap"><span class="nbh nm">Centro (RJ)</span><span class="nbh nm">São Gonçalo</span><span class="nbh nd">Maracanã</span><span class="nbh nd">Triagem</span><span class="nbh nd">Porto Maravilha</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Marcelo Raimundo</span></div><div class="tc-desc">Irajá / Olaria (verificar) / Colégio / Jardim América / VGE / Ilha</div><div class="nbh-wrap"><span class="nbh nm">Irajá</span><span class="nbh nm">Olaria</span><span class="nbh nm">Colégio</span><span class="nbh nm">Ilha do Governador</span><span class="nbh nd">Vista Alegre</span><span class="nbh nd">Vigário Geral</span><span class="nbh nd">Vicente de Carvalho</span><span class="nbh nd">Cordovil</span><span class="nbh nd">Parada de Lucas</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Francisco Alex</span></div><div class="tc-desc">Andaraí / Grajaú / Tijuca / LPD / adjacências</div><div class="nbh-wrap"><span class="nbh nm">Andaraí</span><span class="nbh nm">Grajaú</span><span class="nbh nm">Tijuca</span><span class="nbh nm">Praça da Bandeira</span><span class="nbh nd">Alto da Boa Vista</span><span class="nbh nd">Rio Comprido</span><span class="nbh nd">Vila Isabel</span><span class="nbh nd">Maracanã</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Rafael</span><span class="badge bm">MÓVEL</span></div><div class="tc-desc">São Gonçalo — <em style="color:var(--violet)">verificar disponibilidade</em></div><div class="nbh-wrap"><span class="nbh ns">São Gonçalo</span><span class="nbh ns">Alcântara</span><span class="nbh ns">Neves</span></div></div>
+      </div>
+    </div>
+    <div class="shift-block s-pm" id="rp">
+      <div class="shift-head" onclick="toggleShift('rp')"><span>🌙</span> 15:00 — 23:00<span class="shift-toggle">▼</span></div>
+      <div class="shift-body">
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Bispo</span></div><div class="tc-desc">Centro / Botafogo / Zona Sul — <em style="color:var(--soft)">(área do Orlando e Moises)</em></div><div class="nbh-wrap"><span class="nbh nm">Centro (RJ)</span><span class="nbh nm">Botafogo</span><span class="nbh nm">Copacabana</span><span class="nbh nm">Ipanema</span><span class="nbh nm">Flamengo</span><span class="nbh nd">Urca</span><span class="nbh nd">Catete</span><span class="nbh nd">Leme</span><span class="nbh nd">Glória</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Glaucio Hipolito</span></div><div class="tc-desc">Tijuca / São Cristóvão / Grajaú / Andaraí / Rio Comprido / Rocha / Riachuelo / Ana Neri / Fonseca Teles</div><div class="nbh-wrap"><span class="nbh nm">Tijuca</span><span class="nbh nm">São Cristóvão</span><span class="nbh nm">Grajaú</span><span class="nbh nm">Andaraí</span><span class="nbh nm">Rio Comprido</span><span class="nbh nm">Rocha</span><span class="nbh nm">Riachuelo</span><span class="nbh nm">Ana Neri</span><span class="nbh nd">Estácio</span><span class="nbh nd">Praça da Bandeira</span><span class="nbh nd">Mangueira</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Waldir Motta</span></div><div class="tc-desc">Cascadura / Méier / Engenho de Dentro / Cachambi / Madureira / DDC</div><div class="nbh-wrap"><span class="nbh nm">Cascadura</span><span class="nbh nm">Méier</span><span class="nbh nm">Engenho de Dentro</span><span class="nbh nm">Cachambi</span><span class="nbh nm">Madureira</span><span class="nbh nd">Riachuelo</span><span class="nbh nd">Sampaio</span><span class="nbh nd">Engenho Novo</span><span class="nbh nd">Del Castilho</span></div></div>
+        <div class="tech-card"><div class="tc-row"><span class="tc-name">Jorge Luiz</span></div><div class="tc-desc">Penha / Irajá / Penha Circular / Ramos / Vila Isabel / Olaria / Bonsucesso / Bento Ribeiro</div><div class="nbh-wrap"><span class="nbh nm">Penha</span><span class="nbh nm">Irajá</span><span class="nbh nm">Penha Circular</span><span class="nbh nm">Ramos</span><span class="nbh nm">Vila Isabel</span><span class="nbh nm">Olaria</span><span class="nbh nm">Bonsucesso</span><span class="nbh nd">Higienópolis</span><span class="nbh nd">Manguinhos</span><span class="nbh nd">Inhaúma</span><span class="nbh nd">Complexo do Alemão</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="note-block fi"><p class="note-title">⚠️ Observações</p><ul class="note-list"><li><strong>Tijuca:</strong> também atendida por Gustavo.</li><li><strong>São Cristóvão:</strong> pode acionar Uiliam ou João Paulo, conforme o fluxo.</li><li><strong>Engenho Novo pra baixo:</strong> Francisco Alex, Flávio, Adenilson, Gustavo.</li><li><strong>Engenho Novo pra cima:</strong> José Duque, Marcelo Raimundo, Alex Cunha.</li></ul></div>
+
+</div>
+</div>
+
+<!-- ════════ PAGE BAIRROS ════════ -->
+<div class="page" id="page-bairros">
+<div class="wrap">
+  <div class="bairros-ctrl fi">
+    <button class="fchip fa" data-f="all">Todos</button>
+    <button class="fchip" data-f="oeste">🟠 Oeste</button>
+    <button class="fchip" data-f="baixada">🟢 Baixada</button>
+    <button class="fchip" data-f="rj">🔵 Grande RJ</button>
+    <div class="search-bar">
+      <span class="si">🔍</span>
+      <input type="text" id="bsearch" placeholder="Buscar bairro ou técnico…" autocomplete="off" />
+      <div class="sdrop" id="sdrop"></div>
+    </div>
+    <span class="b-count" id="bcount"></span>
+  </div>
+  <div class="bairros-grid" id="bgrid"></div>
+</div>
+</div>
+
+<footer style="text-align:center;padding:28px;font-size:11px;color:var(--soft);font-family:var(--font-mono);border-top:1px solid var(--line);letter-spacing:0.05em;position:relative;z-index:1">
+  TÉCNICOS IHS &amp; FIXA · RJ / ES · Distribuição de Cobertura
+</footer>
+
+<script>
+const BAIRROS=[
+  {b:"Anil",t:"Danilo Eduardo / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Bangu",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Barra da Tijuca",t:"Eder Luiz / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Barra de Guaratiba",t:"Luciano",a:"oeste",c:"#ff6340"},
+  {b:"Camorim",t:"Eder Luiz / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Campo Grande",t:"Agnaldo / Luciano",a:"oeste",c:"#ff6340"},
+  {b:"Cidade de Deus",t:"Danilo Eduardo",a:"oeste",c:"#ff6340"},
+  {b:"Cosmos",t:"Agnaldo / Leandro",a:"oeste",c:"#ff6340"},
+  {b:"Curicica",t:"Agnaldo / Danilo",a:"oeste",c:"#ff6340"},
+  {b:"Deodoro",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Freguesia (Jacarepaguá)",t:"Danilo Eduardo / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Gardênia Azul",t:"Danilo Eduardo",a:"oeste",c:"#ff6340"},
+  {b:"Gericinó",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Grumari",t:"Luciano",a:"oeste",c:"#ff6340"},
+  {b:"Guaratiba",t:"Denis / Agnaldo",a:"oeste",c:"#ff6340"},
+  {b:"Inhoaíba",t:"Agnaldo / Leandro",a:"oeste",c:"#ff6340"},
+  {b:"Itaguaí",t:"Leonardo P. / Denis",a:"oeste",c:"#ff6340"},
+  {b:"Itanhangá",t:"Eder Luiz",a:"oeste",c:"#ff6340"},
+  {b:"Jacarepaguá",t:"Danilo Eduardo / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Joá",t:"Eder Luiz",a:"oeste",c:"#ff6340"},
+  {b:"Magalhães Bastos",t:"Danilo Eduardo",a:"oeste",c:"#ff6340"},
+  {b:"Padre Miguel",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Paciência",t:"Leonardo Paulino",a:"oeste",c:"#ff6340"},
+  {b:"Pechincha",t:"Danilo Eduardo / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Pedra de Guaratiba",t:"Agnaldo",a:"oeste",c:"#ff6340"},
+  {b:"Praça Seca",t:"Danilo Eduardo",a:"oeste",c:"#ff6340"},
+  {b:"Realengo",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Recreio dos Bandeirantes",t:"Agnaldo / Eder / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Santa Cruz",t:"Leonardo P. / Leandro",a:"oeste",c:"#ff6340"},
+  {b:"Santíssimo",t:"Agnaldo / Leandro",a:"oeste",c:"#ff6340"},
+  {b:"São Conrado",t:"Eder Luiz",a:"oeste",c:"#ff6340"},
+  {b:"Senador Camará",t:"Agnaldo / Leandro",a:"oeste",c:"#ff6340"},
+  {b:"Senador Vasconcelos",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Sepetiba",t:"Leonardo Paulino",a:"oeste",c:"#ff6340"},
+  {b:"Sulacap",t:"Danilo Eduardo",a:"oeste",c:"#ff6340"},
+  {b:"Tanque",t:"Danilo Eduardo / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Taquara",t:"Danilo Eduardo / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Vargem Grande",t:"Luciano / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Vargem Pequena",t:"Luciano / Orcino",a:"oeste",c:"#ff6340"},
+  {b:"Vila Kennedy",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Vila Militar",t:"Ivson de Jesus",a:"oeste",c:"#ff6340"},
+  {b:"Anchieta",t:"Michael / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Austin (Nova Iguaçu)",t:"Cremildo",a:"baixada",c:"#2ecc71"},
+  {b:"Barros Filho",t:"Michael",a:"baixada",c:"#2ecc71"},
+  {b:"Belford Roxo",t:"Cremildo / Tiago Ângelo",a:"baixada",c:"#2ecc71"},
+  {b:"Campos Elíseos (Caxias)",t:"Vanessa",a:"baixada",c:"#2ecc71"},
+  {b:"Cabuçu",t:"Cremildo",a:"baixada",c:"#2ecc71"},
+  {b:"Chatuba",t:"Michael",a:"baixada",c:"#2ecc71"},
+  {b:"Coelho da Rocha",t:"Michael / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Duque de Caxias",t:"Vanessa / Valter / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Guadalupe",t:"Michael / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Gramacho",t:"Marcelo Caetano",a:"baixada",c:"#2ecc71"},
+  {b:"Imbariê",t:"Marcelo Caetano",a:"baixada",c:"#2ecc71"},
+  {b:"Japeri",t:"Cremildo / Tiago Ângelo",a:"baixada",c:"#2ecc71"},
+  {b:"Jardim América (Baixada)",t:"Valter Neves",a:"baixada",c:"#2ecc71"},
+  {b:"Jardim Primavera (Caxias)",t:"Vanessa",a:"baixada",c:"#2ecc71"},
+  {b:"Mesquita",t:"Michael / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Nilópolis",t:"Michael / Tiago Ângelo",a:"baixada",c:"#2ecc71"},
+  {b:"Nova Iguaçu",t:"Cremildo / Tiago Ângelo",a:"baixada",c:"#2ecc71"},
+  {b:"Olinda (Baixada)",t:"Michael / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Pavuna",t:"Michael / Valter / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Queimados",t:"Cremildo / Tiago Ângelo",a:"baixada",c:"#2ecc71"},
+  {b:"São João de Meriti",t:"Michael / Anderson",a:"baixada",c:"#2ecc71"},
+  {b:"Seropédica",t:"Cremildo",a:"baixada",c:"#2ecc71"},
+  {b:"Vilar dos Teles",t:"Michael",a:"baixada",c:"#2ecc71"},
+  {b:"Xerém",t:"Marcelo Caetano",a:"baixada",c:"#2ecc71"},
+  {b:"25 de Agosto (Caxias)",t:"Vanessa",a:"baixada",c:"#2ecc71"},
+  {b:"Abolição",t:"Adenilson / Flavio",a:"rj",c:"#00c8ef"},
+  {b:"Água Santa",t:"Adenilson",a:"rj",c:"#00c8ef"},
+  {b:"Alcântara (S.Gonçalo)",t:"João Paulo / Rafael",a:"rj",c:"#00c8ef"},
+  {b:"Alto da Boa Vista",t:"Francisco Alex",a:"rj",c:"#00c8ef"},
+  {b:"Ana Neri",t:"Carlos Miranda / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Andaraí",t:"Francisco Alex / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Barreto (Niterói)",t:"João Paulo",a:"rj",c:"#00c8ef"},
+  {b:"Benfica",t:"Flavio / Gustavo",a:"rj",c:"#00c8ef"},
+  {b:"Bento Ribeiro",t:"José Duque / Alex Cunha / Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Bonsucesso",t:"Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Botafogo",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Brás de Pina",t:"José Duque",a:"rj",c:"#00c8ef"},
+  {b:"Cachambi",t:"Adenilson / Gustavo / Waldir",a:"rj",c:"#00c8ef"},
+  {b:"Caju",t:"Gustavo",a:"rj",c:"#00c8ef"},
+  {b:"Campinho",t:"Alex Cunha",a:"rj",c:"#00c8ef"},
+  {b:"Carlos Miranda",t:"Carlos Miranda",a:"rj",c:"#00c8ef"},
+  {b:"Cascadura",t:"José Duque / Waldir",a:"rj",c:"#00c8ef"},
+  {b:"Catete",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Catumbi",t:"Gustavo",a:"rj",c:"#00c8ef"},
+  {b:"Cavalcanti",t:"José Duque",a:"rj",c:"#00c8ef"},
+  {b:"Centro (RJ)",t:"Uiliam / Orlando / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Cidade Nova",t:"Uiliam",a:"rj",c:"#00c8ef"},
+  {b:"Colégio",t:"Alex Cunha / Marcelo Raimundo",a:"rj",c:"#00c8ef"},
+  {b:"Complexo do Alemão",t:"Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Copacabana",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Cordovil",t:"Marcelo Raimundo",a:"rj",c:"#00c8ef"},
+  {b:"Cosme Velho",t:"Moises",a:"rj",c:"#00c8ef"},
+  {b:"Del Castilho",t:"Adenilson / Waldir",a:"rj",c:"#00c8ef"},
+  {b:"Encantado",t:"Adenilson",a:"rj",c:"#00c8ef"},
+  {b:"Engenho de Dentro",t:"Flavio / Waldir",a:"rj",c:"#00c8ef"},
+  {b:"Engenho Novo",t:"Flavio / Francisco Alex",a:"rj",c:"#00c8ef"},
+  {b:"Estácio",t:"Uiliam / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Flamengo",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Fonseca (Niterói)",t:"João Paulo",a:"rj",c:"#00c8ef"},
+  {b:"Fonseca Teles",t:"Carlos Miranda / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Gamboa",t:"Uiliam",a:"rj",c:"#00c8ef"},
+  {b:"Gávea",t:"Moises",a:"rj",c:"#00c8ef"},
+  {b:"Glória",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Grajaú",t:"Francisco Alex / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Higienópolis",t:"Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Honório Gurgel",t:"José Duque",a:"rj",c:"#00c8ef"},
+  {b:"Humaitá",t:"Moises",a:"rj",c:"#00c8ef"},
+  {b:"Icaraí",t:"João Paulo",a:"rj",c:"#00c8ef"},
+  {b:"Ilha do Governador",t:"Marcelo Raimundo",a:"rj",c:"#00c8ef"},
+  {b:"Inhaúma",t:"Adenilson / Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Ipanema",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Irajá",t:"Marcelo Raimundo / Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Itaipu (Niterói)",t:"João Paulo",a:"rj",c:"#00c8ef"},
+  {b:"Jacarezinho",t:"Gustavo Cabral",a:"rj",c:"#00c8ef"},
+  {b:"Jardim Botânico",t:"Moises",a:"rj",c:"#00c8ef"},
+  {b:"Lagoa",t:"Moises",a:"rj",c:"#00c8ef"},
+  {b:"Lapa",t:"Uiliam",a:"rj",c:"#00c8ef"},
+  {b:"Laranjeiras",t:"Moises",a:"rj",c:"#00c8ef"},
+  {b:"Leblon",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Leme",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Lins de Vasconcelos",t:"Adenilson / Flavio",a:"rj",c:"#00c8ef"},
+  {b:"Madureira",t:"José Duque / Alex Cunha / Waldir",a:"rj",c:"#00c8ef"},
+  {b:"Mangueira",t:"Gustavo / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Manguinhos",t:"Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Maracanã",t:"Francisco Alex / Orlando",a:"rj",c:"#00c8ef"},
+  {b:"Méier",t:"Adenilson / Gustavo / Waldir",a:"rj",c:"#00c8ef"},
+  {b:"Niterói",t:"João Paulo",a:"rj",c:"#00c8ef"},
+  {b:"Olaria",t:"Marcelo Raimundo / Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Oswaldo Cruz",t:"José Duque / Alex Cunha",a:"rj",c:"#00c8ef"},
+  {b:"Parada de Lucas",t:"Marcelo Raimundo",a:"rj",c:"#00c8ef"},
+  {b:"Penha",t:"Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Penha Circular",t:"José Duque / Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Piedade",t:"Flavio / Carlos Miranda",a:"rj",c:"#00c8ef"},
+  {b:"Pilares",t:"Carlos Miranda",a:"rj",c:"#00c8ef"},
+  {b:"Piratininga (Niterói)",t:"João Paulo",a:"rj",c:"#00c8ef"},
+  {b:"Porto Maravilha",t:"Orlando / Uiliam",a:"rj",c:"#00c8ef"},
+  {b:"Praça da Bandeira",t:"Francisco Alex",a:"rj",c:"#00c8ef"},
+  {b:"Quintino Bocaiúva",t:"Flavio Borges",a:"rj",c:"#00c8ef"},
+  {b:"Ramos",t:"Jorge Luiz",a:"rj",c:"#00c8ef"},
+  {b:"Riachuelo",t:"Flavio / Waldir / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Rio Comprido",t:"Francisco Alex / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Rocha",t:"Carlos Miranda / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Rocha Miranda",t:"José Duque",a:"rj",c:"#00c8ef"},
+  {b:"Sampaio",t:"Flavio / Waldir",a:"rj",c:"#00c8ef"},
+  {b:"Santa Teresa",t:"Uiliam",a:"rj",c:"#00c8ef"},
+  {b:"Santo Cristo",t:"Uiliam",a:"rj",c:"#00c8ef"},
+  {b:"São Cristóvão",t:"Uiliam / Gustavo / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"São Gonçalo",t:"João Paulo / Orlando / Rafael",a:"rj",c:"#00c8ef"},
+  {b:"Saúde",t:"Uiliam",a:"rj",c:"#00c8ef"},
+  {b:"Tijuca",t:"Gustavo / Francisco Alex / Glaucio",a:"rj",c:"#00c8ef"},
+  {b:"Todos os Santos",t:"Adenilson / Flavio",a:"rj",c:"#00c8ef"},
+  {b:"Triagem",t:"Orlando",a:"rj",c:"#00c8ef"},
+  {b:"Turiaçu",t:"José Duque / Alex Cunha",a:"rj",c:"#00c8ef"},
+  {b:"Urca",t:"Moises / Bispo",a:"rj",c:"#00c8ef"},
+  {b:"Vaz Lobo",t:"José Duque / Alex Cunha",a:"rj",c:"#00c8ef"},
+  {b:"Vicente de Carvalho",t:"Marcelo Raimundo",a:"rj",c:"#00c8ef"},
+  {b:"Vidigal",t:"Moises",a:"rj",c:"#00c8ef"},
+  {b:"Vigário Geral",t:"Marcelo Raimundo",a:"rj",c:"#00c8ef"},
+  {b:"Vila da Penha",t:"José Duque",a:"rj",c:"#00c8ef"},
+  {b:"Vila Isabel",t:"Francisco Alex / Jorge Luiz",a:"rj",c:"#00c8ef"},
+].sort((a,b)=>a.b.localeCompare(b.b,'pt-BR'));
+
+// Build bairros grid
+const bgrid=document.getElementById('bgrid');
+const bcount=document.getElementById('bcount');
+BAIRROS.forEach(d=>{
+  const el=document.createElement('div');
+  el.className='brow'; el.dataset.area=d.a;
+  el.innerHTML=`<div class="bdot" style="background:${d.c}"></div><span class="bname">${d.b}</span><span class="btech">${d.t}</span>`;
+  bgrid.appendChild(el);
+});
+function updCount(){bcount.textContent=bgrid.querySelectorAll('.brow:not(.hide)').length+' bairros';}
+updCount();
+
+// Filters
+document.querySelectorAll('.fchip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.fchip').forEach(b=>b.className='fchip');
+    const f=btn.dataset.f;
+    btn.classList.add('f'+f[0]);
+    bgrid.querySelectorAll('.brow').forEach(r=>r.classList.toggle('hide',f!=='all'&&r.dataset.area!==f));
+    updCount();
+  });
+});
+
+// Search
+const bsi=document.getElementById('bsearch'),sdrop=document.getElementById('sdrop');
+bsi.addEventListener('input',()=>{
+  const q=bsi.value.trim().toLowerCase();
+  sdrop.innerHTML='';
+  if(q.length<2){sdrop.classList.remove('open');return;}
+  const hits=BAIRROS.filter(d=>d.b.toLowerCase().includes(q)||d.t.toLowerCase().includes(q)).slice(0,16);
+  if(!hits.length){sdrop.classList.remove('open');return;}
+  hits.forEach(d=>{
+    const el=document.createElement('div');
+    el.className='sd-item';
+    el.innerHTML=`<div class="bdot" style="background:${d.c}"></div><span class="sd-bname">${d.b}</span><span class="sd-tech">${d.t}</span>`;
+    el.addEventListener('click',()=>{bsi.value=d.b;sdrop.classList.remove('open');filterSearch(d.b);});
+    sdrop.appendChild(el);
+  });
+  sdrop.classList.add('open');
+});
+function filterSearch(q){
+  const ql=q.toLowerCase();
+  bgrid.querySelectorAll('.brow').forEach(r=>{
+    const m=r.querySelector('.bname').textContent.toLowerCase().includes(ql)||r.querySelector('.btech').textContent.toLowerCase().includes(ql);
+    r.classList.toggle('hide',!m);
+  });
+  document.querySelectorAll('.fchip').forEach(b=>b.className='fchip');
+  document.querySelector('[data-f="all"]').classList.add('fa');
+  updCount();
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-bar'))sdrop.classList.remove('open');});
+
+// Tabs
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('page-'+btn.dataset.pg).classList.add('active');
+    requestAnimationFrame(initFadeIns);
+  });
+});
+
+// Shift toggle
+function toggleShift(id){
+  const block=document.getElementById(id);
+  const body=block.querySelector('.shift-body');
+  const col=block.classList.toggle('collapsed');
+  body.style.maxHeight=col?'0':body.scrollHeight+'px';
+}
+document.querySelectorAll('.shift-body').forEach(sb=>{sb.style.maxHeight=sb.scrollHeight+'px';});
+
+// Fade ins
+function initFadeIns(){
+  const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');obs.unobserve(e.target);}});},{threshold:0.05});
+  document.querySelectorAll('.fi:not(.vis)').forEach(el=>obs.observe(el));
+}
+initFadeIns();
+</script>
+</body>
+</html>
