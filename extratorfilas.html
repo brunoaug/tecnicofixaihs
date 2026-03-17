@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extrator de Filas — TLP</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══ TEMA DIURNO (07:00–15:00) — laranja/âmbar ═══ */
+:root{
+  --bg:#110d08;--surface:#1c1409;--card:#251a0c;--border:#3a2510;
+  --accent:#cc5520;--accent2:#f5a623;--text:#ede0d4;--muted:#8a6a50;
+  --success:#00e5a0;--danger:#ff4d4d;--warn:#f59e0b;
+  --grad1:rgba(180,75,30,.08);--grad2:rgba(245,166,35,.04);
+  --logo-a:#cc5520;--logo-b:#f5a623;
+  --badge-bg:rgba(180,75,30,.12);--badge-border:rgba(180,75,30,.35);--badge-txt:#cc5520;
+  --rec-border:#10b981;--rec-bg:rgba(16,185,129,.07);
+}
+/* ═══ TEMA NOTURNO (15:00–07:00) — azul escuro ═══ */
+body.theme-night{
+  --bg:#050c1a;--surface:#0a1525;--card:#0f1d35;--border:#1a3055;
+  --accent:#1a6aff;--accent2:#4d9fff;--text:#d0ddf5;--muted:#5a7aaa;
+  --grad1:rgba(26,106,255,.06);--grad2:rgba(77,159,255,.04);
+  --logo-a:#4d9fff;--logo-b:#a78bfa;
+  --badge-bg:rgba(26,106,255,.1);--badge-border:rgba(26,106,255,.35);--badge-txt:#4d9fff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+body{
+  background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;
+  transition:background .6s,color .4s;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 20% 0%,var(--grad1) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 100%,var(--grad2) 0%,transparent 60%);
+}
+
+/* ─── HEADER ─── */
+header{
+  padding:1.4rem 2rem 1.1rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+}
+.header-left{display:flex;align-items:center;gap:1.2rem;}
+.logo-pill{
+  display:flex;align-items:center;gap:.8rem;
+  background:linear-gradient(135deg,var(--logo-a),var(--logo-b));
+  border-radius:14px;padding:.7rem 1.4rem;flex-shrink:0;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);position:relative;overflow:hidden;
+}
+.logo-pill::after{content:'';position:absolute;top:-50%;right:-20%;width:80px;height:200%;
+  background:rgba(255,255,255,.08);transform:rotate(20deg);pointer-events:none;}
+.logo-pill .logo-name{font-size:2rem;font-weight:900;color:#fff;letter-spacing:.1em;line-height:1;
+  text-shadow:0 2px 8px rgba(0,0,0,.25);}
+.logo-pill .logo-sub{font-size:.58rem;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.85);
+  letter-spacing:.2em;margin-top:3px;text-transform:uppercase;}
+.header-text h1{font-size:1.3rem;font-weight:800;letter-spacing:-.03em;}
+.header-text p{font-size:.72rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.header-right{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;}
+
+.home-btn{
+  display:flex;align-items:center;gap:.38rem;padding:.43rem .9rem;
+  border-radius:999px;border:1px solid var(--border);background:var(--surface);
+  color:var(--muted);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;
+  cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;
+}
+.home-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+
+.shift-badge{
+  display:flex;align-items:center;gap:.5rem;padding:.48rem 1rem;
+  border-radius:10px;border:1px solid;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;flex-shrink:0;
+}
+.shift-badge.day{border-color:rgba(180,75,30,.5);background:rgba(180,75,30,.1);color:#cc5520;}
+.shift-badge.night{border-color:rgba(26,106,255,.45);background:rgba(26,106,255,.1);color:#4d9fff;}
+.shift-clock{font-size:.63rem;font-family:'JetBrains Mono',monospace;opacity:.75;margin-top:1px;}
+
+/* ─── CONTAINER ─── */
+.container{max-width:1300px;margin:0 auto;padding:1.75rem 2rem;}
+
+/* ─── ALERTS ─── */
+.alert{
+  display:none;align-items:center;gap:.75rem;padding:.85rem 1.2rem;
+  border-radius:12px;margin-bottom:1rem;font-size:.8rem;
+  font-family:'JetBrains Mono',monospace;border:1px solid;
+}
+.alert.active{display:flex;animation:slideDown .3s ease;}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
+.alert-success{background:rgba(0,229,160,.08);border-color:rgba(0,229,160,.35);color:var(--success);}
+.alert-error{background:rgba(255,77,77,.08);border-color:rgba(255,77,77,.3);color:var(--danger);}
+
+.loading{
+  display:none;align-items:center;justify-content:center;gap:.75rem;
+  padding:1rem;color:var(--accent);font-weight:700;font-size:.85rem;
+  font-family:'JetBrains Mono',monospace;
+}
+.loading.active{display:flex;}
+@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+.spin{display:inline-block;animation:spin .9s linear infinite;}
+
+/* ─── UPLOAD SECTION ─── */
+.upload-section{
+  text-align:center;padding:2.5rem;
+  border:2px dashed var(--border);border-radius:16px;
+  background:var(--surface);margin-bottom:1.5rem;
+  transition:all .25s;cursor:default;
+}
+.upload-section:hover,.upload-section.dragover{
+  border-color:var(--accent);background:var(--card);
+}
+.upload-section.dragover{transform:scale(1.01);}
+
+.file-input-wrapper input[type="file"]{display:none;}
+.file-input-label{
+  display:inline-flex;align-items:center;gap:.55rem;
+  padding:.75rem 2rem;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border-radius:999px;cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;
+  transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.2);
+}
+body:not(.theme-night) .file-input-label{color:#1a0800;}
+.file-input-label:hover{filter:brightness(1.1);transform:translateY(-2px);}
+
+.file-info{
+  margin-top:.9rem;font-size:.75rem;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:'JetBrains Mono',monospace;
+}
+.file-info.active{color:var(--accent);font-weight:600;}
+
+/* ─── SECTION TITLE ─── */
+.section-title{
+  font-size:1rem;font-weight:800;letter-spacing:-.02em;
+  color:var(--text);margin-bottom:1rem;padding-bottom:.55rem;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:.6rem;
+}
+.section-title span{color:var(--accent);}
+
+/* ─── STATS ─── */
+.stats{display:flex;gap:.85rem;margin-bottom:1.25rem;flex-wrap:wrap;}
+.stat-card{
+  flex:1;min-width:160px;background:var(--card);padding:1rem 1.25rem;
+  border-radius:12px;border:1px solid var(--border);transition:all .2s;
+}
+.stat-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.stat-card h3{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;}
+.stat-card p{font-size:1.8rem;font-weight:800;color:var(--accent);}
+
+/* ─── CONTROLS ─── */
+.controls{display:flex;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;align-items:center;}
+.search-wrapper{flex:1;min-width:200px;position:relative;}
+.search-wrapper .s-icon{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;}
+.search-box{
+  width:100%;padding:.68rem 1rem .68rem 2.4rem;
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.8rem;outline:none;transition:border-color .2s;
+}
+.search-box:focus{border-color:var(--accent);}
+
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  padding:.55rem 1.1rem;border:none;border-radius:999px;cursor:pointer;
+  font-family:'Syne',sans-serif;font-size:.76rem;font-weight:700;
+  transition:all .18s;white-space:nowrap;
+}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;filter:none!important;}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+body:not(.theme-night) .btn-primary{color:#1a0800;}
+.btn-primary:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px);}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-outline:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+.btn-rec{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);color:#10b981;}
+.btn-rec:hover:not(:disabled){background:rgba(16,185,129,.2);}
+.btn-export{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
+body:not(.theme-night) .btn-export{color:#1a0800;}
+.btn-export:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);}
+
+/* ─── COLUMNS SECTION ─── */
+.columns-section{display:none;margin-top:1.5rem;}
+.columns-section.active{display:block;animation:fu .35s ease;}
+@keyframes fu{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+
+.columns-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+  gap:.75rem;margin-bottom:1.5rem;
+}
+.column-item{
+  background:var(--card);padding:.85rem 1rem;border-radius:10px;
+  border:1px solid var(--border);transition:all .2s;cursor:pointer;
+}
+.column-item:hover{border-color:var(--accent);transform:translateY(-1px);}
+.column-item.selected{border-color:var(--accent);background:var(--surface);}
+.column-item.recommended{border-color:var(--rec-border);background:var(--rec-bg);}
+.column-item label{
+  display:flex;align-items:center;cursor:pointer;
+  font-size:.78rem;color:var(--text);font-weight:500;gap:.55rem;
+  font-family:'JetBrains Mono',monospace;
+}
+.column-item input[type="checkbox"]{
+  width:15px;height:15px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;
+}
+
+/* ─── PREVIEW ─── */
+.preview-section{display:none;margin-top:1.5rem;}
+.preview-section.active{display:block;animation:fu .35s ease;}
+
+.table-wrapper{
+  overflow-x:auto;border-radius:12px;
+  border:1px solid var(--border);max-height:420px;
+  box-shadow:0 4px 18px rgba(0,0,0,.18);
+}
+table{width:100%;border-collapse:collapse;background:var(--card);}
+th{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  padding:.75rem 1rem;text-align:left;font-family:'Syne',sans-serif;
+  font-size:.73rem;font-weight:700;position:sticky;top:0;z-index:10;
+  white-space:nowrap;
+}
+body:not(.theme-night) th{color:#1a0800;}
+body.theme-night th{color:#fff;}
+th.th-first{background:var(--surface);color:var(--muted)!important;font-family:'JetBrains Mono',monospace;}
+th.th-status{background:linear-gradient(135deg,#f59e0b,#f5a623);}
+td{
+  padding:.6rem 1rem;border-bottom:1px solid var(--border);
+  font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--text);
+}
+td.td-first{background:var(--surface);color:var(--muted);font-weight:600;}
+td.td-status{color:var(--warn);font-style:italic;}
+tr:hover td{background:var(--surface);}
+tr:hover td.td-first{background:var(--card);}
+
+/* ─── FOOTER ─── */
+footer{
+  margin-top:3rem;padding:1.25rem 2rem;border-top:1px solid var(--border);
+  text-align:center;
+}
+.footer-logo{font-size:1.1rem;font-weight:900;color:var(--accent);letter-spacing:.1em;margin-bottom:.25rem;}
+.footer-sub{font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;
+  background:var(--success);color:#000;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;
+  padding:.68rem 1.35rem;border-radius:10px;
+  transform:translateY(100px);opacity:0;
+  transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:999;
+}
+.toast.err{background:var(--danger);color:#fff;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+@media(max-width:768px){
+  header{padding:1rem;}
+  .container{padding:1rem;}
+  .controls{flex-direction:column;}
+  .btn{width:100%;justify-content:center;}
+  .search-wrapper{width:100%;}
+  .stats{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="logo-pill">
+      <div>
+        <div class="logo-name">TLP</div>
+        <div class="logo-sub">Conectados com o Futuro</div>
+      </div>
+    </div>
+    <div class="header-text">
+      <h1>Extrator de Filas</h1>
+      <p>Sistema de Processamento de Dados · Telecomunicações</p>
+    </div>
+  </div>
+  <div class="header-right">
+    <a href="index.html" class="home-btn">⌂ Voltar ao Início</a>
+    <div class="shift-badge day" id="shiftBadge">
+      <span id="shiftIcon">☀️</span>
+      <div>
+        <div id="shiftLabel">Turno Diurno</div>
+        <div class="shift-clock" id="shiftClock"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ALERTS -->
+  <div id="alertSuccess" class="alert alert-success">
+    <span>✓</span><span id="alertSuccessText"></span>
+  </div>
+  <div id="alertError" class="alert alert-error">
+    <span>✕</span><span id="alertErrorText"></span>
+  </div>
+  <div id="loading" class="loading">
+    <span class="spin">⟳</span><span>Processando arquivo...</span>
+  </div>
+
+  <!-- UPLOAD -->
+  <div class="upload-section" id="uploadSection">
+    <div class="file-input-wrapper">
+      <input type="file" id="fileInput" accept=".xlsx,.xls">
+      <label for="fileInput" class="file-input-label">
+        📂 Selecionar Arquivo de Filas
+      </label>
+    </div>
+    <div class="file-info" id="fileInfo">
+      ℹ Arraste e solte um arquivo Excel aqui ou clique para selecionar
+    </div>
+  </div>
+
+  <!-- COLUMNS SECTION -->
+  <div class="columns-section" id="columnsSection">
+
+    <div class="section-title"><span>⊞</span> Selecione as Colunas para Extração</div>
+
+    <div class="stats">
+      <div class="stat-card">
+        <h3>Total de Colunas</h3>
+        <p id="totalColumns">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Selecionadas</h3>
+        <p id="selectedColumns">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Total de Registros</h3>
+        <p id="totalRows">0</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <div class="search-wrapper">
+        <span class="s-icon">🔍</span>
+        <input type="text" id="searchBox" class="search-box" placeholder="Buscar colunas...">
+      </div>
+      <button class="btn btn-outline" id="selectAllBtn">✓ Selecionar Todas</button>
+      <button class="btn btn-outline" id="deselectAllBtn">✕ Desmarcar Todas</button>
+      <button class="btn btn-rec" id="recommendedBtn">⭐ Extração Recomendada</button>
+      <button class="btn btn-export" id="exportBtn" disabled>⬇ Exportar Filas + Status</button>
+    </div>
+
+    <div class="columns-grid" id="columnsGrid"></div>
+
+    <!-- PREVIEW -->
+    <div class="preview-section" id="previewSection">
+      <div class="section-title"><span>👁</span> Prévia dos Dados (10 primeiros registros)</div>
+      <div class="table-wrapper">
+        <table>
+          <thead id="previewTableHead"></thead>
+          <tbody id="previewTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-logo">TLP</div>
+  <div class="footer-sub">Sistema de Extração de Filas · Telecomunicações © 2026</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── TURNO ── */
+const NIGHT_START=15,DAY_START=7;
+function isNightActive(){const h=new Date().getHours();return h>=NIGHT_START||h<DAY_START;}
+function updateShiftUI(){
+  const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,"0");
+  const night=isNightActive();
+  document.body.classList.toggle("theme-night",night);
+  const badge=document.getElementById("shiftBadge");
+  badge.className="shift-badge "+(night?"night":"day");
+  document.getElementById("shiftIcon").textContent=night?"🌙":"☀️";
+  document.getElementById("shiftLabel").textContent=night?"Turno Noturno":"Turno Diurno";
+  document.getElementById("shiftClock").textContent=h+":"+m+(night?" · até 07:00":" · noturno às 15:00");
+}
+updateShiftUI();
+setInterval(updateShiftUI,60000);
+
+/* ── TOAST ── */
+function showToast(msg,type){
+  const el=document.getElementById("toast");
+  el.textContent=msg;el.className="toast"+(type==="err"?" err":"");
+  el.classList.add("show");setTimeout(()=>el.classList.remove("show"),3500);
+}
+
+/* ── ALERT ── */
+function showAlert(type,message){
+  const a=type==="success"?document.getElementById("alertSuccess"):document.getElementById("alertError");
+  const t=type==="success"?document.getElementById("alertSuccessText"):document.getElementById("alertErrorText");
+  t.textContent=message;
+  a.classList.add("active");
+  showToast(message,type==="success"?"":"err");
+  setTimeout(()=>a.classList.remove("active"),6000);
+}
+
+/* ── RECOMMENDED COLUMNS ── */
+const RECOMMENDED_COLUMNS=[
+  'numero de ordem','titulo do alarme','fim sla','end id','ne id','tipo da falha','faixa priorizacao dispatching'
+];
+function normalizeText(text){
+  return text.toString().toLowerCase().trim().replace(/\s+/g,' ').replace(/[_-]/g,' ')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+}
+function isRecommendedColumn(header){
+  const n=normalizeText(header);
+  return RECOMMENDED_COLUMNS.some(r=>normalizeText(r)===n);
+}
+
+/* ── STATE ── */
+let workbook=null,allData=[],headers=[];
+let selectedColumnIndices=new Set();
+
+/* ── ELEMENTS ── */
+const fileInput=document.getElementById("fileInput");
+const uploadSection=document.getElementById("uploadSection");
+const fileInfo=document.getElementById("fileInfo");
+const columnsSection=document.getElementById("columnsSection");
+const columnsGrid=document.getElementById("columnsGrid");
+const searchBox=document.getElementById("searchBox");
+const selectAllBtn=document.getElementById("selectAllBtn");
+const deselectAllBtn=document.getElementById("deselectAllBtn");
+const recommendedBtn=document.getElementById("recommendedBtn");
+const exportBtn=document.getElementById("exportBtn");
+const previewSection=document.getElementById("previewSection");
+const previewTableHead=document.getElementById("previewTableHead");
+const previewTableBody=document.getElementById("previewTableBody");
+const totalColumnsEl=document.getElementById("totalColumns");
+const selectedColumnsEl=document.getElementById("selectedColumns");
+const totalRowsEl=document.getElementById("totalRows");
+const loading=document.getElementById("loading");
+
+/* ── DRAG & DROP ── */
+uploadSection.addEventListener("dragover",e=>{e.preventDefault();uploadSection.classList.add("dragover");});
+uploadSection.addEventListener("dragleave",()=>uploadSection.classList.remove("dragover"));
+uploadSection.addEventListener("drop",e=>{
+  e.preventDefault();uploadSection.classList.remove("dragover");
+  if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener("change",e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
+
+/* ── HANDLE FILE ── */
+function handleFile(file){
+  if(!file.name.match(/\.(xlsx|xls)$/i)){showAlert("error","Por favor, selecione um arquivo Excel válido (.xlsx ou .xls)");return;}
+  fileInfo.innerHTML="📄 "+file.name+" ("+formatFileSize(file.size)+")";
+  fileInfo.classList.add("active");
+  loading.classList.add("active");
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const data=e.target.result;
+      workbook=XLSX.read(data,{type:"binary",cellStyles:true,cellDates:true});
+      const ws=workbook.Sheets[workbook.SheetNames[0]];
+      allData=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",blankrows:false});
+      if(!allData.length){showAlert("error","O arquivo está vazio!");loading.classList.remove("active");return;}
+      headers=allData[0].map((h,i)=>h||"Coluna "+(i+1));
+      processData();
+      loading.classList.remove("active");
+      showAlert("success","Arquivo carregado com sucesso! Pronto para extração.");
+    }catch(err){loading.classList.remove("active");showAlert("error","Erro ao processar o arquivo: "+err.message);}
+  };
+  reader.onerror=()=>{loading.classList.remove("active");showAlert("error","Erro ao ler o arquivo");};
+  reader.readAsBinaryString(file);
+}
+
+/* ── PROCESS DATA ── */
+function processData(){
+  const dataRows=allData.slice(1);
+  totalColumnsEl.textContent=headers.length;
+  totalRowsEl.textContent=dataRows.length;
+  selectedColumnsEl.textContent=0;
+  selectedColumnIndices.clear();
+  columnsGrid.innerHTML="";
+  headers.forEach((header,index)=>{
+    const isRec=isRecommendedColumn(header);
+    const item=document.createElement("div");
+    item.className="column-item"+(isRec?" recommended":"");
+    item.innerHTML=`<label><input type="checkbox" data-index="${index}"><span>${header}${isRec?" ⭐":""}</span></label>`;
+    const cb=item.querySelector("input");
+    cb.addEventListener("change",()=>{
+      if(cb.checked){selectedColumnIndices.add(index);item.classList.add("selected");}
+      else{selectedColumnIndices.delete(index);item.classList.remove("selected");}
+      updateSelectedCount();updatePreview();
+    });
+    item.addEventListener("click",e=>{if(e.target.tagName!=="INPUT"){cb.checked=!cb.checked;cb.dispatchEvent(new Event("change"));}});
+    columnsGrid.appendChild(item);
+  });
+  columnsSection.classList.add("active");
+}
+
+function updateSelectedCount(){
+  selectedColumnsEl.textContent=selectedColumnIndices.size;
+  exportBtn.disabled=selectedColumnIndices.size===0;
+}
+
+function updatePreview(){
+  if(!selectedColumnIndices.size){previewSection.classList.remove("active");return;}
+  const si=Array.from(selectedColumnIndices).sort((a,b)=>a-b);
+  const sh=si.map(i=>headers[i]);
+  previewTableHead.innerHTML=`<tr>${sh.map((h,i)=>`<th class="${i===0?"th-first":""}">${h}</th>`).join("")}<th class="th-status">STATUS</th></tr>`;
+  const rows=allData.slice(1,11);
+  previewTableBody.innerHTML=rows.map(row=>{
+    const cells=si.map(i=>row[i]||"");
+    return`<tr>${cells.map((c,i)=>`<td class="${i===0?"td-first":""}">${c}</td>`).join("")}<td class="td-status">(vazio)</td></tr>`;
+  }).join("");
+  previewSection.classList.add("active");
+}
+
+/* ── CONTROLS ── */
+searchBox.addEventListener("input",e=>{
+  const q=e.target.value.toLowerCase();
+  columnsGrid.querySelectorAll(".column-item").forEach(item=>{
+    item.style.display=item.textContent.toLowerCase().includes(q)?"block":"none";
+  });
+});
+
+selectAllBtn.addEventListener("click",()=>{
+  columnsGrid.querySelectorAll("input[type=checkbox]").forEach(cb=>{
+    if(cb.parentElement.parentElement.style.display!=="none"){cb.checked=true;cb.dispatchEvent(new Event("change"));}
+  });
+});
+
+deselectAllBtn.addEventListener("click",()=>{
+  columnsGrid.querySelectorAll("input[type=checkbox]").forEach(cb=>{cb.checked=false;cb.dispatchEvent(new Event("change"));});
+});
+
+recommendedBtn.addEventListener("click",()=>{
+  columnsGrid.querySelectorAll("input[type=checkbox]").forEach(cb=>{cb.checked=false;cb.parentElement.parentElement.classList.remove("selected");});
+  selectedColumnIndices.clear();
+  let found=0;const foundCols=[];
+  headers.forEach((h,i)=>{
+    if(isRecommendedColumn(h)){
+      const cb=columnsGrid.querySelector(`input[data-index="${i}"]`);
+      if(cb){cb.checked=true;cb.parentElement.parentElement.classList.add("selected");selectedColumnIndices.add(i);foundCols.push(h);found++;}
+    }
+  });
+  updateSelectedCount();updatePreview();
+  if(found>0)showAlert("success",`Extração recomendada aplicada! ${found} colunas: ${foundCols.join(", ")}`);
+  else showAlert("error","Nenhuma coluna recomendada encontrada. Verifique os nomes das colunas.");
+});
+
+/* ── EXPORT ── */
+exportBtn.addEventListener("click",()=>{
+  if(!selectedColumnIndices.size){showAlert("error","Selecione ao menos uma coluna!");return;}
+  try{
+    loading.classList.add("active");
+    const si=Array.from(selectedColumnIndices).sort((a,b)=>a-b);
+    const filteredData=allData.map((row,ri)=>{
+      const fr=si.map(i=>row[i]!==undefined?row[i]:"");
+      fr.push(ri===0?"STATUS":"");
+      return fr;
+    });
+    const nb=XLSX.utils.book_new();
+    const nw=XLSX.utils.aoa_to_sheet(filteredData);
+    const range=XLSX.utils.decode_range(nw["!ref"]);
+    // Header row styling
+    for(let col=range.s.c;col<=range.e.c;col++){
+      const ca=XLSX.utils.encode_cell({r:0,c:col});
+      if(!nw[ca])continue;
+      nw[ca].s={fill:{patternType:"solid",fgColor:{rgb:"2d1810"}},font:{color:{rgb:"FFFFFF"},bold:true,sz:12},alignment:{horizontal:"center",vertical:"center"},border:{top:{style:"thin",color:{rgb:"2d1810"}},bottom:{style:"thin",color:{rgb:"2d1810"}},left:{style:"thin",color:{rgb:"2d1810"}},right:{style:"thin",color:{rgb:"2d1810"}}}};
+    }
+    // First column styling
+    for(let row=range.s.r;row<=range.e.r;row++){
+      const ca=XLSX.utils.encode_cell({r:row,c:0});
+      if(!nw[ca])nw[ca]={t:"s",v:""};
+      nw[ca].s={fill:{patternType:"solid",fgColor:{rgb:"2d1810"}},font:{color:{rgb:"FFFFFF"},bold:true,sz:11},alignment:{horizontal:"left",vertical:"center"},border:{top:{style:"thin",color:{rgb:"2d1810"}},bottom:{style:"thin",color:{rgb:"2d1810"}},left:{style:"thin",color:{rgb:"2d1810"}},right:{style:"thin",color:{rgb:"2d1810"}}}};
+    }
+    nw["!cols"]=[...si.map(()=>({wch:20})),{wch:15}];
+    XLSX.utils.book_append_sheet(nb,nw,"Filas TLP");
+    const ts=new Date().toISOString().slice(0,19).replace(/:/g,"-");
+    const fname=`TLP_Filas_${ts}.xlsx`;
+    XLSX.writeFile(nb,fname,{bookType:"xlsx",bookSST:false,type:"binary",cellStyles:true});
+    loading.classList.remove("active");
+    showAlert("success",`Extração concluída! ${fname} | Formatação TLP aplicada | Coluna STATUS adicionada`);
+  }catch(err){loading.classList.remove("active");showAlert("error","Erro ao exportar: "+err.message);}
+});
+
+/* ── UTILS ── */
+function formatFileSize(b){
+  if(!b)return"0 Bytes";
+  const k=1024,s=["Bytes","KB","MB","GB"],i=Math.floor(Math.log(b)/Math.log(k));
+  return Math.round(b/Math.pow(k,i)*100)/100+" "+s[i];
+}
+</script>
+</body>
+</html>
