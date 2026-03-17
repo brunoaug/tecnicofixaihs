@@ -1,0 +1,1705 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Carimbos - TLP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+        :root {
+            /* Cores TLP Oficiais */
+            --tlp-orange: #E85D1F;
+            --tlp-orange-dark: #C74D15;
+            --tlp-orange-light: #FF7A3D;
+            --tlp-yellow: #F5A623;
+            --tlp-yellow-light: #FFB84D;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            
+            /* Tema Claro */
+            --bg-primary: #ffffff;
+            --bg-secondary: #FFF8F3;
+            --bg-tertiary: #FFE8DC;
+            --text-primary: #2D1810;
+            --text-secondary: #8B4513;
+            --border-color: #FFD4BA;
+            --shadow: rgba(232, 93, 31, 0.15);
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --accent-gradient: linear-gradient(135deg, #E85D1F 0%, #F5A623 100%);
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a0f0a;
+            --bg-secondary: #2d1810;
+            --bg-tertiary: #3d2418;
+            --text-primary: #fff8f3;
+            --text-secondary: #ffb88c;
+            --border-color: #4d3020;
+            --shadow: rgba(232, 93, 31, 0.3);
+            --card-bg: #2d1810;
+            --input-bg: #3d2418;
+            --accent-gradient: linear-gradient(135deg, #E85D1F 0%, #F5A623 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .top-bar {
+            background: var(--accent-gradient);
+            padding: 1.2rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(232, 93, 31, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.6rem 1.8rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo-icon {
+            width: 55px;
+            height: 55px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #e88e1f 0%, #ffb237 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .logo-icon::before {
+            content: 'TLP';
+            position: absolute;
+            background: white;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            z-index: -1;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .logo-text .company-name {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+            line-height: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo-text .company-subtitle {
+            font-size: 0.7rem;
+            opacity: 0.95;
+            letter-spacing: 4px;
+            font-weight: 400;
+            margin-top: 2px;
+        }
+
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            font-size: 0.95rem;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-toggle i {
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3.5rem 2rem;
+            background: var(--accent-gradient);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(232, 93, 31, 0.3);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            animation: pulse 15s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.5; }
+            50% { transform: scale(1.1) rotate(180deg); opacity: 0.8; }
+        }
+
+        .page-header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-weight: 800;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .navigation {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .nav-card {
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(232, 93, 31, 0.3);
+            border-color: var(--tlp-orange);
+        }
+
+        .nav-card:hover::before {
+            opacity: 0.08;
+        }
+
+        .nav-card-icon {
+            font-size: 4rem;
+            margin-bottom: 1.8rem;
+            position: relative;
+            z-index: 1;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--tlp-orange);
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+        }
+
+        .nav-card p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            position: relative;
+            z-index: 1;
+            line-height: 1.7;
+        }
+
+        .nav-card .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--accent-gradient);
+            color: white;
+            padding: 0.5rem 1.3rem;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            margin-top: 1.8rem;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 4px 15px rgba(232, 93, 31, 0.3);
+        }
+
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .back-button {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 1rem 2.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(232, 93, 31, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateX(-5px) scale(1.05);
+            box-shadow: 0 6px 25px rgba(232, 93, 31, 0.4);
+        }
+
+        .toolbar {
+            background: var(--card-bg);
+            padding: 1.8rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            align-items: center;
+            box-shadow: 0 4px 15px var(--shadow);
+            border: 2px solid var(--border-color);
+        }
+
+        .toolbar button {
+            padding: 0.95rem 2rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(232, 93, 31, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(232, 93, 31, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 280px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1.2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--tlp-orange);
+            font-size: 1.1rem;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.95rem 1.2rem 0.95rem 3.2rem;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            font-size: 1rem;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--tlp-orange);
+            box-shadow: 0 0 0 4px rgba(232, 93, 31, 0.1);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.8rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--tlp-orange);
+            color: var(--tlp-orange);
+            transform: translateY(-2px);
+        }
+
+        .filter-btn.active {
+            background: var(--accent-gradient);
+            color: white;
+            border-color: var(--tlp-orange);
+            box-shadow: 0 4px 15px rgba(232, 93, 31, 0.3);
+        }
+
+        .stamps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .stamp-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .stamp-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(232, 93, 31, 0.2);
+            border-color: var(--tlp-orange);
+        }
+
+        .stamp-header {
+            padding: 1.5rem;
+            color: white;
+            font-weight: 800;
+            text-align: center;
+            font-size: 1.05rem;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .stamp-body {
+            padding: 2rem;
+        }
+
+        .stamp-field {
+            margin-bottom: 1.3rem;
+            padding: 1.3rem;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            border-left: 4px solid var(--tlp-orange);
+            transition: all 0.3s ease;
+        }
+
+        .stamp-field:hover {
+            background: var(--bg-tertiary);
+            transform: translateX(5px);
+        }
+
+        .stamp-field label {
+            display: block;
+            font-weight: 700;
+            color: var(--tlp-orange);
+            margin-bottom: 0.7rem;
+            font-size: 0.95rem;
+        }
+
+        .stamp-field input,
+        .stamp-field textarea {
+            width: 100%;
+            padding: 0.95rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: 'Poppins', sans-serif;
+            background: var(--input-bg);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .stamp-field input:focus,
+        .stamp-field textarea:focus {
+            outline: none;
+            border-color: var(--tlp-orange);
+            box-shadow: 0 0 0 3px rgba(232, 93, 31, 0.1);
+        }
+
+        .stamp-field textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .stamp-actions {
+            padding: 1.3rem 2rem;
+            background: var(--bg-secondary);
+            display: flex;
+            gap: 1.2rem;
+            border-top: 2px solid var(--border-color);
+        }
+
+        .stamp-actions button {
+            flex: 1;
+            padding: 0.95rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-copy {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(232, 93, 31, 0.3);
+        }
+
+        .btn-copy:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(232, 93, 31, 0.4);
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-clear:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(239, 68, 68, 0.4);
+        }
+
+        /* Cores dos carimbos TLP */
+        .color-yellow { background: linear-gradient(135deg, #F5A623 0%, #FFB84D 100%); }
+        .color-blue { background: linear-gradient(135deg, #E85D1F 0%, #F5A623 100%); }
+        .color-black { background: linear-gradient(135deg, #C74D15 0%, #E85D1F 100%); }
+        .color-orange { background: linear-gradient(135deg, #E85D1F 0%, #FF7A3D 100%); }
+        .color-green { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .color-purple { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+        .color-red { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1.3rem 2rem;
+            background: var(--card-bg);
+            border: 3px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 450px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .notification.show {
+            display: flex;
+        }
+
+        .notification.success {
+            border-color: var(--success-color);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+        }
+
+        .notification.error {
+            border-color: var(--danger-color);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+        }
+
+        .notification i {
+            font-size: 1.5rem;
+        }
+
+        .notification.success i {
+            color: var(--success-color);
+        }
+
+        .notification.error i {
+            color: var(--danger-color);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(500px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--accent-gradient);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(232, 93, 31, 0.3);
+            color: white;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(232, 93, 31, 0.4);
+        }
+
+        .stat-card h3 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card p {
+            font-size: 1.1rem;
+            font-weight: 600;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .stamps-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .toolbar {
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .logo-text .company-name {
+                font-size: 1.5rem;
+            }
+
+            .nav-card {
+                padding: 2.5rem;
+            }
+
+            .navigation {
+                grid-template-columns: 1fr;
+            }
+
+            .stamp-actions {
+                flex-direction: column;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 5rem 2rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 6rem;
+            margin-bottom: 2rem;
+            opacity: 0.4;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .empty-state h3 {
+            color: var(--tlp-orange);
+            font-size: 1.8rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+
+        .empty-state p {
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="logo-section">
+            <div class="logo-container">
+                <div class="logo-icon">TLP</div>
+                <div class="logo-text">
+                    <span class="company-name">TLP</span>
+                    <span class="company-subtitle">CONECTADOS COM O FUTURO</span>
+                </div>
+            </div>
+        </div>
+        <button class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-moon" id="themeIcon"></i>
+            <span id="themeText">Tema Escuro</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Página Inicial -->
+        <div id="homePage" class="page-content active">
+            <div class="page-header">
+                <h1>Sistema de Carimbos TLP</h1>
+                <p>Plataforma Corporativa de Gerenciamento de Carimbos</p>
+            </div>
+
+            <div class="navigation">
+                <div class="nav-card" onclick="showPage('cscPage')">
+                    <div class="nav-card-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h2>Carimbos CSC/CCI</h2>
+                    <p>Acesse os carimbos específicos do CSC/CCI com todos os campos padronizados para operações técnicas</p>
+                    <span class="badge">
+                        <i class="fas fa-stamp"></i>
+                        18 Carimbos Disponíveis
+                    </span>
+                </div>
+
+                <div class="nav-card" onclick="showPage('padraoPage')">
+                    <div class="nav-card-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h2>Carimbos Padrão</h2>
+                    <p>Utilize os carimbos padrão para operações comuns e rotinas do dia a dia operacional</p>
+                    <span class="badge">
+                        <i class="fas fa-stamp"></i>
+                        5 Carimbos Disponíveis
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Página Carimbos CSC -->
+        <div id="cscPage" class="page-content">
+            <button class="back-button" onclick="showPage('homePage')">
+                <i class="fas fa-arrow-left"></i>
+                Voltar ao Início
+            </button>
+            
+            <div class="page-header">
+                <h1>Carimbos CSC/CCI</h1>
+                <p>Carimbos específicos para operações do Centro de Serviços Compartilhados</p>
+            </div>
+
+            <div class="toolbar">
+                <button class="btn-primary" onclick="addNewStamp('csc')">
+                    <i class="fas fa-plus-circle"></i>
+                    Novo Carimbo
+                </button>
+                <button class="btn-success" onclick="copyAllStamps('csc')">
+                    <i class="fas fa-copy"></i>
+                    Copiar Todos
+                </button>
+                <button class="btn-warning" onclick="clearAllFields('csc')">
+                    <i class="fas fa-eraser"></i>
+                    Limpar Todos
+                </button>
+                <button class="btn-primary" onclick="saveToLocalStorage('csc')">
+                    <i class="fas fa-save"></i>
+                    Salvar
+                </button>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInputCSC" placeholder="Buscar carimbos..." onkeyup="searchStamps('csc')">
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="totalStampsCSC">18</h3>
+                    <p>Total de Carimbos</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="filteredStampsCSC">18</h3>
+                    <p>Carimbos Visíveis</p>
+                </div>
+            </div>
+
+            <div class="filters" id="filterButtonsCSC"></div>
+            <div class="stamps-grid" id="stampsGridCSC"></div>
+        </div>
+
+        <!-- Página Carimbos Padrão -->
+        <div id="padraoPage" class="page-content">
+            <button class="back-button" onclick="showPage('homePage')">
+                <i class="fas fa-arrow-left"></i>
+                Voltar ao Início
+            </button>
+            
+            <div class="page-header">
+                <h1>Carimbos Padrão</h1>
+                <p>Carimbos para operações comuns e rotinas operacionais</p>
+            </div>
+
+            <div class="toolbar">
+                <button class="btn-primary" onclick="addNewStamp('padrao')">
+                    <i class="fas fa-plus-circle"></i>
+                    Novo Carimbo
+                </button>
+                <button class="btn-success" onclick="copyAllStamps('padrao')">
+                    <i class="fas fa-copy"></i>
+                    Copiar Todos
+                </button>
+                <button class="btn-warning" onclick="clearAllFields('padrao')">
+                    <i class="fas fa-eraser"></i>
+                    Limpar Todos
+                </button>
+                <button class="btn-primary" onclick="saveToLocalStorage('padrao')">
+                    <i class="fas fa-save"></i>
+                    Salvar
+                </button>
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInputPadrao" placeholder="Buscar carimbos..." onkeyup="searchStamps('padrao')">
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <h3 id="totalStampsPadrao">5</h3>
+                    <p>Total de Carimbos</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="filteredStampsPadrao">5</h3>
+                    <p>Carimbos Visíveis</p>
+                </div>
+            </div>
+
+            <div class="filters" id="filterButtonsPadrao"></div>
+            <div class="stamps-grid" id="stampsGridPadrao"></div>
+        </div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle" id="notificationIcon"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        // Dados dos Carimbos CSC (CORRIGIDO - SEM NÚMEROS NOS TÍTULOS)
+let stampsCSC = [
+    {
+        id: 1,
+        title: "ACIONAMENTO",
+        color: "yellow",
+        category: "Acionamento",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Previsão de normalização:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 2,
+        title: "ATUALIZAÇÃO",
+        color: "yellow",
+        category: "Atualização",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Previsão:", value: "" },
+            { label: "Observação:", value: "" },
+            { label: "CA:", value: "" }
+        ]
+    },
+    {
+        id: 3,
+        title: "ESCALONAMENTO ISOC/NOC",
+        color: "yellow",
+        category: "Escalonamento",
+        fields: [
+            { label: "Área a ser contatada:", value: "" },
+            { label: "Motivo do contato:", value: "" },
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Site/TSK's:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 4,
+        title: "iSOC (ASSOCIAÇÃO DE ATIVIDADES)",
+        color: "yellow",
+        category: "iSOC",
+        fields: [
+            { label: "Área a ser contatada:", value: "" },
+            { label: "NE ID / ELEMENTO:", value: "" },
+            { label: "TICKET:", value: "" },
+            { label: "OBS:", value: "Chamado envolvido em evento múltiplo, solicitado associação conforme premissa contratual de tratativa de falha por evento e não por tarefa." }
+        ]
+    },
+    {
+        id: 10,
+        title: "ATUALIZAÇÃO CONCESSIONÁRIA",
+        color: "blue",
+        category: "Concessionária",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Concessionária de energia:", value: "" },
+            { label: "Protocolo da concessionária:", value: "" },
+            { label: "Previsão de Restabelecimento da Energia:", value: "" },
+            { label: "Nome do atendente da Concessionária:", value: "" },
+            { label: "Número do CA:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 11,
+        title: "ATUALIZAÇÃO GMG",
+        color: "blue",
+        category: "GMG",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Data/Hora início do deslocamento:", value: "" },
+            { label: "Data/Hora fim do deslocamento:", value: "" },
+            { label: "Data/Hora início da instalação:", value: "" },
+            { label: "Data/Hora fim da instalação:", value: "" },
+            { label: "KM:", value: "" },
+            { label: "CA:", value: "" },
+            { label: "Obs:", value: "" }
+        ]
+    },
+    {
+        id: 12,
+        title: "FALTA DE SOBRESSALENTE",
+        color: "blue",
+        category: "Sobressalente",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Descrição do sobressalente:", value: "" },
+            { label: "Modelo:", value: "" },
+            { label: "CA:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 13,
+        title: "VANDALISMO",
+        color: "blue",
+        category: "Vandalismo",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "O que foi Vandalizado:", value: "" },
+            { label: "Foi realizado relatório fotográfico:", value: "" },
+            { label: "Materiais necessários para a solução provisória:", value: "" },
+            { label: "Número do BO:", value: "" },
+            { label: "Número do C.A.:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 14,
+        title: "FALHA PROVEDOR TX",
+        color: "blue",
+        category: "Provedor",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Há energia no local:", value: "" },
+            { label: "Houve teste presencial no site?", value: "" },
+            { label: "Quais foram os testes realizados?", value: "" },
+            { label: "Operador NOC/ CMC (teste):", value: "" },
+            { label: "Número do C.A.:", value: "" },
+            { label: "Data e hora de entrada no site:", value: "" },
+            { label: "Data e hora da saída no site:", value: "" },
+            { label: "Nome do provedor:", value: "" },
+            { label: "Qual a designação do circuito afetado?", value: "" },
+            { label: "Alguma restrição? Qual?", value: "" },
+            { label: "Como é o acesso ao site?", value: "" }
+        ]
+    },
+    {
+        id: 15,
+        title: "PROCESSO FLAG",
+        color: "blue",
+        category: "Processo",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Número do CA:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 16,
+        title: "PROCESSO CONTATO IDOC",
+        color: "blue",
+        category: "Processo",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Número do CA:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 17,
+        title: "WO PROVEDOR",
+        color: "blue",
+        category: "WO",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "Acompanhamento/Liberação de Acesso ou Conjunta" },
+            { label: "Número do CA:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 18,
+        title: "WO LOGÍSTICA",
+        color: "blue",
+        category: "WO",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Número do CA:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 19,
+        title: "WO OUTROS",
+        color: "blue",
+        category: "WO",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Número do CA:", value: "" },
+            { label: "Observação:", value: "" }
+        ]
+    },
+    {
+        id: 30,
+        title: "FECHAMENTO SEM SOBRESSALENTE",
+        color: "black",
+        category: "Fechamento",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "CA:", value: "" },
+            { label: "Justificativa de SLA:", value: "" }
+        ]
+    },
+    {
+        id: 31,
+        title: "FECHAMENTO COM SOBRESSALENTE",
+        color: "black",
+        category: "Fechamento",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Serial instalado:", value: "" },
+            { label: "Tim code instalado:", value: "" },
+            { label: "Serial retirado:", value: "" },
+            { label: "Tim code Retirado:", value: "" },
+            { label: "Número do C.A.:", value: "" },
+            { label: "Justificativa de SLA:", value: "" }
+        ]
+    },
+    {
+        id: 32,
+        title: "FECHAMENTO COM VANDALISMO",
+        color: "black",
+        category: "Fechamento",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "O que foi Vandalizado:", value: "" },
+            { label: "Foi realizado relatório fotográfico:", value: "" },
+            { label: "Materiais necessários para a solução provisória:", value: "" },
+            { label: "Número do BO:", value: "" },
+            { label: "Número do C.A.:", value: "" },
+            { label: "Observação:", value: "" },
+            { label: "Justificativa de SLA:", value: "" }
+        ]
+    },
+    {
+        id: 33,
+        title: "FECHAMENTO GMG",
+        color: "black",
+        category: "Fechamento",
+        fields: [
+            { label: "Técnico/Contato:", value: "" },
+            { label: "Ação:", value: "" },
+            { label: "Data/Hora início do deslocamento:", value: "" },
+            { label: "Data/Hora fim do deslocamento:", value: "" },
+            { label: "Data/Hora início da instalação:", value: "" },
+            { label: "Data/Hora fim da instalação:", value: "" },
+            { label: "KM:", value: "" },
+            { label: "CA:", value: "" },
+            { label: "Obs:", value: "" }
+        ]
+    }
+];
+        // Dados dos Carimbos Padrão
+        let stampsPadrao = [
+            {
+                id: 1,
+                title: "ISOC ACESSO | VALIDAÇÃO DE ALARME PRESO",
+                color: "green",
+                category: "ISOC",
+                fields: [
+                    { label: "Site:", value: "" },
+                    { label: "Ticket:", value: "" },
+                    { label: "Tipo da falha:", value: "" },
+                    { label: "Técnico está no local?", value: "" },
+                    { label: "Foi aberta CA?", value: "" },
+                    { label: "Possui evidências na TSK?", value: "" },
+                    { label: "Foi realizada a consulta via TAIS se o alarme segue presente?", value: "" }
+                ]
+            },
+            {
+                id: 2,
+                title: "FIELD - Limpeza de Alarme",
+                color: "purple",
+                category: "FIELD",
+                fields: [
+                    { label: "Motivo do contato:", value: "Limpeza de alarme" },
+                    { label: "NE ID / Elemento:", value: "" },
+                    { label: "Chamado:", value: "" },
+                    { label: "OBS:", value: "Prezados, por favor poderiam limpar alarmes site se encontra normal e mas com alarmes presos." }
+                ]
+            },
+            {
+                id: 3,
+                title: "ESCALONAMENTO ÁREA DE RISCO",
+                color: "orange",
+                category: "Escalonamento",
+                fields: [
+                    { label: "Motivo do contato:", value: "Local em área de risco" },
+                    { label: "Técnico/Contato:", value: "" },
+                    { label: "Site:", value: "" },
+                    { label: "TSK:", value: "" },
+                    { label: "Observação:", value: "Local de alto risco após as 17h. acesso ao local somente em HC" }
+                ]
+            },
+            {
+                id: 4,
+                title: "INTEMPÉRIE CLIMÁTICA - Abono de SLA",
+                color: "red",
+                category: "Abono",
+                fields: [
+                    { label: "Solicitação:", value: "Solicitamos o abono - INTERPÉRIE CLIMÁTICA - Prezados, chove em toda região e venta forte. Causando risco de alagamentos, o que dificulta acesso em certos pontos e impede o deslocamento técnico. Solicitaremos abono do SLA devido a intempérie climática. Assim que houver melhora do tempo será possível verificar a falha." },
+                    { label: "EXPURGO:", value: "SOLICITO EXPURGO, DEVIDO A FORTES CHUVAS NO TRJ, OCASIONANDO A PERDA DO SLA." }
+                ]
+            },
+            {
+                id: 5,
+                title: "[CCI TLP] - CARIMBO",
+                color: "blue",
+                category: "CCI",
+                fields: [
+                    { label: "Tipo:", value: "Crítica de encerramento" },
+                    { label: "Descrição:", value: "Chamado normalizado com falha de processamento da validação automática, será enviado pleito a TIM." }
+                ]
+            }
+        ];
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            
+            if (newTheme === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Tema Claro';
+            } else {
+                icon.className = 'fas fa-moon';
+                text.textContent = 'Tema Escuro';
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            
+            if (savedTheme === 'dark') {
+                icon.className = 'fas fa-sun';
+                text.textContent = 'Tema Claro';
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            if (pageId === 'cscPage') {
+                renderStamps('csc');
+                createFilterButtons('csc');
+                updateStats('csc');
+            } else if (pageId === 'padraoPage') {
+                renderStamps('padrao');
+                createFilterButtons('padrao');
+                updateStats('padrao');
+            }
+        }
+
+        function renderStamps(type, filter = 'all') {
+            const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+            const grid = document.getElementById(type === 'csc' ? 'stampsGridCSC' : 'stampsGridPadrao');
+            grid.innerHTML = '';
+
+            let filteredStamps = filter === 'all' ? stamps : stamps.filter(s => s.category === filter);
+
+            if (filteredStamps.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-inbox"></i>
+                        </div>
+                        <h3>Nenhum carimbo encontrado</h3>
+                        <p>Tente ajustar os filtros ou adicione um novo carimbo</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredStamps.forEach(stamp => {
+                const card = createStampCard(stamp, type);
+                grid.appendChild(card);
+            });
+
+            updateStats(type, filteredStamps.length);
+        }
+
+        function createStampCard(stamp, type) {
+            const card = document.createElement('div');
+            card.className = 'stamp-card';
+            card.setAttribute('data-stamp-id', stamp.id);
+
+            const header = document.createElement('div');
+            header.className = `stamp-header color-${stamp.color}`;
+            header.textContent = stamp.title;
+
+            const body = document.createElement('div');
+            body.className = 'stamp-body';
+
+            stamp.fields.forEach(field => {
+                const fieldDiv = document.createElement('div');
+                fieldDiv.className = 'stamp-field';
+                
+                const label = document.createElement('label');
+                label.textContent = field.label;
+                
+                const isTextarea = field.label.includes('Observação') || 
+                                  field.label.includes('OBS') || 
+                                  field.label.includes('Descrição') ||
+                                  field.label.includes('Solicitação') ||
+                                  field.label.includes('EXPURGO');
+                
+                const input = isTextarea ? document.createElement('textarea') : document.createElement('input');
+                
+                if (!isTextarea) input.type = 'text';
+                input.value = field.value;
+                input.placeholder = field.value || `Digite ${field.label.toLowerCase()}`;
+                input.onchange = (e) => updateFieldValue(stamp.id, field.label, e.target.value, type);
+
+                fieldDiv.appendChild(label);
+                fieldDiv.appendChild(input);
+                body.appendChild(fieldDiv);
+            });
+
+            const actions = document.createElement('div');
+            actions.className = 'stamp-actions';
+            actions.innerHTML = `
+                <button class="btn-copy" onclick="copyStamp(${stamp.id}, '${type}')">
+                    <i class="fas fa-copy"></i>
+                    Copiar
+                </button>
+                <button class="btn-clear" onclick="clearStampFields(${stamp.id}, '${type}')">
+                    <i class="fas fa-eraser"></i>
+                    Limpar
+                </button>
+                <button class="btn-delete" onclick="deleteStamp(${stamp.id}, '${type}')">
+                    <i class="fas fa-trash-alt"></i>
+                    Excluir
+                </button>
+            `;
+
+            card.appendChild(header);
+            card.appendChild(body);
+            card.appendChild(actions);
+
+            return card;
+        }
+
+        function updateFieldValue(stampId, fieldLabel, value, type) {
+            const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+            const stamp = stamps.find(s => s.id === stampId);
+            if (stamp) {
+                const field = stamp.fields.find(f => f.label === fieldLabel);
+                if (field) {
+                    field.value = value;
+                    saveToLocalStorage(type);
+                }
+            }
+        }
+
+        function clearStampFields(id, type) {
+            if (confirm('Deseja limpar todos os campos deste carimbo?')) {
+                const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+                const stamp = stamps.find(s => s.id === id);
+                
+                if (stamp) {
+                    stamp.fields.forEach(field => {
+                        // Mantém valores padrão específicos
+                        const defaultValues = [
+                            "Limpeza de alarme",
+                            "Prezados, por favor poderiam limpar alarmes site se encontra normal e mas com alarmes presos.",
+                            "Local em área de risco",
+                            "Local de alto risco após as 17h. acesso ao local somente em HC",
+                            "Solicitamos o abono - INTERPÉRIE CLIMÁTICA - Prezados, chove em toda região e venta forte. Causando risco de alagamentos, o que dificulta acesso em certos pontos e impede o deslocamento técnico. Solicitaremos abono do SLA devido a intempérie climática. Assim que houver melhora do tempo será possível verificar a falha.",
+                            "SOLICITO EXPURGO, DEVIDO A FORTES CHUVAS NO TRJ, OCASIONANDO A PERDA DO SLA.",
+                            "Crítica de encerramento",
+                            "Chamado normalizado com falha de processamento da validação automática, será enviado pleito a TIM.",
+                            "Chamado envolvido em evento múltiplo, solicitado associação conforme premissa contratual de tratativa de falha por evento e não por tarefa.",
+                            "Acompanhamento/Liberação de Acesso ou Conjunta"
+                        ];
+                        
+                        if (!defaultValues.includes(field.value)) {
+                            field.value = "";
+                        }
+                    });
+                    
+                    saveToLocalStorage(type);
+                    renderStamps(type);
+                    showNotification('Campos do carimbo limpos com sucesso!', 'success');
+                }
+            }
+        }
+
+        function clearAllFields(type) {
+            if (confirm('Deseja limpar TODOS os campos de TODOS os carimbos? Esta ação não pode ser desfeita!')) {
+                const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+                
+                stamps.forEach(stamp => {
+                    stamp.fields.forEach(field => {
+                        // Mantém valores padrão específicos
+                        const defaultValues = [
+                            "Limpeza de alarme",
+                            "Prezados, por favor poderiam limpar alarmes site se encontra normal e mas com alarmes presos.",
+                            "Local em área de risco",
+                            "Local de alto risco após as 17h. acesso ao local somente em HC",
+                            "Solicitamos o abono - INTERPÉRIE CLIMÁTICA - Prezados, chove em toda região e venta forte. Causando risco de alagamentos, o que dificulta acesso em certos pontos e impede o deslocamento técnico. Solicitaremos abono do SLA devido a intempérie climática. Assim que houver melhora do tempo será possível verificar a falha.",
+                            "SOLICITO EXPURGO, DEVIDO A FORTES CHUVAS NO TRJ, OCASIONANDO A PERDA DO SLA.",
+                            "Crítica de encerramento",
+                            "Chamado normalizado com falha de processamento da validação automática, será enviado pleito a TIM.",
+                            "Chamado envolvido em evento múltiplo, solicitado associação conforme premissa contratual de tratativa de falha por evento e não por tarefa.",
+                            "Acompanhamento/Liberação de Acesso ou Conjunta"
+                        ];
+                        
+                        if (!defaultValues.includes(field.value)) {
+                            field.value = "";
+                        }
+                    });
+                });
+                
+                saveToLocalStorage(type);
+                renderStamps(type);
+                showNotification('Todos os campos foram limpos com sucesso!', 'success');
+            }
+        }
+
+       function copyStamp(id, type) {
+    const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+    const stamp = stamps.find(s => s.id === id);
+    if (!stamp) return;
+
+    // Remove números do título (ex: "ATUALIZAÇÃO - 0002" vira "ATUALIZAÇÃO")
+    let cleanTitle = stamp.title.replace(/\s*-\s*\d+$/, '').trim();
+    
+    let text = `${cleanTitle}\n`; 
+    stamp.fields.forEach(field => {
+        if (field.value) {
+            text += `${field.label} ${field.value}\n`;
+        }
+    });
+
+    navigator.clipboard.writeText(text).then(() => {
+        showNotification('Carimbo copiado com sucesso!', 'success');
+    }).catch(() => {
+        showNotification('Erro ao copiar carimbo', 'error');
+    });
+}
+
+        function copyAllStamps(type) {
+            const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+            let text = `CARIMBOS TLP - ${type.toUpperCase()}\n\n`;
+            
+            stamps.forEach(stamp => {
+                text += `${stamp.title}\n`;
+                stamp.fields.forEach(field => {
+                    if (field.value) {
+                        text += `${field.label} ${field.value}\n`;
+                    }
+                });
+                text += '\n---\n\n';
+            });
+
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification('Todos os carimbos copiados!', 'success');
+            }).catch(() => {
+                showNotification('Erro ao copiar carimbos', 'error');
+            });
+        }
+
+        function deleteStamp(id, type) {
+            if (confirm('Tem certeza que deseja excluir este carimbo?')) {
+                if (type === 'csc') {
+                    stampsCSC = stampsCSC.filter(s => s.id !== id);
+                } else {
+                    stampsPadrao = stampsPadrao.filter(s => s.id !== id);
+                }
+                saveToLocalStorage(type);
+                renderStamps(type);
+                createFilterButtons(type);
+                updateStats(type);
+                showNotification('Carimbo excluído com sucesso!', 'success');
+            }
+        }
+
+        function addNewStamp(type) {
+            const title = prompt('Digite o título do novo carimbo:');
+            if (!title) return;
+
+            const category = prompt('Digite a categoria:');
+            if (!category) return;
+
+            const numFields = parseInt(prompt('Quantos campos?', '4'));
+            if (isNaN(numFields) || numFields < 1) return;
+
+            const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+            const newId = Math.max(...stamps.map(s => s.id), 0) + 1;
+
+            const colors = ['blue', 'green', 'purple', 'orange', 'yellow'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+            const newStamp = {
+                id: newId,
+                title,
+                category,
+                color: randomColor,
+                fields: []
+            };
+
+            for (let i = 0; i < numFields; i++) {
+                const fieldLabel = prompt(`Nome do campo ${i + 1}:`, `Campo ${i + 1}:`);
+                if (fieldLabel) {
+                    newStamp.fields.push({
+                        label: fieldLabel,
+                        value: ""
+                    });
+                }
+            }
+
+            if (type === 'csc') {
+                stampsCSC.push(newStamp);
+            } else {
+                stampsPadrao.push(newStamp);
+            }
+
+            saveToLocalStorage(type);
+            renderStamps(type);
+            createFilterButtons(type);
+            updateStats(type);
+            showNotification('Novo carimbo criado com sucesso!', 'success');
+        }
+
+        function searchStamps(type) {
+            const searchInput = type === 'csc' ? 'searchInputCSC' : 'searchInputPadrao';
+            const searchTerm = document.getElementById(searchInput).value.toLowerCase();
+            const grid = type === 'csc' ? 'stampsGridCSC' : 'stampsGridPadrao';
+            const cards = document.querySelectorAll(`#${grid} .stamp-card`);
+
+            let visibleCount = 0;
+            cards.forEach(card => {
+                const text = card.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            updateStats(type, visibleCount);
+        }
+
+        function createFilterButtons(type) {
+            const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+            const categories = [...new Set(stamps.map(s => s.category))];
+            const filterDiv = document.getElementById(type === 'csc' ? 'filterButtonsCSC' : 'filterButtonsPadrao');
+            
+            filterDiv.innerHTML = `<button class="filter-btn active" onclick="filterStamps('all', '${type}')">Todos</button>`;
+            
+            categories.forEach(cat => {
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.textContent = cat;
+                btn.onclick = () => filterStamps(cat, type);
+                filterDiv.appendChild(btn);
+            });
+        }
+
+        function filterStamps(category, type) {
+            renderStamps(type, category);
+            
+            const filterDiv = type === 'csc' ? 'filterButtonsCSC' : 'filterButtonsPadrao';
+            document.querySelectorAll(`#${filterDiv} .filter-btn`).forEach(btn => {
+                btn.classList.remove('active');
+                if ((category === 'all' && btn.textContent === 'Todos') || btn.textContent === category) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        function updateStats(type, filteredCount = null) {
+            const stamps = type === 'csc' ? stampsCSC : stampsPadrao;
+            const totalId = type === 'csc' ? 'totalStampsCSC' : 'totalStampsPadrao';
+            const filteredId = type === 'csc' ? 'filteredStampsCSC' : 'filteredStampsPadrao';
+            
+            document.getElementById(totalId).textContent = stamps.length;
+            document.getElementById(filteredId).textContent = filteredCount !== null ? filteredCount : stamps.length;
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const icon = document.getElementById('notificationIcon');
+            
+            notification.className = `notification ${type}`;
+            
+            if (type === 'success') {
+                icon.className = 'fas fa-check-circle';
+            } else {
+                icon.className = 'fas fa-exclamation-circle';
+            }
+            
+            document.getElementById('notificationText').textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function saveToLocalStorage(type) {
+            if (type === 'csc') {
+                localStorage.setItem('stampsCSC', JSON.stringify(stampsCSC));
+            } else {
+                localStorage.setItem('stampsPadrao', JSON.stringify(stampsPadrao));
+            }
+            showNotification('Dados salvos com sucesso!', 'success');
+        }
+
+        function loadFromLocalStorage() {
+            const savedCSC = localStorage.getItem('stampsCSC');
+            const savedPadrao = localStorage.getItem('stampsPadrao');
+            
+            if (savedCSC) {
+                try {
+                    stampsCSC = JSON.parse(savedCSC);
+                } catch (e) {
+                    console.error('Erro ao carregar carimbos CSC:', e);
+                }
+            }
+            
+            if (savedPadrao) {
+                try {
+                    stampsPadrao = JSON.parse(savedPadrao);
+                } catch (e) {
+                    console.error('Erro ao carregar carimbos padrão:', e);
+                }
+            }
+        }
+
+        window.onload = () => {
+            loadTheme();
+            loadFromLocalStorage();
+        };
+    </script>
+</body>
+</html>
