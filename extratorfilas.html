@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -6,590 +7,985 @@
 <title>Extrator de Filas — TLP</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ═══ TEMA DIURNO (07:00–15:00) — laranja/âmbar ═══ */
-:root{
-  --bg:#110d08;--surface:#1c1409;--card:#251a0c;--border:#3a2510;
-  --accent:#cc5520;--accent2:#f5a623;--text:#ede0d4;--muted:#8a6a50;
-  --success:#00e5a0;--danger:#ff4d4d;--warn:#f59e0b;
-  --grad1:rgba(180,75,30,.08);--grad2:rgba(245,166,35,.04);
-  --logo-a:#cc5520;--logo-b:#f5a623;
-  --badge-bg:rgba(180,75,30,.12);--badge-border:rgba(180,75,30,.35);--badge-txt:#cc5520;
-  --rec-border:#10b981;--rec-bg:rgba(16,185,129,.07);
-}
-/* ═══ TEMA NOTURNO (15:00–07:00) — azul escuro ═══ */
-body.theme-night{
-  --bg:#050c1a;--surface:#0a1525;--card:#0f1d35;--border:#1a3055;
-  --accent:#1a6aff;--accent2:#4d9fff;--text:#d0ddf5;--muted:#5a7aaa;
-  --grad1:rgba(26,106,255,.06);--grad2:rgba(77,159,255,.04);
-  --logo-a:#4d9fff;--logo-b:#a78bfa;
-  --badge-bg:rgba(26,106,255,.1);--badge-border:rgba(26,106,255,.35);--badge-txt:#4d9fff;
+/* ════════════════════════════════════
+   TEMA DIURNO — laranja vivo, fundo claro
+   ════════════════════════════════════ */
+:root {
+  --bg:       #FFF7F2;
+  --surface:  #FFFFFF;
+  --card:     #FFFFFF;
+  --card2:    #FFF0E8;
+  --border:   rgba(255,80,0,0.12);
+  --border2:  rgba(255,80,0,0.28);
+
+  --accent:   #FF4500;
+  --accent2:  #FF8800;
+  --accent3:  #FFCC00;
+
+  --text:     #1A0A00;
+  --text2:    #5C3010;
+  --muted:    #B07040;
+
+  --success:  #00C97A;
+  --danger:   #FF2244;
+  --warn:     #FF8C00;
+
+  --logo-grd: linear-gradient(135deg, #FF4500, #FF8800);
+  --btn-grd:  linear-gradient(135deg, #FF4500, #FF8800);
+
+  --glow:     rgba(255,69,0,0.14);
+  --glow2:    rgba(255,136,0,0.08);
 }
 
-*{margin:0;padding:0;box-sizing:border-box;}
-body{
-  background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;
-  transition:background .6s,color .4s;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 20% 0%,var(--grad1) 0%,transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%,var(--grad2) 0%,transparent 60%);
+/* ════════════════════════════════════
+   TEMA NOTURNO — azul elétrico
+   ════════════════════════════════════ */
+body.theme-night {
+  --bg:       #03080F;
+  --surface:  #060E1C;
+  --card:     #09132A;
+  --card2:    #0D1A33;
+  --border:   rgba(30,100,255,0.20);
+  --border2:  rgba(30,100,255,0.40);
+
+  --accent:   #1E64FF;
+  --accent2:  #22B8FF;
+  --accent3:  #A3D4FF;
+
+  --text:     #E0ECFF;
+  --text2:    #7BA0D8;
+  --muted:    #3A5A90;
+
+  --success:  #00FFB2;
+  --danger:   #FF3B5C;
+  --warn:     #FFB800;
+
+  --logo-grd: linear-gradient(135deg, #1E64FF, #22B8FF);
+  --btn-grd:  linear-gradient(135deg, #1E64FF, #22B8FF);
+
+  --glow:     rgba(30,100,255,0.15);
+  --glow2:    rgba(34,184,255,0.08);
 }
 
-/* ─── HEADER ─── */
-header{
-  padding:1.4rem 2rem 1.1rem;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+body.theme-night header {
+  background: rgba(3,8,15,0.88);
 }
-.header-left{display:flex;align-items:center;gap:1.2rem;}
-.logo-pill{
-  display:flex;align-items:center;gap:.8rem;
-  background:linear-gradient(135deg,var(--logo-a),var(--logo-b));
-  border-radius:14px;padding:.7rem 1.4rem;flex-shrink:0;
-  box-shadow:0 4px 20px rgba(0,0,0,.25);position:relative;overflow:hidden;
-}
-.logo-pill::after{content:'';position:absolute;top:-50%;right:-20%;width:80px;height:200%;
-  background:rgba(255,255,255,.08);transform:rotate(20deg);pointer-events:none;}
-.logo-pill .logo-name{font-size:2rem;font-weight:900;color:#fff;letter-spacing:.1em;line-height:1;
-  text-shadow:0 2px 8px rgba(0,0,0,.25);}
-.logo-pill .logo-sub{font-size:.58rem;font-family:'JetBrains Mono',monospace;color:rgba(255,255,255,.85);
-  letter-spacing:.2em;margin-top:3px;text-transform:uppercase;}
-.header-text h1{font-size:1.3rem;font-weight:800;letter-spacing:-.03em;}
-.header-text p{font-size:.72rem;color:var(--muted);margin-top:2px;font-family:'JetBrains Mono',monospace;}
-.header-right{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
-.home-btn{
-  display:flex;align-items:center;gap:.38rem;padding:.43rem .9rem;
-  border-radius:999px;border:1px solid var(--border);background:var(--surface);
-  color:var(--muted);font-family:'Syne',sans-serif;font-size:.75rem;font-weight:700;
-  cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;
-}
-.home-btn:hover{border-color:var(--accent2);color:var(--accent2);}
-
-.shift-badge{
-  display:flex;align-items:center;gap:.5rem;padding:.48rem 1rem;
-  border-radius:10px;border:1px solid;font-family:'Syne',sans-serif;font-size:.78rem;font-weight:700;flex-shrink:0;
-}
-.shift-badge.day{border-color:rgba(180,75,30,.5);background:rgba(180,75,30,.1);color:#cc5520;}
-.shift-badge.night{border-color:rgba(26,106,255,.45);background:rgba(26,106,255,.1);color:#4d9fff;}
-.shift-clock{font-size:.63rem;font-family:'JetBrains Mono',monospace;opacity:.75;margin-top:1px;}
-
-/* ─── CONTAINER ─── */
-.container{max-width:1300px;margin:0 auto;padding:1.75rem 2rem;}
-
-/* ─── ALERTS ─── */
-.alert{
-  display:none;align-items:center;gap:.75rem;padding:.85rem 1.2rem;
-  border-radius:12px;margin-bottom:1rem;font-size:.8rem;
-  font-family:'JetBrains Mono',monospace;border:1px solid;
-}
-.alert.active{display:flex;animation:slideDown .3s ease;}
-@keyframes slideDown{from{opacity:0;transform:translateY(-8px);}to{opacity:1;transform:translateY(0);}}
-.alert-success{background:rgba(0,229,160,.08);border-color:rgba(0,229,160,.35);color:var(--success);}
-.alert-error{background:rgba(255,77,77,.08);border-color:rgba(255,77,77,.3);color:var(--danger);}
-
-.loading{
-  display:none;align-items:center;justify-content:center;gap:.75rem;
-  padding:1rem;color:var(--accent);font-weight:700;font-size:.85rem;
-  font-family:'JetBrains Mono',monospace;
-}
-.loading.active{display:flex;}
-@keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-.spin{display:inline-block;animation:spin .9s linear infinite;}
-
-/* ─── UPLOAD SECTION ─── */
-.upload-section{
-  text-align:center;padding:2.5rem;
-  border:2px dashed var(--border);border-radius:16px;
-  background:var(--surface);margin-bottom:1.5rem;
-  transition:all .25s;cursor:default;
-}
-.upload-section:hover,.upload-section.dragover{
-  border-color:var(--accent);background:var(--card);
-}
-.upload-section.dragover{transform:scale(1.01);}
-
-.file-input-wrapper input[type="file"]{display:none;}
-.file-input-label{
-  display:inline-flex;align-items:center;gap:.55rem;
-  padding:.75rem 2rem;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  color:#fff;border-radius:999px;cursor:pointer;
-  font-family:'Syne',sans-serif;font-size:.85rem;font-weight:700;
-  transition:all .2s;box-shadow:0 4px 16px rgba(0,0,0,.2);
-}
-body:not(.theme-night) .file-input-label{color:#1a0800;}
-.file-input-label:hover{filter:brightness(1.1);transform:translateY(-2px);}
-
-.file-info{
-  margin-top:.9rem;font-size:.75rem;color:var(--muted);
-  display:flex;align-items:center;justify-content:center;gap:.5rem;
-  font-family:'JetBrains Mono',monospace;
-}
-.file-info.active{color:var(--accent);font-weight:600;}
-
-/* ─── SECTION TITLE ─── */
-.section-title{
-  font-size:1rem;font-weight:800;letter-spacing:-.02em;
-  color:var(--text);margin-bottom:1rem;padding-bottom:.55rem;
-  border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:.6rem;
-}
-.section-title span{color:var(--accent);}
-
-/* ─── STATS ─── */
-.stats{display:flex;gap:.85rem;margin-bottom:1.25rem;flex-wrap:wrap;}
-.stat-card{
-  flex:1;min-width:160px;background:var(--card);padding:1rem 1.25rem;
-  border-radius:12px;border:1px solid var(--border);transition:all .2s;
-}
-.stat-card:hover{border-color:var(--accent);transform:translateY(-2px);}
-.stat-card h3{font-size:.62rem;font-family:'JetBrains Mono',monospace;color:var(--muted);
-  text-transform:uppercase;letter-spacing:.08em;margin-bottom:.4rem;}
-.stat-card p{font-size:1.8rem;font-weight:800;color:var(--accent);}
-
-/* ─── CONTROLS ─── */
-.controls{display:flex;gap:.6rem;margin-bottom:1.1rem;flex-wrap:wrap;align-items:center;}
-.search-wrapper{flex:1;min-width:200px;position:relative;}
-.search-wrapper .s-icon{position:absolute;left:.8rem;top:50%;transform:translateY(-50%);color:var(--muted);font-size:.85rem;}
-.search-box{
-  width:100%;padding:.68rem 1rem .68rem 2.4rem;
-  background:var(--surface);border:1px solid var(--border);border-radius:10px;
-  color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.8rem;outline:none;transition:border-color .2s;
-}
-.search-box:focus{border-color:var(--accent);}
-
-.btn{
-  display:inline-flex;align-items:center;gap:.4rem;
-  padding:.55rem 1.1rem;border:none;border-radius:999px;cursor:pointer;
-  font-family:'Syne',sans-serif;font-size:.76rem;font-weight:700;
-  transition:all .18s;white-space:nowrap;
-}
-.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;filter:none!important;}
-.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
-body:not(.theme-night) .btn-primary{color:#1a0800;}
-.btn-primary:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px);}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--muted);}
-.btn-outline:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
-.btn-rec{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.35);color:#10b981;}
-.btn-rec:hover:not(:disabled){background:rgba(16,185,129,.2);}
-.btn-export{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
-body:not(.theme-night) .btn-export{color:#1a0800;}
-.btn-export:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);}
-
-/* ─── COLUMNS SECTION ─── */
-.columns-section{display:none;margin-top:1.5rem;}
-.columns-section.active{display:block;animation:fu .35s ease;}
-@keyframes fu{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-
-.columns-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
-  gap:.75rem;margin-bottom:1.5rem;
-}
-.column-item{
-  background:var(--card);padding:.85rem 1rem;border-radius:10px;
-  border:1px solid var(--border);transition:all .2s;cursor:pointer;
-}
-.column-item:hover{border-color:var(--accent);transform:translateY(-1px);}
-.column-item.selected{border-color:var(--accent);background:var(--surface);}
-.column-item.recommended{border-color:var(--rec-border);background:var(--rec-bg);}
-.column-item label{
-  display:flex;align-items:center;cursor:pointer;
-  font-size:.78rem;color:var(--text);font-weight:500;gap:.55rem;
-  font-family:'JetBrains Mono',monospace;
-}
-.column-item input[type="checkbox"]{
-  width:15px;height:15px;cursor:pointer;accent-color:var(--accent);flex-shrink:0;
+/* ─── BODY ─── */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  min-height: 100vh;
+  transition: background .5s, color .3s;
+  overflow-x: hidden;
 }
 
-/* ─── PREVIEW ─── */
-.preview-section{display:none;margin-top:1.5rem;}
-.preview-section.active{display:block;animation:fu .35s ease;}
+/* ─── AMBIENT BACKGROUND ─── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 60% at 10% 0%, var(--glow) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 90% 100%, var(--glow2) 0%, transparent 55%);
+}
+body > * { position: relative; z-index: 1; }
 
-.table-wrapper{
-  overflow-x:auto;border-radius:12px;
-  border:1px solid var(--border);max-height:420px;
-  box-shadow:0 4px 18px rgba(0,0,0,.18);
+/* ══════════════════════════
+   HEADER
+══════════════════════════ */
+header {
+  padding: 0 3rem;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  background: rgba(255,247,242,0.90);
+  box-shadow: 0 1px 0 var(--border);
+  position: sticky;
+  top: 0; z-index: 100;
 }
-table{width:100%;border-collapse:collapse;background:var(--card);}
-th{
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  padding:.75rem 1rem;text-align:left;font-family:'Syne',sans-serif;
-  font-size:.73rem;font-weight:700;position:sticky;top:0;z-index:10;
-  white-space:nowrap;
-}
-body:not(.theme-night) th{color:#1a0800;}
-body.theme-night th{color:#fff;}
-th.th-first{background:var(--surface);color:var(--muted)!important;font-family:'JetBrains Mono',monospace;}
-th.th-status{background:linear-gradient(135deg,#f59e0b,#f5a623);}
-td{
-  padding:.6rem 1rem;border-bottom:1px solid var(--border);
-  font-size:.75rem;font-family:'JetBrains Mono',monospace;color:var(--text);
-}
-td.td-first{background:var(--surface);color:var(--muted);font-weight:600;}
-td.td-status{color:var(--warn);font-style:italic;}
-tr:hover td{background:var(--surface);}
-tr:hover td.td-first{background:var(--card);}
 
-/* ─── FOOTER ─── */
-footer{
-  margin-top:3rem;padding:1.25rem 2rem;border-top:1px solid var(--border);
-  text-align:center;
+/* LOGO */
+.logo-mark {
+  display: flex; align-items: center; gap: 1rem;
 }
-.footer-logo{font-size:1.1rem;font-weight:900;color:var(--accent);letter-spacing:.1em;margin-bottom:.25rem;}
-.footer-sub{font-size:.65rem;font-family:'JetBrains Mono',monospace;color:var(--muted);}
-
-/* ─── TOAST ─── */
-.toast{
-  position:fixed;bottom:2rem;right:2rem;
-  background:var(--success);color:#000;
-  font-family:'Syne',sans-serif;font-weight:700;font-size:.82rem;
-  padding:.68rem 1.35rem;border-radius:10px;
-  transform:translateY(100px);opacity:0;
-  transition:all .3s cubic-bezier(.34,1.56,.64,1);z-index:999;
+.logo-badge {
+  background: var(--logo-grd);
+  border-radius: 10px;
+  width: 52px; height: 52px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 0 30px var(--glow), 0 4px 16px rgba(0,0,0,.4);
+  position: relative; overflow: hidden;
 }
-.toast.err{background:var(--danger);color:#fff;}
-.toast.show{transform:translateY(0);opacity:1;}
+.logo-badge::after {
+  content: '';
+  position: absolute; top: -30%; left: -10%;
+  width: 60%; height: 160%;
+  background: rgba(255,255,255,.18);
+  transform: rotate(20deg);
+}
+.logo-badge span {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.75rem;
+  color: #fff;
+  letter-spacing: .06em;
+  line-height: 1;
+}
+.logo-text h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.55rem;
+  letter-spacing: .08em;
+  color: var(--text);
+  line-height: 1;
+}
+.logo-text p {
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  color: var(--muted);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
 
-@media(max-width:768px){
-  header{padding:1rem;}
-  .container{padding:1rem;}
-  .controls{flex-direction:column;}
-  .btn{width:100%;justify-content:center;}
-  .search-wrapper{width:100%;}
-  .stats{flex-direction:column;}
+/* HEADER RIGHT */
+.header-right { display: flex; align-items: center; gap: .75rem; }
+
+.btn-home {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .45rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .78rem; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  transition: all .2s;
+}
+.btn-home:hover { background: var(--border); color: var(--text); border-color: var(--accent); }
+
+.shift-pill {
+  display: flex; align-items: center; gap: .65rem;
+  padding: .45rem 1.1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  cursor: default;
+}
+.shift-icon { font-size: 1.1rem; }
+.shift-info {}
+.shift-label {
+  font-size: .76rem; font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+.shift-clock {
+  font-family: 'DM Mono', monospace;
+  font-size: .58rem; color: var(--muted);
+  margin-top: 2px; line-height: 1;
+}
+
+/* ══════════════════════════
+   MAIN CONTAINER
+══════════════════════════ */
+.page { max-width: 1320px; margin: 0 auto; padding: 3rem 3rem; }
+
+/* ─── PAGE INTRO ─── */
+.page-intro {
+  margin-bottom: 2.5rem;
+  display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.page-intro h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.2rem;
+  letter-spacing: .06em;
+  line-height: .95;
+  color: var(--text);
+}
+.page-intro h2 span {
+  background: var(--logo-grd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.page-intro p {
+  font-size: .82rem; color: var(--text2); max-width: 360px;
+  line-height: 1.7;
+}
+
+/* ─── STEP PILL ─── */
+.step-row {
+  display: flex; gap: .5rem; align-items: center;
+  margin-bottom: 2rem;
+  font-family: 'DM Mono', monospace; font-size: .7rem;
+}
+.step-item {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .35rem .9rem;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  background: var(--surface);
+  transition: all .3s;
+}
+.step-item.active {
+  border-color: var(--accent);
+  background: rgba(255,85,0,.1);
+  color: var(--accent);
+}
+body.theme-night .step-item.active {
+  background: rgba(30,100,255,.1);
+}
+.step-item.done {
+  border-color: var(--success);
+  background: rgba(0,255,170,.07);
+  color: var(--success);
+}
+.step-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: currentColor; flex-shrink: 0;
+}
+.step-arrow { color: var(--muted); }
+
+/* ══════════════════════════
+   ALERTS
+══════════════════════════ */
+.alert {
+  display: none;
+  align-items: center; gap: .75rem;
+  padding: 1rem 1.4rem;
+  border-radius: 12px;
+  margin-bottom: 1.25rem;
+  font-size: .8rem; font-family: 'DM Mono', monospace;
+  border: 1px solid;
+  animation: alertIn .3s ease;
+}
+.alert.active { display: flex; }
+@keyframes alertIn { from { opacity:0; transform: translateY(-6px); } to { opacity:1; transform: translateY(0); } }
+.alert-icon { font-size: 1rem; flex-shrink: 0; }
+.alert-success { background: rgba(0,180,100,.08); border-color: rgba(0,180,100,.35); color: #008050; }
+.alert-error   { background: rgba(255,34,68,.06);  border-color: rgba(255,34,68,.3);   color: #cc1133; }
+body.theme-night .alert-success { background: rgba(0,255,178,.07); border-color: rgba(0,255,178,.3); color: var(--success); }
+body.theme-night .alert-error   { background: rgba(255,59,92,.07);  border-color: rgba(255,59,92,.3);  color: var(--danger); }
+
+.loading {
+  display: none; align-items: center; justify-content: center; gap: .75rem;
+  padding: .9rem; color: var(--accent); font-weight: 600; font-size: .82rem;
+  font-family: 'DM Mono', monospace; letter-spacing: .05em;
+}
+.loading.active { display: flex; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { display: inline-block; animation: spin .8s linear infinite; }
+
+/* ══════════════════════════
+   UPLOAD ZONE
+══════════════════════════ */
+.upload-zone {
+  border: 2px dashed var(--border2);
+  border-radius: 20px;
+  background: var(--surface);
+  padding: 4rem 2rem;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem;
+  text-align: center;
+  cursor: default;
+  transition: all .25s;
+  position: relative; overflow: hidden;
+}
+.upload-zone::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 60% at 50% 0%, var(--glow) 0%, transparent 70%);
+  opacity: 0; transition: opacity .3s; pointer-events: none;
+}
+.upload-zone:hover::before,
+.upload-zone.dragover::before { opacity: 1; }
+.upload-zone:hover,
+.upload-zone.dragover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px var(--glow), 0 0 0 4px rgba(255,69,0,.06);
+}
+.upload-zone.dragover { transform: scale(1.01); }
+
+.upload-icon {
+  width: 72px; height: 72px; border-radius: 18px;
+  background: var(--btn-grd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 8px 32px var(--glow);
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.upload-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem; letter-spacing: .06em; color: var(--text);
+}
+.upload-sub {
+  font-size: .8rem; color: var(--text2); max-width: 340px; line-height: 1.6;
+}
+
+input[type="file"] { display: none; }
+.btn-upload {
+  display: inline-flex; align-items: center; gap: .55rem;
+  padding: .8rem 2.2rem;
+  background: var(--btn-grd);
+  color: #fff; border-radius: 100px; border: none;
+  font-family: 'DM Sans', sans-serif; font-size: .85rem; font-weight: 700;
+  cursor: pointer; transition: all .2s;
+  box-shadow: 0 6px 24px var(--glow);
+  letter-spacing: .02em;
+}
+.btn-upload:hover { filter: brightness(1.08); transform: translateY(-2px); box-shadow: 0 10px 30px var(--glow); }
+
+.file-status {
+  font-family: 'DM Mono', monospace; font-size: .72rem;
+  color: var(--muted); display: flex; align-items: center; gap: .4rem;
+}
+.file-status.active { color: var(--accent); font-weight: 500; }
+
+/* ══════════════════════════
+   COLUMN SECTION
+══════════════════════════ */
+.section { display: none; margin-top: 2.5rem; }
+.section.active { display: block; animation: fadeUp .4s ease; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+/* ─── SECTION HEADER ─── */
+.section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
+}
+.section-title-text {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.6rem; letter-spacing: .06em;
+  color: var(--text); display: flex; align-items: center; gap: .65rem;
+}
+.section-title-text .icon-chip {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--btn-grd);
+  display: flex; align-items: center; justify-content: center;
+  font-size: .95rem;
+  box-shadow: 0 4px 12px var(--glow);
+}
+
+/* ─── STATS ROW ─── */
+.stats-row {
+  display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;
+}
+.stat-box {
+  flex: 1; min-width: 150px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
+  transition: all .2s; position: relative; overflow: hidden;
+}
+.stat-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--btn-grd); opacity: 0; transition: opacity .2s;
+}
+.stat-box:hover { border-color: var(--border2); transform: translateY(-2px); }
+.stat-box:hover::before { opacity: 1; }
+.stat-label {
+  font-family: 'DM Mono', monospace; font-size: .62rem;
+  text-transform: uppercase; letter-spacing: .1em;
+  color: var(--muted); margin-bottom: .5rem;
+}
+.stat-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem; letter-spacing: .04em;
+  line-height: 1;
+  background: var(--btn-grd);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── TOOLBAR ─── */
+.toolbar {
+  display: flex; gap: .6rem; flex-wrap: wrap; align-items: center;
+  margin-bottom: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: .7rem;
+}
+.search-wrap {
+  flex: 1; min-width: 180px;
+  display: flex; align-items: center; gap: .5rem;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: .55rem 1rem;
+}
+.search-wrap .s-ico { color: var(--muted); font-size: .85rem; }
+.search-wrap input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: var(--text); font-family: 'DM Mono', monospace; font-size: .78rem;
+}
+.search-wrap input::placeholder { color: var(--muted); }
+
+.btn { 
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .55rem 1.1rem; border: none; border-radius: 100px;
+  font-family: 'DM Sans', sans-serif; font-size: .76rem; font-weight: 700;
+  cursor: pointer; transition: all .18s; white-space: nowrap; letter-spacing: .01em;
+}
+.btn:disabled { opacity: .35; cursor: not-allowed; transform: none !important; filter: none !important; }
+
+.btn-ghost {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text2);
+}
+.btn-ghost:hover:not(:disabled) { border-color: var(--border2); color: var(--text); background: var(--card2); }
+
+.btn-rec {
+  background: rgba(0,180,100,.1); border: 1px solid rgba(0,180,100,.3);
+  color: var(--success);
+}
+.btn-rec:hover:not(:disabled) { background: rgba(0,180,100,.18); }
+
+.btn-export {
+  background: var(--btn-grd);
+  color: #fff;
+  box-shadow: 0 4px 16px var(--glow);
+}
+.btn-export:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 8px 24px var(--glow); }
+
+/* ─── COLUMNS GRID ─── */
+.col-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: .65rem;
+  margin-bottom: 1.5rem;
+}
+.col-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: .9rem 1rem;
+  cursor: pointer;
+  transition: all .18s;
+  position: relative; overflow: hidden;
+}
+.col-item::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--btn-grd);
+  opacity: 0; transition: opacity .2s; border-radius: 3px 0 0 3px;
+}
+.col-item:hover { border-color: var(--border2); transform: translateY(-1px); background: var(--card2); }
+.col-item:hover::before { opacity: .5; }
+.col-item.selected { border-color: var(--accent); background: var(--card2); }
+.col-item.selected::before { opacity: 1; }
+.col-item.rec { border-color: rgba(0,180,100,.3); background: rgba(0,180,100,.05); }
+.col-item.rec::before { background: var(--success); }
+.col-item.rec.selected { border-color: var(--success); }
+
+.col-label {
+  display: flex; align-items: center; gap: .55rem; cursor: pointer;
+  font-size: .76rem; font-family: 'DM Mono', monospace; font-weight: 500;
+  color: var(--text2); line-height: 1.4; user-select: none;
+}
+.col-item.selected .col-label { color: var(--text); }
+.col-label input[type="checkbox"] {
+  width: 15px; height: 15px; flex-shrink: 0;
+  cursor: pointer; accent-color: var(--accent);
+}
+.rec-star { font-size: .8rem; }
+
+/* ══════════════════════════
+   PREVIEW TABLE
+══════════════════════════ */
+.preview-section { display: none; margin-top: 2rem; }
+.preview-section.active { display: block; animation: fadeUp .4s ease; }
+
+.table-wrap {
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(255,69,0,.08);
+}
+.table-scroll { overflow-x: auto; max-height: 400px; }
+
+table { width: 100%; border-collapse: collapse; background: var(--card); }
+thead tr { background: var(--surface); }
+th {
+  padding: .8rem 1.1rem; text-align: left;
+  font-family: 'DM Mono', monospace; font-size: .67rem; font-weight: 500;
+  color: var(--text2); text-transform: uppercase; letter-spacing: .08em;
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface); border-bottom: 2px solid var(--border2);
+  white-space: nowrap;
+}
+th.th-accent { color: var(--accent); border-bottom-color: var(--accent); }
+th.th-status { color: var(--warn); }
+td {
+  padding: .65rem 1.1rem;
+  border-bottom: 1px solid var(--border);
+  font-family: 'DM Mono', monospace; font-size: .73rem; color: var(--text2);
+}
+td.td-num { color: var(--muted); font-size: .65rem; }
+td.td-status { color: var(--warn); font-style: italic; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--card2); }
+
+/* ══════════════════════════
+   FOOTER
+══════════════════════════ */
+footer {
+  margin-top: 5rem;
+  padding: 2rem 3rem;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+}
+.footer-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem; letter-spacing: .1em;
+  background: var(--logo-grd);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.footer-copy {
+  font-family: 'DM Mono', monospace; font-size: .62rem;
+  color: var(--muted); text-align: right; line-height: 1.6;
+}
+
+/* ══════════════════════════
+   TOAST
+══════════════════════════ */
+.toast {
+  position: fixed; bottom: 2rem; right: 2rem; z-index: 9999;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: .85rem 1.4rem;
+  font-family: 'DM Sans', sans-serif; font-size: .8rem; font-weight: 600;
+  color: var(--text);
+  box-shadow: 0 12px 40px rgba(0,0,0,.4);
+  display: flex; align-items: center; gap: .6rem;
+  transform: translateY(80px) scale(.96); opacity: 0;
+  transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  max-width: 340px;
+}
+.toast.show { transform: translateY(0) scale(1); opacity: 1; }
+.toast.ok  { border-color: rgba(0,255,170,.4); }
+.toast.err { border-color: rgba(255,59,92,.4); }
+.toast-icon { font-size: 1rem; flex-shrink: 0; }
+
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
+@media (max-width: 768px) {
+  header { padding: 0 1.25rem; }
+  .page { padding: 2rem 1.25rem; }
+  .page-intro h2 { font-size: 2.2rem; }
+  footer { padding: 1.5rem 1.25rem; }
+  .toolbar { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+  .search-wrap { width: 100%; }
+  .stats-row { flex-direction: column; }
+}
+
+/* ── DIVIDER ── */
+.divider {
+  height: 1px; background: var(--border); margin: 2rem 0;
 }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
+<!-- ══ HEADER ══ -->
 <header>
-  <div class="header-left">
-    <div class="logo-pill">
-      <div>
-        <div class="logo-name">TLP</div>
-        <div class="logo-sub">Conectados com o Futuro</div>
-      </div>
-    </div>
-    <div class="header-text">
+  <div class="logo-mark">
+    <div class="logo-badge"><span>TLP</span></div>
+    <div class="logo-text">
       <h1>Extrator de Filas</h1>
-      <p>Sistema de Processamento de Dados · Telecomunicações</p>
+      <p>Sistema de Processamento · Telecomunicações</p>
     </div>
   </div>
   <div class="header-right">
-    <a href="index.html" class="home-btn">⌂ Voltar ao Início</a>
-    <div class="shift-badge day" id="shiftBadge">
-      <span id="shiftIcon">☀️</span>
-      <div>
-        <div id="shiftLabel">Turno Diurno</div>
+    <a href="index.html" class="btn-home">⌂ Início</a>
+    <div class="shift-pill">
+      <span class="shift-icon" id="shiftIcon">☀️</span>
+      <div class="shift-info">
+        <div class="shift-label" id="shiftLabel">Turno Diurno</div>
         <div class="shift-clock" id="shiftClock"></div>
       </div>
     </div>
   </div>
 </header>
 
-<div class="container">
+<!-- ══ PAGE ══ -->
+<div class="page">
+
+  <!-- INTRO -->
+  <div class="page-intro">
+    <div>
+      <h2><span>Extração</span><br>de Filas</h2>
+    </div>
+    <p>Selecione um arquivo Excel com dados de filas, escolha as colunas desejadas e exporte com formatação TLP aplicada automaticamente.</p>
+  </div>
+
+  <!-- STEPS -->
+  <div class="step-row" id="stepRow">
+    <div class="step-item active" id="step1"><span class="step-dot"></span>01 · Carregar Arquivo</div>
+    <span class="step-arrow">→</span>
+    <div class="step-item" id="step2"><span class="step-dot"></span>02 · Selecionar Colunas</div>
+    <span class="step-arrow">→</span>
+    <div class="step-item" id="step3"><span class="step-dot"></span>03 · Exportar</div>
+  </div>
 
   <!-- ALERTS -->
   <div id="alertSuccess" class="alert alert-success">
-    <span>✓</span><span id="alertSuccessText"></span>
+    <span class="alert-icon">✓</span>
+    <span id="alertSuccessText"></span>
   </div>
   <div id="alertError" class="alert alert-error">
-    <span>✕</span><span id="alertErrorText"></span>
+    <span class="alert-icon">✕</span>
+    <span id="alertErrorText"></span>
   </div>
   <div id="loading" class="loading">
-    <span class="spin">⟳</span><span>Processando arquivo...</span>
+    <span class="spin">⟳</span>
+    <span>Processando arquivo...</span>
   </div>
 
   <!-- UPLOAD -->
-  <div class="upload-section" id="uploadSection">
-    <div class="file-input-wrapper">
-      <input type="file" id="fileInput" accept=".xlsx,.xls">
-      <label for="fileInput" class="file-input-label">
-        📂 Selecionar Arquivo de Filas
-      </label>
+  <div class="upload-zone" id="uploadZone">
+    <div class="upload-icon">📂</div>
+    <div>
+      <div class="upload-title">Arraste seu arquivo aqui</div>
+      <div class="upload-sub">Suporte a .xlsx e .xls · Arraste e solte ou clique para selecionar</div>
     </div>
-    <div class="file-info" id="fileInfo">
-      ℹ Arraste e solte um arquivo Excel aqui ou clique para selecionar
-    </div>
+    <input type="file" id="fileInput" accept=".xlsx,.xls">
+    <label for="fileInput" class="btn-upload">
+      Selecionar Arquivo
+    </label>
+    <div class="file-status" id="fileStatus">ℹ Aguardando seleção de arquivo...</div>
   </div>
 
-  <!-- COLUMNS SECTION -->
-  <div class="columns-section" id="columnsSection">
+  <!-- COLUMNS -->
+  <div class="section" id="columnsSection">
 
-    <div class="section-title"><span>⊞</span> Selecione as Colunas para Extração</div>
-
-    <div class="stats">
-      <div class="stat-card">
-        <h3>Total de Colunas</h3>
-        <p id="totalColumns">0</p>
-      </div>
-      <div class="stat-card">
-        <h3>Selecionadas</h3>
-        <p id="selectedColumns">0</p>
-      </div>
-      <div class="stat-card">
-        <h3>Total de Registros</h3>
-        <p id="totalRows">0</p>
+    <div class="section-head">
+      <div class="section-title-text">
+        <div class="icon-chip">⊞</div>
+        Colunas Disponíveis
       </div>
     </div>
 
-    <div class="controls">
-      <div class="search-wrapper">
-        <span class="s-icon">🔍</span>
-        <input type="text" id="searchBox" class="search-box" placeholder="Buscar colunas...">
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">Total de Colunas</div>
+        <div class="stat-val" id="totalColumns">0</div>
       </div>
-      <button class="btn btn-outline" id="selectAllBtn">✓ Selecionar Todas</button>
-      <button class="btn btn-outline" id="deselectAllBtn">✕ Desmarcar Todas</button>
-      <button class="btn btn-rec" id="recommendedBtn">⭐ Extração Recomendada</button>
-      <button class="btn btn-export" id="exportBtn" disabled>⬇ Exportar Filas + Status</button>
+      <div class="stat-box">
+        <div class="stat-label">Selecionadas</div>
+        <div class="stat-val" id="selectedColumns">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Total de Registros</div>
+        <div class="stat-val" id="totalRows">0</div>
+      </div>
     </div>
 
-    <div class="columns-grid" id="columnsGrid"></div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <span class="s-ico">🔍</span>
+        <input type="text" id="searchBox" placeholder="Buscar coluna...">
+      </div>
+      <button class="btn btn-ghost" id="selectAllBtn">✓ Todas</button>
+      <button class="btn btn-ghost" id="deselectAllBtn">✕ Nenhuma</button>
+      <button class="btn btn-rec" id="recommendedBtn">⭐ Recomendadas</button>
+      <button class="btn btn-export" id="exportBtn" disabled>⬇ Exportar Filas</button>
+    </div>
+
+    <div class="col-grid" id="colGrid"></div>
 
     <!-- PREVIEW -->
     <div class="preview-section" id="previewSection">
-      <div class="section-title"><span>👁</span> Prévia dos Dados (10 primeiros registros)</div>
-      <div class="table-wrapper">
-        <table>
-          <thead id="previewTableHead"></thead>
-          <tbody id="previewTableBody"></tbody>
-        </table>
+      <div class="section-head" style="margin-bottom:1rem;">
+        <div class="section-title-text">
+          <div class="icon-chip">👁</div>
+          Prévia — 10 primeiros registros
+        </div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-scroll">
+          <table>
+            <thead id="previewHead"></thead>
+            <tbody id="previewBody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
   </div>
-
 </div>
 
+<!-- FOOTER -->
 <footer>
-  <div class="footer-logo">TLP</div>
-  <div class="footer-sub">Sistema de Extração de Filas · Telecomunicações © 2026</div>
+  <div class="footer-brand">TLP</div>
+  <div class="footer-copy">Sistema de Extração de Filas<br>Telecomunicações © 2026</div>
 </footer>
 
-<div class="toast" id="toast"></div>
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon"></span>
+  <span id="toastMsg"></span>
+</div>
 
 <script>
-/* ── TURNO ── */
-const NIGHT_START=15,DAY_START=7;
-function isNightActive(){const h=new Date().getHours();return h>=NIGHT_START||h<DAY_START;}
-function updateShiftUI(){
-  const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,"0");
-  const night=isNightActive();
-  document.body.classList.toggle("theme-night",night);
-  const badge=document.getElementById("shiftBadge");
-  badge.className="shift-badge "+(night?"night":"day");
-  document.getElementById("shiftIcon").textContent=night?"🌙":"☀️";
-  document.getElementById("shiftLabel").textContent=night?"Turno Noturno":"Turno Diurno";
-  document.getElementById("shiftClock").textContent=h+":"+m+(night?" · até 07:00":" · noturno às 15:00");
+/* ══ SHIFT ══ */
+function isNight() { const h = new Date().getHours(); return h >= 15 || h < 7; }
+function updateShift() {
+  const now = new Date(), h = now.getHours(), m = String(now.getMinutes()).padStart(2,"0");
+  const night = isNight();
+  document.body.classList.toggle("theme-night", night);
+  document.getElementById("shiftIcon").textContent = night ? "🌙" : "☀️";
+  document.getElementById("shiftLabel").textContent = night ? "Turno Noturno" : "Turno Diurno";
+  document.getElementById("shiftClock").textContent = `${h}:${m}` + (night ? " · até 07:00" : " · noturno às 15:00");
 }
-updateShiftUI();
-setInterval(updateShiftUI,60000);
+updateShift();
+setInterval(updateShift, 60000);
 
-/* ── TOAST ── */
-function showToast(msg,type){
-  const el=document.getElementById("toast");
-  el.textContent=msg;el.className="toast"+(type==="err"?" err":"");
-  el.classList.add("show");setTimeout(()=>el.classList.remove("show"),3500);
-}
-
-/* ── ALERT ── */
-function showAlert(type,message){
-  const a=type==="success"?document.getElementById("alertSuccess"):document.getElementById("alertError");
-  const t=type==="success"?document.getElementById("alertSuccessText"):document.getElementById("alertErrorText");
-  t.textContent=message;
-  a.classList.add("active");
-  showToast(message,type==="success"?"":"err");
-  setTimeout(()=>a.classList.remove("active"),6000);
+/* ══ TOAST ══ */
+function toast(msg, type = "ok") {
+  const el = document.getElementById("toast");
+  document.getElementById("toastIcon").textContent = type === "ok" ? "✓" : "✕";
+  document.getElementById("toastMsg").textContent = msg;
+  el.className = `toast ${type}`;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3800);
 }
 
-/* ── RECOMMENDED COLUMNS ── */
-const RECOMMENDED_COLUMNS=[
+/* ══ ALERT ══ */
+function alert_(type, msg) {
+  const id = type === "success" ? "alertSuccess" : "alertError";
+  const tid = type === "success" ? "alertSuccessText" : "alertErrorText";
+  document.getElementById(tid).textContent = msg;
+  document.getElementById(id).classList.add("active");
+  toast(msg, type === "success" ? "ok" : "err");
+  setTimeout(() => document.getElementById(id).classList.remove("active"), 6000);
+}
+
+/* ══ RECOMMENDED ══ */
+const REC = [
   'numero de ordem','titulo do alarme','fim sla','end id','ne id','tipo da falha','faixa priorizacao dispatching'
 ];
-function normalizeText(text){
-  return text.toString().toLowerCase().trim().replace(/\s+/g,' ').replace(/[_-]/g,' ')
-    .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const norm = t => t.toString().toLowerCase().trim().replace(/\s+/g,' ').replace(/[_-]/g,' ')
+  .normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+const isRec = h => REC.some(r => norm(r) === norm(h));
+
+/* ══ STATE ══ */
+let allData = [], headers = [];
+let selected = new Set();
+
+/* ══ STEPS ══ */
+function setStep(n) {
+  [1,2,3].forEach(i => {
+    const el = document.getElementById("step"+i);
+    el.classList.remove("active","done");
+    if (i < n) el.classList.add("done");
+    else if (i === n) el.classList.add("active");
+  });
 }
-function isRecommendedColumn(header){
-  const n=normalizeText(header);
-  return RECOMMENDED_COLUMNS.some(r=>normalizeText(r)===n);
-}
 
-/* ── STATE ── */
-let workbook=null,allData=[],headers=[];
-let selectedColumnIndices=new Set();
+/* ══ ELEMENTS ══ */
+const fileInput      = document.getElementById("fileInput");
+const uploadZone     = document.getElementById("uploadZone");
+const fileStatus     = document.getElementById("fileStatus");
+const columnsSection = document.getElementById("columnsSection");
+const colGrid        = document.getElementById("colGrid");
+const searchBox      = document.getElementById("searchBox");
+const selectAllBtn   = document.getElementById("selectAllBtn");
+const deselectAllBtn = document.getElementById("deselectAllBtn");
+const recommendedBtn = document.getElementById("recommendedBtn");
+const exportBtn      = document.getElementById("exportBtn");
+const previewSection = document.getElementById("previewSection");
+const previewHead    = document.getElementById("previewHead");
+const previewBody    = document.getElementById("previewBody");
+const loading        = document.getElementById("loading");
 
-/* ── ELEMENTS ── */
-const fileInput=document.getElementById("fileInput");
-const uploadSection=document.getElementById("uploadSection");
-const fileInfo=document.getElementById("fileInfo");
-const columnsSection=document.getElementById("columnsSection");
-const columnsGrid=document.getElementById("columnsGrid");
-const searchBox=document.getElementById("searchBox");
-const selectAllBtn=document.getElementById("selectAllBtn");
-const deselectAllBtn=document.getElementById("deselectAllBtn");
-const recommendedBtn=document.getElementById("recommendedBtn");
-const exportBtn=document.getElementById("exportBtn");
-const previewSection=document.getElementById("previewSection");
-const previewTableHead=document.getElementById("previewTableHead");
-const previewTableBody=document.getElementById("previewTableBody");
-const totalColumnsEl=document.getElementById("totalColumns");
-const selectedColumnsEl=document.getElementById("selectedColumns");
-const totalRowsEl=document.getElementById("totalRows");
-const loading=document.getElementById("loading");
-
-/* ── DRAG & DROP ── */
-uploadSection.addEventListener("dragover",e=>{e.preventDefault();uploadSection.classList.add("dragover");});
-uploadSection.addEventListener("dragleave",()=>uploadSection.classList.remove("dragover"));
-uploadSection.addEventListener("drop",e=>{
-  e.preventDefault();uploadSection.classList.remove("dragover");
-  if(e.dataTransfer.files.length>0)handleFile(e.dataTransfer.files[0]);
+/* ══ DRAG & DROP ══ */
+uploadZone.addEventListener("dragover", e => { e.preventDefault(); uploadZone.classList.add("dragover"); });
+uploadZone.addEventListener("dragleave", () => uploadZone.classList.remove("dragover"));
+uploadZone.addEventListener("drop", e => {
+  e.preventDefault(); uploadZone.classList.remove("dragover");
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
 });
-fileInput.addEventListener("change",e=>{if(e.target.files[0])handleFile(e.target.files[0]);});
+fileInput.addEventListener("change", e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
 
-/* ── HANDLE FILE ── */
-function handleFile(file){
-  if(!file.name.match(/\.(xlsx|xls)$/i)){showAlert("error","Por favor, selecione um arquivo Excel válido (.xlsx ou .xls)");return;}
-  fileInfo.innerHTML="📄 "+file.name+" ("+formatFileSize(file.size)+")";
-  fileInfo.classList.add("active");
+/* ══ HANDLE FILE ══ */
+function handleFile(file) {
+  if (!file.name.match(/\.(xlsx|xls)$/i)) {
+    alert_("error", "Por favor, selecione um arquivo Excel válido (.xlsx ou .xls)"); return;
+  }
+  fileStatus.innerHTML = `📄 ${file.name} &nbsp;·&nbsp; ${fmtSize(file.size)}`;
+  fileStatus.classList.add("active");
   loading.classList.add("active");
-  const reader=new FileReader();
-  reader.onload=e=>{
-    try{
-      const data=e.target.result;
-      workbook=XLSX.read(data,{type:"binary",cellStyles:true,cellDates:true});
-      const ws=workbook.Sheets[workbook.SheetNames[0]];
-      allData=XLSX.utils.sheet_to_json(ws,{header:1,defval:"",blankrows:false});
-      if(!allData.length){showAlert("error","O arquivo está vazio!");loading.classList.remove("active");return;}
-      headers=allData[0].map((h,i)=>h||"Coluna "+(i+1));
-      processData();
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const wb = XLSX.read(e.target.result, { type:"binary", cellDates:true });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      allData = XLSX.utils.sheet_to_json(ws, { header:1, defval:"", blankrows:false });
+      if (!allData.length) { alert_("error","Arquivo vazio!"); loading.classList.remove("active"); return; }
+      headers = allData[0].map((h,i) => h || `Coluna ${i+1}`);
+      buildColumns();
       loading.classList.remove("active");
-      showAlert("success","Arquivo carregado com sucesso! Pronto para extração.");
-    }catch(err){loading.classList.remove("active");showAlert("error","Erro ao processar o arquivo: "+err.message);}
+      alert_("success","Arquivo carregado! Selecione as colunas para extração.");
+      setStep(2);
+    } catch(err) {
+      loading.classList.remove("active");
+      alert_("error","Erro ao processar: " + err.message);
+    }
   };
-  reader.onerror=()=>{loading.classList.remove("active");showAlert("error","Erro ao ler o arquivo");};
+  reader.onerror = () => { loading.classList.remove("active"); alert_("error","Erro ao ler o arquivo"); };
   reader.readAsBinaryString(file);
 }
 
-/* ── PROCESS DATA ── */
-function processData(){
-  const dataRows=allData.slice(1);
-  totalColumnsEl.textContent=headers.length;
-  totalRowsEl.textContent=dataRows.length;
-  selectedColumnsEl.textContent=0;
-  selectedColumnIndices.clear();
-  columnsGrid.innerHTML="";
-  headers.forEach((header,index)=>{
-    const isRec=isRecommendedColumn(header);
-    const item=document.createElement("div");
-    item.className="column-item"+(isRec?" recommended":"");
-    item.innerHTML=`<label><input type="checkbox" data-index="${index}"><span>${header}${isRec?" ⭐":""}</span></label>`;
-    const cb=item.querySelector("input");
-    cb.addEventListener("change",()=>{
-      if(cb.checked){selectedColumnIndices.add(index);item.classList.add("selected");}
-      else{selectedColumnIndices.delete(index);item.classList.remove("selected");}
-      updateSelectedCount();updatePreview();
+/* ══ BUILD COLUMNS ══ */
+function buildColumns() {
+  const rows = allData.slice(1);
+  document.getElementById("totalColumns").textContent = headers.length;
+  document.getElementById("totalRows").textContent = rows.length;
+  document.getElementById("selectedColumns").textContent = 0;
+  selected.clear();
+  colGrid.innerHTML = "";
+  headers.forEach((h, i) => {
+    const rec = isRec(h);
+    const item = document.createElement("div");
+    item.className = "col-item" + (rec ? " rec" : "");
+    item.innerHTML = `<label class="col-label"><input type="checkbox" data-i="${i}"><span>${h}${rec?' <span class="rec-star">⭐</span>':''}</span></label>`;
+    const cb = item.querySelector("input");
+    cb.addEventListener("change", () => {
+      if (cb.checked) { selected.add(i); item.classList.add("selected"); }
+      else { selected.delete(i); item.classList.remove("selected"); }
+      syncCount(); updatePreview();
     });
-    item.addEventListener("click",e=>{if(e.target.tagName!=="INPUT"){cb.checked=!cb.checked;cb.dispatchEvent(new Event("change"));}});
-    columnsGrid.appendChild(item);
+    item.addEventListener("click", e => { if (e.target.tagName !== "INPUT") { cb.checked = !cb.checked; cb.dispatchEvent(new Event("change")); } });
+    colGrid.appendChild(item);
   });
   columnsSection.classList.add("active");
 }
 
-function updateSelectedCount(){
-  selectedColumnsEl.textContent=selectedColumnIndices.size;
-  exportBtn.disabled=selectedColumnIndices.size===0;
+function syncCount() {
+  document.getElementById("selectedColumns").textContent = selected.size;
+  exportBtn.disabled = selected.size === 0;
+  if (selected.size > 0) setStep(3);
+  else setStep(2);
 }
 
-function updatePreview(){
-  if(!selectedColumnIndices.size){previewSection.classList.remove("active");return;}
-  const si=Array.from(selectedColumnIndices).sort((a,b)=>a-b);
-  const sh=si.map(i=>headers[i]);
-  previewTableHead.innerHTML=`<tr>${sh.map((h,i)=>`<th class="${i===0?"th-first":""}">${h}</th>`).join("")}<th class="th-status">STATUS</th></tr>`;
-  const rows=allData.slice(1,11);
-  previewTableBody.innerHTML=rows.map(row=>{
-    const cells=si.map(i=>row[i]||"");
-    return`<tr>${cells.map((c,i)=>`<td class="${i===0?"td-first":""}">${c}</td>`).join("")}<td class="td-status">(vazio)</td></tr>`;
-  }).join("");
+/* ══ PREVIEW ══ */
+function updatePreview() {
+  if (!selected.size) { previewSection.classList.remove("active"); return; }
+  const si = Array.from(selected).sort((a,b) => a - b);
+  const sh = si.map(i => headers[i]);
+  previewHead.innerHTML = `<tr>
+    ${sh.map((h,i) => `<th class="${i===0?'th-accent':''}">${h}</th>`).join("")}
+    <th class="th-status">STATUS</th>
+  </tr>`;
+  const rows = allData.slice(1, 11);
+  previewBody.innerHTML = rows.map(row => `<tr>
+    ${si.map((idx,i) => `<td class="${i===0?'td-num':''}">${row[idx] ?? ''}</td>`).join("")}
+    <td class="td-status">—</td>
+  </tr>`).join("");
   previewSection.classList.add("active");
 }
 
-/* ── CONTROLS ── */
-searchBox.addEventListener("input",e=>{
-  const q=e.target.value.toLowerCase();
-  columnsGrid.querySelectorAll(".column-item").forEach(item=>{
-    item.style.display=item.textContent.toLowerCase().includes(q)?"block":"none";
+/* ══ TOOLBAR ACTIONS ══ */
+searchBox.addEventListener("input", e => {
+  const q = e.target.value.toLowerCase();
+  colGrid.querySelectorAll(".col-item").forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q) ? "" : "none";
   });
 });
 
-selectAllBtn.addEventListener("click",()=>{
-  columnsGrid.querySelectorAll("input[type=checkbox]").forEach(cb=>{
-    if(cb.parentElement.parentElement.style.display!=="none"){cb.checked=true;cb.dispatchEvent(new Event("change"));}
-  });
-});
-
-deselectAllBtn.addEventListener("click",()=>{
-  columnsGrid.querySelectorAll("input[type=checkbox]").forEach(cb=>{cb.checked=false;cb.dispatchEvent(new Event("change"));});
-});
-
-recommendedBtn.addEventListener("click",()=>{
-  columnsGrid.querySelectorAll("input[type=checkbox]").forEach(cb=>{cb.checked=false;cb.parentElement.parentElement.classList.remove("selected");});
-  selectedColumnIndices.clear();
-  let found=0;const foundCols=[];
-  headers.forEach((h,i)=>{
-    if(isRecommendedColumn(h)){
-      const cb=columnsGrid.querySelector(`input[data-index="${i}"]`);
-      if(cb){cb.checked=true;cb.parentElement.parentElement.classList.add("selected");selectedColumnIndices.add(i);foundCols.push(h);found++;}
+selectAllBtn.addEventListener("click", () => {
+  colGrid.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    if (cb.parentElement.parentElement.style.display !== "none") {
+      cb.checked = true; cb.dispatchEvent(new Event("change"));
     }
   });
-  updateSelectedCount();updatePreview();
-  if(found>0)showAlert("success",`Extração recomendada aplicada! ${found} colunas: ${foundCols.join(", ")}`);
-  else showAlert("error","Nenhuma coluna recomendada encontrada. Verifique os nomes das colunas.");
 });
 
-/* ── EXPORT ── */
-exportBtn.addEventListener("click",()=>{
-  if(!selectedColumnIndices.size){showAlert("error","Selecione ao menos uma coluna!");return;}
-  try{
+deselectAllBtn.addEventListener("click", () => {
+  colGrid.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.checked = false; cb.dispatchEvent(new Event("change"));
+  });
+});
+
+recommendedBtn.addEventListener("click", () => {
+  colGrid.querySelectorAll("input[type=checkbox]").forEach(cb => {
+    cb.checked = false; cb.parentElement.parentElement.classList.remove("selected");
+  });
+  selected.clear();
+  let found = 0, names = [];
+  headers.forEach((h, i) => {
+    if (isRec(h)) {
+      const cb = colGrid.querySelector(`input[data-i="${i}"]`);
+      if (cb) { cb.checked = true; cb.parentElement.parentElement.classList.add("selected"); selected.add(i); names.push(h); found++; }
+    }
+  });
+  syncCount(); updatePreview();
+  if (found > 0) alert_("success", `${found} colunas recomendadas selecionadas: ${names.join(", ")}`);
+  else alert_("error", "Nenhuma coluna recomendada encontrada.");
+});
+
+/* ══ EXPORT ══ */
+exportBtn.addEventListener("click", () => {
+  if (!selected.size) { alert_("error","Selecione ao menos uma coluna!"); return; }
+  try {
     loading.classList.add("active");
-    const si=Array.from(selectedColumnIndices).sort((a,b)=>a-b);
-    const filteredData=allData.map((row,ri)=>{
-      const fr=si.map(i=>row[i]!==undefined?row[i]:"");
-      fr.push(ri===0?"STATUS":"");
-      return fr;
+    const si = Array.from(selected).sort((a,b) => a - b);
+    const data = allData.map((row, ri) => {
+      const r = si.map(i => row[i] !== undefined ? row[i] : "");
+      r.push(ri === 0 ? "STATUS" : "");
+      return r;
     });
-    const nb=XLSX.utils.book_new();
-    const nw=XLSX.utils.aoa_to_sheet(filteredData);
-    const range=XLSX.utils.decode_range(nw["!ref"]);
-    // Header row styling
-    for(let col=range.s.c;col<=range.e.c;col++){
-      const ca=XLSX.utils.encode_cell({r:0,c:col});
-      if(!nw[ca])continue;
-      nw[ca].s={fill:{patternType:"solid",fgColor:{rgb:"2d1810"}},font:{color:{rgb:"FFFFFF"},bold:true,sz:12},alignment:{horizontal:"center",vertical:"center"},border:{top:{style:"thin",color:{rgb:"2d1810"}},bottom:{style:"thin",color:{rgb:"2d1810"}},left:{style:"thin",color:{rgb:"2d1810"}},right:{style:"thin",color:{rgb:"2d1810"}}}};
+    const nb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    const range = XLSX.utils.decode_range(ws["!ref"]);
+    for (let c = range.s.c; c <= range.e.c; c++) {
+      const addr = XLSX.utils.encode_cell({r:0,c});
+      if (!ws[addr]) continue;
+      ws[addr].s = {
+        fill: { patternType:"solid", fgColor:{rgb:"1A0800"} },
+        font: { color:{rgb:"FFFFFF"}, bold:true, sz:12 },
+        alignment: { horizontal:"center", vertical:"center" },
+        border: { top:{style:"thin",color:{rgb:"2d1810"}}, bottom:{style:"thin",color:{rgb:"2d1810"}}, left:{style:"thin",color:{rgb:"2d1810"}}, right:{style:"thin",color:{rgb:"2d1810"}} }
+      };
     }
-    // First column styling
-    for(let row=range.s.r;row<=range.e.r;row++){
-      const ca=XLSX.utils.encode_cell({r:row,c:0});
-      if(!nw[ca])nw[ca]={t:"s",v:""};
-      nw[ca].s={fill:{patternType:"solid",fgColor:{rgb:"2d1810"}},font:{color:{rgb:"FFFFFF"},bold:true,sz:11},alignment:{horizontal:"left",vertical:"center"},border:{top:{style:"thin",color:{rgb:"2d1810"}},bottom:{style:"thin",color:{rgb:"2d1810"}},left:{style:"thin",color:{rgb:"2d1810"}},right:{style:"thin",color:{rgb:"2d1810"}}}};
-    }
-    nw["!cols"]=[...si.map(()=>({wch:20})),{wch:15}];
-    XLSX.utils.book_append_sheet(nb,nw,"Filas TLP");
-    const ts=new Date().toISOString().slice(0,19).replace(/:/g,"-");
-    const fname=`TLP_Filas_${ts}.xlsx`;
-    XLSX.writeFile(nb,fname,{bookType:"xlsx",bookSST:false,type:"binary",cellStyles:true});
+    ws["!cols"] = [...si.map(() => ({wch:20})), {wch:15}];
+    XLSX.utils.book_append_sheet(nb, ws, "Filas TLP");
+    const ts = new Date().toISOString().slice(0,19).replace(/:/g,"-");
+    const fname = `TLP_Filas_${ts}.xlsx`;
+    XLSX.writeFile(nb, fname, {bookType:"xlsx", type:"binary", cellStyles:true});
     loading.classList.remove("active");
-    showAlert("success",`Extração concluída! ${fname} | Formatação TLP aplicada | Coluna STATUS adicionada`);
-  }catch(err){loading.classList.remove("active");showAlert("error","Erro ao exportar: "+err.message);}
+    alert_("success", `Exportado! ${fname} · Coluna STATUS incluída`);
+  } catch(err) {
+    loading.classList.remove("active");
+    alert_("error","Erro ao exportar: " + err.message);
+  }
 });
 
-/* ── UTILS ── */
-function formatFileSize(b){
-  if(!b)return"0 Bytes";
-  const k=1024,s=["Bytes","KB","MB","GB"],i=Math.floor(Math.log(b)/Math.log(k));
-  return Math.round(b/Math.pow(k,i)*100)/100+" "+s[i];
+/* ══ UTILS ══ */
+function fmtSize(b) {
+  if (!b) return "0 B";
+  const k = 1024, s = ["B","KB","MB","GB"];
+  const i = Math.floor(Math.log(b) / Math.log(k));
+  return (b / Math.pow(k, i)).toFixed(1) + " " + s[i];
 }
 </script>
 </body>
