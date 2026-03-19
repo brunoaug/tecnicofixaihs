@@ -6,6 +6,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Técnicos por Área — RJ</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 /* ══ TEMA DIURNO ══ */
 :root {
@@ -287,6 +291,8 @@ body.theme-especial .dawn-tag{color:#A3E635;border-color:rgba(163,230,53,.28);ba
 .copy-btn{padding:.28rem .6rem;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .copy-btn:hover{border-color:var(--accent);color:var(--accent);}
 .copy-btn.copied{border-color:var(--success)!important;color:var(--success)!important;}
+.map-btn{padding:.28rem .6rem;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.map-btn:hover{border-color:var(--accent);color:var(--accent);}
 .offline-btn{padding:.28rem .6rem;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:.65rem;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .offline-btn:hover{border-color:var(--offline);color:var(--offline);}
 .offline-btn.is-forced{border-color:var(--online)!important;color:var(--online)!important;}
@@ -315,7 +321,6 @@ body.theme-especial .dawn-tag{color:#A3E635;border-color:rgba(163,230,53,.28);ba
 .data-row{display:flex;gap:.4rem;align-items:baseline;margin-bottom:.22rem;}
 .data-label{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:38px;flex-shrink:0;}
 .data-val{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2);}
-/* TEL — link clicável */
 .data-val.tel-val{color:var(--accent);cursor:pointer;text-decoration:none;}
 .data-val.tel-val:hover{text-decoration:underline;}
 
@@ -370,11 +375,8 @@ body.theme-especial .dawn-tag{color:#A3E635;border-color:rgba(163,230,53,.28);ba
 header    {animation:fade-up .4s ease both;}
 .container{animation:fade-up .4s .08s ease both;}
 
-
-/* ── ÁREA TAG DESTACADA ── */
 .area-tag.highlight{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;}
 
-/* ── MODO COMPACTO ── */
 body.compact-mode .tech-card{padding:.65rem .85rem;}
 body.compact-mode .areas-tags{display:none;}
 body.compact-mode .data-row{display:none;}
@@ -387,7 +389,6 @@ body.compact-mode .cards-grid{grid-template-columns:repeat(auto-fill,minmax(220p
 body.compact-mode .card-top{margin-bottom:.25rem;}
 body.compact-mode .tech-name{font-size:.82rem;}
 
-/* ── HISTÓRICO DE COMENTÁRIOS ── */
 .comment-log{margin-top:.6rem;}
 .comment-log-entry{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);padding:.2rem 0;border-bottom:1px solid var(--border);line-height:1.4;}
 .comment-log-entry:last-child{border-bottom:none;}
@@ -401,15 +402,298 @@ body.compact-mode .tech-name{font-size:.82rem;}
 .comment-log-clear{padding:.28rem .55rem;border:1px solid rgba(255,34,68,.28);background:transparent;border-radius:6px;color:var(--danger);font-family:'DM Mono',monospace;font-size:.62rem;cursor:pointer;}
 .comment-log-clear:hover{background:rgba(255,34,68,.07);}
 
-/* ── FILTROS DE STATUS ── */
 .status-filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem;}
 
-/* ── ATALHOS HINT ── */
 .kbd-hint{position:fixed;bottom:5.5rem;right:2rem;z-index:990;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:.65rem .9rem;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);box-shadow:0 8px 28px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .22s;}
 .kbd-hint.show{opacity:1;}
 .kbd-hint kbd{display:inline-block;background:var(--card2);border:1px solid var(--border2);border-radius:4px;padding:.1rem .35rem;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text);margin:0 .1rem;}
 
-@media(max-width:768px){
+/* ══════════════════════════════════════════════════════════════
+   MAPA INTEGRADO (LEAFLET + OPENSTREETMAP)
+   ══════════════════════════════════════════════════════════════ */
+.map-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  z-index: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.map-modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.map-modal {
+  background: var(--surface);
+  border: 2px solid var(--border2);
+  border-radius: 20px;
+  width: min(95vw, 1400px);
+  height: min(90vh, 900px);
+  display: flex;
+  flex-direction: column;
+  transform: scale(0.9);
+  transition: transform 0.3s;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+}
+
+.map-modal-overlay.open .map-modal {
+  transform: scale(1);
+}
+
+.map-header {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  background: var(--card);
+}
+
+.map-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.map-close-btn {
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.map-close-btn:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+  background: rgba(255, 34, 68, 0.06);
+}
+
+.map-controls {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.map-search-box {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.45rem 0.8rem;
+  min-width: 200px;
+}
+
+.map-search-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+}
+
+.map-search-box input::placeholder {
+  color: var(--muted);
+}
+
+.map-filter-btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+
+.map-filter-btn:hover {
+  border-color: var(--border2);
+  background: var(--card2);
+}
+
+.map-filter-btn.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--tag-bg);
+}
+
+.map-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#leafletMap {
+  width: 100%;
+  height: 100%;
+}
+
+.map-legend {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-width: 280px;
+  z-index: 1000;
+}
+
+.map-legend-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.map-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.35rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text2);
+}
+
+.map-legend-item:last-child {
+  margin-bottom: 0;
+}
+
+.map-legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.map-info-card {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  max-width: 320px;
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.map-info-card.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.map-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.7rem;
+}
+
+.map-info-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.map-info-close {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.map-info-close:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.map-info-status {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  margin-bottom: 0.5rem;
+}
+
+.map-info-areas {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  color: var(--text2);
+  line-height: 1.5;
+  margin-bottom: 0.6rem;
+}
+
+.map-info-btn {
+  width: 100%;
+  padding: 0.45rem;
+  border-radius: 8px;
+  border: 1px solid var(--accent);
+  background: var(--btn-grd);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.map-info-btn:hover {
+  filter: brightness(1.15);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
   header{padding:0 1.25rem;height:auto;padding-top:.75rem;padding-bottom:.75rem;}
   .container{padding:1.25rem;}
   .toolbar-row{flex-wrap:wrap;}
@@ -417,6 +701,26 @@ body.compact-mode .tech-name{font-size:.82rem;}
   .toolbar-sep{display:none;}
   .cards-grid{grid-template-columns:1fr;}
   .theme-palette-panel{width:90vw;right:auto;left:0;}
+  
+  .map-modal {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+  }
+
+  .map-legend,
+  .map-info-card {
+    max-width: calc(100vw - 40px);
+  }
+
+  .map-controls {
+    width: 100%;
+  }
+
+  .map-search-box {
+    flex: 1;
+    min-width: 0;
+  }
 }
 </style>
 </head>
@@ -486,7 +790,6 @@ body.compact-mode .tech-name{font-size:.82rem;}
     <div class="weekend-body" id="weekendBody"><div id="weekendSlots"></div></div>
   </div>
   <div class="toolbar">
-    <!-- LINHA 1: Busca + Filtros de conteúdo -->
     <div class="toolbar-row">
       <div class="search-wrap" style="flex:1;min-width:160px;">
         <span class="s-ico">🔍</span>
@@ -502,10 +805,10 @@ body.compact-mode .tech-name{font-size:.82rem;}
       <div class="toolbar-sep"></div>
       <button class="tbtn" id="regFilterBtn" data-reg="">🗂 Região: Todas</button>
     </div>
-    <!-- LINHA 2: Visualização + Ações -->
     <div class="toolbar-row">
       <button class="tbtn" id="expandAllBtn" title="Expandir/colapsar regiões (E)">⊞ Expandir</button>
       <button class="tbtn" id="compactBtn" title="Modo compacto (C)">⊡ Compacto</button>
+      <button class="tbtn" id="openMapBtn" title="Abrir mapa de cobertura (M)">🗺️ Mapa</button>
       <div class="toolbar-sep"></div>
       <button class="tbtn" id="sortBtn" title="Alternar ordenação">🔃 A→Z</button>
       <button class="tbtn" id="exportBtn" title="Exportar relatório .txt">⬇ Exportar</button>
@@ -521,7 +824,61 @@ body.compact-mode .tech-name{font-size:.82rem;}
   <div id="mainContent"></div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- MODAL DO MAPA -->
+<div class="map-modal-overlay" id="mapModal">
+  <div class="map-modal">
+    <div class="map-header">
+      <div class="map-title">
+        <span>🗺️</span>
+        <span>Mapa de Cobertura — Rio de Janeiro</span>
+      </div>
+      <div class="map-controls">
+        <div class="map-search-box">
+          <span style="font-size:0.8rem;">🔍</span>
+          <input type="text" id="mapSearchInput" placeholder="Buscar bairro...">
+        </div>
+        <button class="map-filter-btn" id="mapFilterOnline">🟢 Online</button>
+        <button class="map-filter-btn" id="mapFilterRegion" data-reg="">Todas regiões</button>
+        <button class="map-close-btn" id="mapCloseBtn">✕ Fechar</button>
+      </div>
+    </div>
+    <div class="map-container">
+      <div id="leafletMap"></div>
+      <div class="map-legend">
+        <div class="map-legend-title">📍 Legenda</div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:#00C97A;"></div>
+          <span>Online / Disponível</span>
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:#FF8800;"></div>
+          <span>Ocupado</span>
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:#FF2244;"></div>
+          <span>Offline / Indisponível</span>
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:#1E64FF;"></div>
+          <span>Turno Noturno</span>
+        </div>
+        <div class="map-legend-item">
+          <div class="map-legend-dot" style="background:#9333EA;"></div>
+          <span>Turno Madrugada</span>
+        </div>
+      </div>
+      <div class="map-info-card" id="mapInfoCard">
+        <div class="map-info-header">
+          <div class="map-info-name" id="mapInfoName"></div>
+          <button class="map-info-close" id="mapInfoClose">✕</button>
+        </div>
+        <div class="map-info-status" id="mapInfoStatus"></div>
+        <div class="map-info-areas" id="mapInfoAreas"></div>
+        <button class="map-info-btn" id="mapInfoGoToCard">Ver detalhes do técnico</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="tmodal-overlay" id="timerModal">
   <div class="tmodal">
@@ -551,11 +908,12 @@ body.compact-mode .tech-name{font-size:.82rem;}
   </div>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
 const T_DIA=7,T_NOITE=15,T_DIA_END=17,T_MAD=23;
 
-/* ══ TEMA MANUAL ══ */
-let manualTheme=null; // null=auto | "dia"|"noite"|"madrugada"|"especial"
+let manualTheme=null;
 const THEME_META={
   dia:       {label:"☀️ Modo Dia",      next:"noite",     classes:[]},
   noite:     {label:"🌙 Modo Noite",     next:"madrugada", classes:["theme-night"]},
@@ -574,13 +932,12 @@ let activeAreas=new Set(["Todas"]);
 let filterOnlyOnline=false;
 let filterOnlyForecast=false;
 let compactMode=false;
-let sortMode="status"; // "status" = online→busy→offline | "alpha" = A→Z
-let filterRegion=""; // "" = todas | "RJ" | "BXD" | "OESTE"
-const logState={}; // nome → [{ts, text}]
+let sortMode="status";
+let filterRegion="";
+const logState={};
 const REGIOES=[{id:"RJ",label:"Rio de Janeiro / Niterói",color:"var(--rj-color)"},{id:"BXD",label:"Baixada",color:"var(--bxd-color)"},{id:"OESTE",label:"Oeste",color:"var(--oeste-color)"}];
 const collapseState={};
 
-/* ══ DADOS — campo tel pronto para preenchimento ══ */
 const T=[
   {nome:"Carlos Miranda",    nc:"CARLOS ALBERTO FIDALGO MIRANDA",   reg:"RJ",    turno:"dia",       tel:null, cpf:"699.675.807-63",rg:"05728184-2",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"Residente",                         areas:["FTS","Central Ana Neri","Rocha","Engenho Novo","Pilares","Méier","Piedade","Encantado","Riachuelo"]},
   {nome:"José Duque",        nc:"JOSÉ CARLOS DUQUE ESTRADA FILHO",  reg:"RJ",    turno:"dia",       tel:null, cpf:"078.938.447-79",rg:"6775760-9",   crea:"2005105212", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Cascadura","Madureira","Rocha Miranda","Bento Ribeiro","Vila da Penha","Penha Circular","Brás de Pina","Oswaldo Cruz","Vila Valqueire","Honório Gurgel","Turiaçu","Campinho","Cavalcanti","Coelho Neto","Acari","Deodoro"]},
@@ -618,7 +975,6 @@ const T=[
 
 const busyLabels=["","Pouco ocupado","Ocupado","Bem ocupado","Muito ocupado","Indisponível"];
 
-/* ══ PERSISTÊNCIA localStorage ══ */
 const LS="rj_state_v2";
 function saveState(){
   try{
@@ -650,7 +1006,6 @@ T.forEach(t=>t.areas.forEach(a=>{if(!allAreas.includes(a))allAreas.push(a);}));
 const areasBtnsEl=document.getElementById("areasBtns");
 allAreas.forEach(area=>{const b=document.createElement("button");b.className="area-btn"+(area==="Todas"?" selected":"");b.textContent=area;b.dataset.area=area;areasBtnsEl.appendChild(b);});
 
-/* ══ EVENTOS ══ */
 document.getElementById("areaToggleBtn").addEventListener("click",()=>{const p=document.getElementById("areasPanel"),b=document.getElementById("areaToggleBtn");const o=p.classList.toggle("open");b.classList.toggle("open",o);});
 areasBtnsEl.addEventListener("click",e=>{const b=e.target.closest(".area-btn");if(!b)return;const area=b.dataset.area;if(area==="Todas"){activeAreas=new Set(["Todas"]);document.querySelectorAll(".area-btn").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");}else{activeAreas.delete("Todas");if(b.classList.contains("selected")){b.classList.remove("selected");activeAreas.delete(area);if(!activeAreas.size){activeAreas.add("Todas");document.querySelector('.area-btn[data-area="Todas"]').classList.add("selected");}}else{b.classList.add("selected");activeAreas.add(area);document.querySelector('.area-btn[data-area="Todas"]').classList.remove("selected");}}updateAreaBadge();renderAll();});
 document.getElementById("clearAreasBtn").addEventListener("click",()=>{activeAreas=new Set(["Todas"]);document.querySelectorAll(".area-btn").forEach(x=>x.classList.remove("selected"));document.querySelector('.area-btn[data-area="Todas"]').classList.add("selected");updateAreaBadge();renderAll();});
@@ -659,6 +1014,7 @@ document.getElementById("copyAllBtn").addEventListener("click",()=>{const vis=T.
 document.getElementById("weekendPanelHdr").addEventListener("click",()=>{document.getElementById("weekendPanel").classList.toggle("collapsed");renderWeekendPanel();});
 document.getElementById("mainContent").addEventListener("click",e=>{
   const cb=e.target.closest(".copy-btn");if(cb){const t=T.find(x=>x.nome===cb.dataset.key);if(!t)return;copyClip(cardText(t),()=>{cb.textContent="✓ Copiado";cb.classList.add("copied");setTimeout(()=>{cb.textContent="⧉ Copiar";cb.classList.remove("copied");},2000);showToast("Dados copiados!");});return;}
+  const mb=e.target.closest(".map-btn");if(mb){openMapModal();const nome=mb.dataset.key;setTimeout(()=>{const marker=allMarkers.find(m=>m.techName===nome);if(marker){leafletMap.setView(marker.getLatLng(),14);marker.fire('click');}},300);return;}
   const ob=e.target.closest(".offline-btn");if(ob){const k=ob.dataset.key;const t=T.find(x=>x.nome===k);const inShift=t&&turnoAtivoAgora(t.turno);if(inShift){offlineState[k]=!offlineState[k];}else{onlineForced[k]=!onlineForced[k];}renderAll();renderBusyPanel();saveState();return;}
   const tb=e.target.closest(".timer-btn");if(tb){openTimerModal(tb.dataset.key);return;}
   const cu=e.target.closest("[data-clear-unavail]");if(cu){const k=cu.dataset.clearUnavail;if(timerState[k]){timerState[k].unavailUntil=null;timerState[k].unavailReason=null;}renderAll();return;}
@@ -700,7 +1056,6 @@ document.getElementById("tmUnavailClear").addEventListener("click",()=>{document
 document.getElementById("tmForecastClear").addEventListener("click",()=>{document.getElementById("tmForecastInput").value="";document.getElementById("tmForecastReason").value="";});
 document.getElementById("timerModalSave").addEventListener("click",()=>{if(!timerModalTarget)return;const u=document.getElementById("tmUnavailInput").value;const ur=document.getElementById("tmUnavailReason").value.trim();const f=document.getElementById("tmForecastInput").value;const fr=document.getElementById("tmForecastReason").value.trim();timerState[timerModalTarget]={unavailUntil:u||null,unavailReason:ur||null,forecast:f||null,forecastReason:fr||null};closeTimerModal();renderAll();saveState();showToast("Horários salvos para "+timerModalTarget);});
 
-/* ══ HELPERS ══ */
 function updateAreaBadge(){const badge=document.getElementById("activeAreaBadge"),clearBtn=document.getElementById("clearAreasBtn");if(activeAreas.has("Todas")||!activeAreas.size){badge.textContent="Todas";clearBtn.style.display="none";}else{badge.textContent=activeAreas.size===1?[...activeAreas][0]:activeAreas.size+" áreas";clearBtn.style.display="flex";}}
 function shouldShow(t){
   if(!activeAreas.has("Todas")&&!t.areas.some(a=>activeAreas.has(a)))return false;
@@ -796,6 +1151,7 @@ function makeCard(t){
     +'</div>'
     +'<div class="card-actions">'
     +'<button class="copy-btn" data-key="'+t.nome+'">⧉ Copiar</button>'
+    +'<button class="map-btn" data-key="'+t.nome+'">🗺 Mapa</button>'
     +'<button class="'+offBtnClass+'" data-key="'+t.nome+'">'+offBtnLabel+'</button>'
     +'<div class="wk-card-check'+(isWk?" checked":"")+'" data-key="'+t.nome+'"><div class="wk-box"></div><span class="wk-label">Sáb/Dom</span></div>'
     +'<div class="busy-row"><button class="busy-toggle" data-level="'+lvl+'" data-key="'+t.nome+'">'+dots+'</button><span class="busy-label '+blc+'">'+blt+'</span></div>'
@@ -832,7 +1188,6 @@ function makeDiv(cls,icon,lbl){const d=document.createElement("div");d.className
 function sortCards(arr){
   return arr.slice().sort((a,b)=>{
     if(sortMode==="alpha") return a.nome.localeCompare(b.nome,"pt-BR");
-    // status: online primeiro → mais ocupado → offline
     const ao=estaOnline(a)?0:1, bo=estaOnline(b)?0:1;
     if(ao!==bo)return ao-bo;
     const ab=busyState[a.nome]||0, bb2=busyState[b.nome]||0;
@@ -870,7 +1225,6 @@ function renderAll(){
 updateShiftUI();renderAll();renderBusyPanel();renderWeekendPanel();renderForecastAlert();
 setInterval(()=>{renderAll();renderBusyPanel();renderForecastAlert();updateTabBadge();},60000);
 
-/* ══ BADGE TÍTULO ABA ══ */
 function updateTabBadge(){
   const exp=T.filter(t=>forecastStatus(t.nome)==="expired").length;
   const wrn=T.filter(t=>forecastStatus(t.nome)==="warn").length;
@@ -879,7 +1233,6 @@ function updateTabBadge(){
 }
 updateTabBadge();
 
-/* ══ EXPANDIR / COLAPSAR TODOS ══ */
 let allCollapsed=false;
 document.getElementById("expandAllBtn").addEventListener("click",()=>{
   allCollapsed=!allCollapsed;
@@ -894,7 +1247,6 @@ document.getElementById("expandAllBtn").addEventListener("click",()=>{
   document.getElementById("expandAllBtn").textContent=allCollapsed?"⊟ Expandir todos":"⊞ Colapsar todos";
 });
 
-/* ══ TOGGLE TEMA — ciclo: dia → noite → madrugada → especial → dia ══ */
 function applyManualTheme(){
   document.body.classList.remove("theme-night","theme-dawn","theme-especial");
   if(manualTheme===null){
@@ -927,7 +1279,6 @@ document.getElementById("themeToggleBtn").addEventListener("click",()=>{
 });
 applyManualTheme();
 
-/* ══ FILTRO DE REGIÃO ══ */
 const REG_CYCLE=[
   {id:"",      label:"🗂 Região: Todas", color:""},
   {id:"RJ",    label:"🔵 Rio / Niterói", color:"var(--rj-color)"},
@@ -945,7 +1296,6 @@ document.getElementById("regFilterBtn").addEventListener("click",()=>{
   showToast(next.label);
 });
 
-/* ══ ORDENAÇÃO ══ */
 document.getElementById("sortBtn").addEventListener("click",()=>{
   sortMode=sortMode==="status"?"alpha":"status";
   const btn=document.getElementById("sortBtn");
@@ -956,7 +1306,6 @@ document.getElementById("sortBtn").addEventListener("click",()=>{
   showToast(sortMode==="alpha"?"Ordem: A → Z":"Ordem: Status");
 });
 
-/* ══ FILTROS DE STATUS ══ */
 document.getElementById("filterOnlineBtn").addEventListener("click",()=>{
   filterOnlyOnline=!filterOnlyOnline;
   if(filterOnlyOnline)filterOnlyForecast=false;
@@ -973,7 +1322,6 @@ document.getElementById("filterForecastBtn").addEventListener("click",()=>{
   renderAll();
 });
 
-/* ══ MODO COMPACTO ══ */
 document.getElementById("compactBtn").addEventListener("click",()=>{
   compactMode=!compactMode;
   document.body.classList.toggle("compact-mode",compactMode);
@@ -981,7 +1329,6 @@ document.getElementById("compactBtn").addEventListener("click",()=>{
   document.getElementById("compactBtn").textContent=compactMode?"⊠ Compacto":"⊡ Compacto";
 });
 
-/* ══ EXPORTAR RELATÓRIO ══ */
 document.getElementById("exportBtn").addEventListener("click",()=>{
   const now=new Date();
   const ts=now.toLocaleDateString("pt-BR")+" "+now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
@@ -1018,28 +1365,25 @@ document.getElementById("exportBtn").addEventListener("click",()=>{
   showToast("Relatório exportado!");
 });
 
-/* ══ ATALHOS DE TECLADO ══ */
-let kbdHintTimer=null;
 document.addEventListener("keydown",e=>{
   const tag=document.activeElement.tagName.toLowerCase();
   const isInput=tag==="input"||tag==="textarea";
-  // / — focar busca
   if(e.key==="/"&&!isInput){e.preventDefault();document.getElementById("searchInput").focus();return;}
-  // Esc — limpar busca ou fechar modal
   if(e.key==="Escape"){
     if(document.getElementById("timerModal").classList.contains("open")){closeTimerModal();return;}
+    if(document.getElementById("mapModal").classList.contains("open")){closeMapModal();return;}
     if(document.getElementById("searchInput").value){document.getElementById("searchInput").value="";renderAll();return;}
     if(isInput){document.activeElement.blur();return;}
   }
-  // E — expandir/colapsar (só fora de inputs)
   if((e.key==="e"||e.key==="E")&&!isInput){
     document.getElementById("expandAllBtn").click();return;
   }
-  // C — modo compacto
   if((e.key==="c"||e.key==="C")&&!isInput){
     document.getElementById("compactBtn").click();return;
   }
-  // ? — mostrar hint
+  if((e.key==="m"||e.key==="M")&&!isInput){
+    openMapModal();return;
+  }
   if(e.key==="?"&&!isInput){
     const hint=document.getElementById("kbdHint");
     hint.classList.toggle("show");
@@ -1049,7 +1393,6 @@ document.addEventListener("keydown",e=>{
   }
 });
 
-/* ══ PERSONALIZAÇÃO DE CORES DOS TEMAS ══ */
 const THEME_DEFAULTS={
   dia:      {accent:"#FF4500",accent2:"#FF8800",label:"☀️ Dia"},
   noite:    {accent:"#1E64FF",accent2:"#22B8FF",label:"🌙 Noite"},
@@ -1104,9 +1447,271 @@ const palettePanel=document.getElementById("themePalettePanel");
 paletteBtn.addEventListener("click",e=>{e.stopPropagation();const open=palettePanel.classList.toggle("open");paletteBtn.classList.toggle("open",open);if(open)buildPalettePanel();});
 document.addEventListener("click",e=>{if(!palettePanel.contains(e.target)&&e.target!==paletteBtn){palettePanel.classList.remove("open");paletteBtn.classList.remove("open");}});
 document.getElementById("tppReset").addEventListener("click",()=>{themeCustomColors={};saveColors();document.querySelectorAll("[id^='custom-color-']").forEach(el=>el.remove());buildPalettePanel();showToast("Cores resetadas para o padrão!");});
+
+/* ══════════════════════════════════════════════════════════════
+   MAPA INTEGRADO — LEAFLET + OPENSTREETMAP
+   ══════════════════════════════════════════════════════════════ */
+
+const BAIRRO_COORDS = {
+  "Copacabana": [-22.9711, -43.1822], "Ipanema": [-22.9838, -43.2044], "Leblon": [-22.9844, -43.2253],
+  "Botafogo": [-22.9519, -43.1828], "Flamengo": [-22.9322, -43.1758], "Laranjeiras": [-22.9364, -43.1881],
+  "Catete": [-22.9258, -43.1775], "Glória": [-22.9197, -43.1764], "Urca": [-22.9533, -43.1656],
+  "Humaitá": [-22.9547, -43.1958], "Lagoa": [-22.9711, -43.2050], "Jardim Botânico": [-22.9661, -43.2231],
+  "Gávea": [-22.9794, -43.2344], "Cosme Velho": [-22.9428, -43.1989], "Centro": [-22.9068, -43.1729],
+  "Lapa": [-22.9133, -43.1797], "Santa Teresa": [-22.9197, -43.1886], "Estácio": [-22.9108, -43.2069],
+  "Catumbi": [-22.9186, -43.1997], "Tijuca": [-22.9322, -43.2403], "Vila Isabel": [-22.9169, -43.2467],
+  "Andaraí": [-22.9289, -43.2539], "Grajaú": [-22.9197, -43.2644], "Maracanã": [-22.9122, -43.2303],
+  "São Cristóvão": [-22.8997, -43.2236], "Benfica": [-22.8944, -43.2386], "Meier": [-22.9019, -43.2781],
+  "Cachambi": [-22.8933, -43.2694], "Engenho de Dentro": [-22.9039, -43.2958], "Engenho Novo": [-22.9050, -43.2694],
+  "Todos os Santos": [-22.9078, -43.2847], "Pilares": [-22.8828, -43.2997], "Abolição": [-22.8886, -43.2886],
+  "Piedade": [-22.8989, -43.2997], "Rocha": [-22.9197, -43.2428], "Riachuelo": [-22.9050, -43.2619],
+  "Encantado": [-22.8933, -43.2847], "Jacaré": [-22.8886, -43.2539], "Del Castilho": [-22.8828, -43.2781],
+  "Quintino": [-22.8933, -43.3181], "Cascadura": [-22.8828, -43.3306], "Madureira": [-22.8719, -43.3361],
+  "Campinho": [-22.8828, -43.3472], "Bento Ribeiro": [-22.8661, -43.3639], "Oswaldo Cruz": [-22.8550, -43.3472],
+  "Rocha Miranda": [-22.8550, -43.3639], "Turiaçu": [-22.8550, -43.3306], "Cavalcanti": [-22.8661, -43.3181],
+  "Honório Gurgel": [-22.8550, -43.3472], "Coelho Neto": [-22.8328, -43.3639], "Acari": [-22.8219, -43.3472],
+  "Vila Valqueire": [-22.8828, -43.3639], "Penha": [-22.8428, -43.2781], "Penha Circular": [-22.8328, -43.2886],
+  "Brás de Pina": [-22.8328, -43.2781], "Ramos": [-22.8428, -43.2539], "Olaria": [-22.8550, -43.2694],
+  "Bonsucesso": [-22.8661, -43.2539], "Manguinhos": [-22.8719, -43.2428], "Irajá": [-22.8328, -43.3181],
+  "Vila da Penha": [-22.8428, -43.3056], "Vigário Geral": [-22.8219, -43.3056], "Parada de Lucas": [-22.8108, -43.2997],
+  "Cordovil": [-22.8328, -43.2997], "Higienópolis": [-22.8108, -43.3181], "Tomás Coelho": [-22.8108, -43.2886],
+  "Vicente de Carvalho": [-22.8550, -43.3056], "Jardim América": [-22.8108, -43.2781], "Colégio": [-22.8219, -43.2886],
+  "Inhaúma": [-22.8828, -43.2886], "Ilha do Governador": [-22.8108, -43.2050], "Galeão": [-22.8050, -43.2428],
+  "Duque de Caxias": [-22.7858, -43.3056], "Nova Iguaçu": [-22.7594, -43.4511], "Nilópolis": [-22.8078, -43.4144],
+  "São João de Meriti": [-22.8039, -43.3722], "Mesquita": [-22.7828, -43.4311], "Belford Roxo": [-22.7642, -43.3994],
+  "Queimados": [-22.7136, -43.5528], "Japeri": [-22.6428, -43.6533], "Pavuna": [-22.8108, -43.3556],
+  "Anchieta": [-22.8219, -43.4056], "Guadalupe": [-22.8428, -43.3722], "Coelho da Rocha": [-22.7828, -43.3889],
+  "Olinda": [-22.8328, -43.3889], "Campo Grande": [-22.9019, -43.5611], "Santa Cruz": [-22.9197, -43.6833],
+  "Sepetiba": [-22.9711, -43.7000], "Paciência": [-22.8828, -43.6667], "Cosmos": [-22.9019, -43.6000],
+  "Bangu": [-22.8719, -43.4678], "Realengo": [-22.8828, -43.4344], "Deodoro": [-22.8550, -43.3889],
+  "Senador Camará": [-22.8719, -43.4978], "Padre Miguel": [-22.8719, -43.4511], "Santíssimo": [-22.8828, -43.4844],
+  "Magalhães Bastos": [-22.8828, -43.4178], "Barra da Tijuca": [-23.0050, -43.3650], "Recreio dos Bandeirantes": [-23.0197, -43.4678],
+  "Jacarepaguá": [-22.9289, -43.3639], "Taquara": [-22.9197, -43.3806], "Tanque": [-22.9108, -43.3556],
+  "Pechincha": [-22.9197, -43.3472], "Curicica": [-22.9289, -43.3556], "Anil": [-22.9461, -43.3389],
+  "Freguesia": [-22.9461, -43.3306], "Gardênia Azul": [-22.9289, -43.3389], "Praça Seca": [-22.9019, -43.3472],
+  "Vargem Grande": [-23.0197, -43.5028], "Vargem Pequena": [-23.0050, -43.4844], "Niterói": [-22.8833, -43.1036],
+  "São Gonçalo": [-22.8267, -43.0536], "Fonseca": [-22.8833, -43.0869], "Alcântara": [-22.8667, -43.0869],
+  "Pendotiba": [-22.9167, -43.0203], "FTS": [-22.9068, -43.1729], "Central Ana Neri": [-22.9197, -43.2428],
+  "Fonseca Teles": [-22.9197, -43.2428], "DDC": [-22.8933, -43.2694], "LPD": [-22.9322, -43.2403],
+  "VGE": [-22.8108, -43.2781], "Maré": [-22.8661, -43.2428], "Jacarezinho": [-22.8886, -43.2539],
+  "Rio Comprido": [-22.9258, -43.2050], "Alto da Boa Vista": [-22.9594, -43.2781], "Usina": [-22.9322, -43.2539],
+  "Muda": [-22.9322, -43.2539], "Água Santa": [-22.9108, -43.2781], "Praça da Bandeira": [-22.9108, -43.2236],
+  "Rio das Pedras": [-22.9289, -43.3556], "Adjacências": [-22.9068, -43.1729], "Zona Sul": [-22.9711, -43.1822],
+  "Zona Norte": [-22.9019, -43.2781], "Ana Neri": [-22.9197, -43.2428], "Barros Filho": [-22.8328, -43.3722],
+  "Eng. de Dentro": [-22.9039, -43.2958], "Lins": [-22.9078, -43.2847], "Méier": [-22.9019, -43.2781]
+};
+
+let leafletMap = null;
+let allMarkers = [];
+let mapFilterOnlineOnly = false;
+let mapFilterRegion = "";
+let selectedMarkerTech = null;
+
+function getMarkerColor(tech) {
+  const online = estaOnline(tech);
+  const busy = busyState[tech.nome] || 0;
+  
+  if (!online) return "#FF2244";
+  if (busy >= 3) return "#FF8800";
+  if (tech.turno === "noite") return "#1E64FF";
+  if (tech.turno === "madrugada") return "#9333EA";
+  return "#00C97A";
+}
+
+function initLeafletMap() {
+  if (leafletMap) return;
+  
+  leafletMap = L.map('leafletMap').setView([-22.9068, -43.1729], 11);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(leafletMap);
+  
+  updateMapMarkers();
+}
+
+function updateMapMarkers() {
+  if (!leafletMap) return;
+  
+  allMarkers.forEach(m => leafletMap.removeLayer(m));
+  allMarkers = [];
+  
+  const techs = T.filter(t => {
+    if (mapFilterOnlineOnly && !estaOnline(t)) return false;
+    if (mapFilterRegion && t.reg !== mapFilterRegion) return false;
+    return true;
+  });
+  
+  techs.forEach(tech => {
+    const area = tech.areas.find(a => BAIRRO_COORDS[a]);
+    if (!area) return;
+    
+    const coords = BAIRRO_COORDS[area];
+    const color = getMarkerColor(tech);
+    
+    const marker = L.circleMarker(coords, {
+      radius: 8,
+      fillColor: color,
+      color: "#fff",
+      weight: 2,
+      opacity: 1,
+      fillOpacity: 0.9
+    }).addTo(leafletMap);
+    
+    marker.techName = tech.nome;
+    
+    marker.on('click', () => {
+      showMarkerInfo(tech);
+      selectedMarkerTech = tech.nome;
+      leafletMap.setView(coords, 14);
+    });
+    
+    allMarkers.push(marker);
+  });
+  
+  if (allMarkers.length > 0) {
+    const group = L.featureGroup(allMarkers);
+    leafletMap.fitBounds(group.getBounds().pad(0.1));
+  }
+}
+
+function showMarkerInfo(tech) {
+  const card = document.getElementById("mapInfoCard");
+  const online = estaOnline(tech);
+  const busy = busyState[tech.nome] || 0;
+  
+  document.getElementById("mapInfoName").textContent = tech.nome;
+  
+  const statusHTML = `
+    <div class="status-dot ${online ? 'online' : 'offline'}"></div>
+    <span class="status-text ${online ? 'online' : 'offline'}">${online ? 'Online' : 'Offline'}</span>
+    ${busy > 0 ? `<span style="margin-left:0.5rem;color:var(--warn);">• ${busyLabels[busy]}</span>` : ''}
+  `;
+  document.getElementById("mapInfoStatus").innerHTML = statusHTML;
+  
+  const areasText = tech.areas.slice(0, 8).join(" · ") + (tech.areas.length > 8 ? " ..." : "");
+  document.getElementById("mapInfoAreas").textContent = "📍 " + areasText;
+  
+  card.classList.add("show");
+}
+
+document.getElementById("mapInfoClose").addEventListener("click", () => {
+  document.getElementById("mapInfoCard").classList.remove("show");
+  selectedMarkerTech = null;
+});
+
+document.getElementById("mapInfoGoToCard").addEventListener("click", () => {
+  if (!selectedMarkerTech) return;
+  
+  closeMapModal();
+  
+  setTimeout(() => {
+    const btn = document.querySelector('.copy-btn[data-key="' + selectedMarkerTech + '"]');
+    if (!btn) return;
+    
+    const card = btn.closest(".tech-card");
+    if (!card) return;
+    
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.style.transition = "box-shadow .15s";
+    card.style.boxShadow = "0 0 0 3px var(--accent), 0 0 24px var(--accent)";
+    
+    setTimeout(() => {
+      card.style.boxShadow = "";
+    }, 1400);
+  }, 300);
+});
+
+let searchTimeout = null;
+document.getElementById("mapSearchInput").addEventListener("input", (e) => {
+  clearTimeout(searchTimeout);
+  const query = e.target.value.trim().toLowerCase();
+  
+  if (!query || query.length < 3) return;
+  
+  searchTimeout = setTimeout(() => {
+    const found = Object.entries(BAIRRO_COORDS).find(([name]) => 
+      name.toLowerCase().includes(query)
+    );
+    
+    if (found) {
+      const [name, coords] = found;
+      leafletMap.setView(coords, 14);
+      
+      const tempMarker = L.circleMarker(coords, {
+        radius: 10,
+        fillColor: "#FFD700",
+        color: "#fff",
+        weight: 2,
+        opacity: 1,
+        fillOpacity: 0.8
+      }).addTo(leafletMap);
+      
+      setTimeout(() => leafletMap.removeLayer(tempMarker), 3000);
+      showToast("📍 " + name);
+    }
+  }, 500);
+});
+
+document.getElementById("mapFilterOnline").addEventListener("click", () => {
+  mapFilterOnlineOnly = !mapFilterOnlineOnly;
+  document.getElementById("mapFilterOnline").classList.toggle("active", mapFilterOnlineOnly);
+  updateMapMarkers();
+});
+
+document.getElementById("mapFilterRegion").addEventListener("click", () => {
+  const regions = ["", "RJ", "BXD", "OESTE"];
+  const currentIdx = regions.indexOf(mapFilterRegion);
+  mapFilterRegion = regions[(currentIdx + 1) % regions.length];
+  
+  const labels = {
+    "": "Todas regiões",
+    "RJ": "🔵 Rio / Niterói",
+    "BXD": "🟣 Baixada",
+    "OESTE": "🟢 Oeste"
+  };
+  
+  const btn = document.getElementById("mapFilterRegion");
+  btn.textContent = labels[mapFilterRegion];
+  btn.classList.toggle("active", mapFilterRegion !== "");
+  
+  updateMapMarkers();
+});
+
+function openMapModal() {
+  document.getElementById("mapModal").classList.add("open");
+  
+  if (!leafletMap) {
+    setTimeout(() => {
+      initLeafletMap();
+    }, 100);
+  } else {
+    updateMapMarkers();
+    setTimeout(() => {
+      leafletMap.invalidateSize();
+    }, 100);
+  }
+}
+
+function closeMapModal() {
+  document.getElementById("mapModal").classList.remove("open");
+  document.getElementById("mapInfoCard").classList.remove("show");
+}
+
+document.getElementById("mapCloseBtn").addEventListener("click", closeMapModal);
+document.getElementById("openMapBtn").addEventListener("click", openMapModal);
+
+document.getElementById("mapModal").addEventListener("click", (e) => {
+  if (e.target === document.getElementById("mapModal")) {
+    closeMapModal();
+  }
+});
 </script>
+
 <div class="kbd-hint" id="kbdHint">
-  <kbd>/</kbd> buscar &nbsp; <kbd>Esc</kbd> limpar &nbsp; <kbd>E</kbd> expandir &nbsp; <kbd>C</kbd> compacto &nbsp; <kbd>?</kbd> ocultar
+  <kbd>/</kbd> buscar &nbsp; <kbd>Esc</kbd> limpar &nbsp; <kbd>E</kbd> expandir &nbsp; <kbd>C</kbd> compacto &nbsp; <kbd>M</kbd> mapa &nbsp; <kbd>?</kbd> ocultar
 </div>
+
 </body>
 </html>
