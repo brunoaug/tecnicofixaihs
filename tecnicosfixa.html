@@ -7,7 +7,7 @@
 <title>Técnicos por Área — RJ</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ══ TEMA DIURNO (07:00–17:00) — laranja/âmbar ══ */
+/* ══ TEMA DIURNO ══ */
 :root {
   --bg:#FFF7F2; --surface:#FFFFFF; --card:#FFFFFF; --card2:#FFF0E8;
   --border:rgba(255,80,0,0.12); --border2:rgba(255,80,0,0.28);
@@ -54,7 +54,6 @@ body.theme-dawn {
   --tag-bg:rgba(124,58,237,0.08);
 }
 body.theme-dawn header { background:rgba(7,4,15,0.92); border-color:rgba(124,58,237,0.22); }
-
 /* ══ TEMA ESPECIAL — verde neon ══ */
 body.theme-especial {
   --bg:#011008; --surface:#031A0E; --card:#042414; --card2:#052D19;
@@ -70,37 +69,26 @@ body.theme-especial {
   --online:#00FFB2; --offline:#FF3B5C; --wk-color:#A3E635;
   --tag-bg:rgba(0,230,100,0.07);
 }
-body.theme-especial header {
-  background:rgba(1,16,8,0.94);
-  border-color:rgba(0,230,100,0.22);
+body.theme-especial header { background:rgba(1,16,8,0.94); border-color:rgba(0,230,100,0.22); }
+body.theme-especial .logo-badge { box-shadow:0 0 32px rgba(0,230,100,0.35),0 3px 12px rgba(0,0,0,.18); }
+body.theme-especial::after {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,230,100,0.012) 2px,rgba(0,230,100,0.012) 4px);
 }
-body.theme-especial .logo-badge {
-  box-shadow:0 0 32px rgba(0,230,100,0.35),0 3px 12px rgba(0,0,0,.18);
-}
-body.theme-especial body::before {
-  background:radial-gradient(ellipse 70% 55% at 10% 0%,rgba(0,230,100,0.12) 0%,transparent 55%),
-             radial-gradient(ellipse 50% 40% at 90% 100%,rgba(0,255,178,0.07) 0%,transparent 55%);
-}
+body.theme-especial .tech-card:not(.is-offline):hover { box-shadow:0 0 18px rgba(0,230,100,0.18),0 6px 24px rgba(0,0,0,.12); }
 
-/* Manual theme toggle button */
+/* ── THEME TOGGLE BTN ── */
 .theme-toggle-btn {
   display:flex; align-items:center; gap:.4rem;
   padding:.42rem .85rem; border-radius:8px;
   border:1px solid var(--border2); background:transparent;
   color:var(--text2); font-family:'DM Sans',sans-serif;
-  font-size:.76rem; font-weight:600; cursor:pointer; transition:all .2s;
-  white-space:nowrap;
+  font-size:.76rem; font-weight:600; cursor:pointer; transition:all .2s; white-space:nowrap;
 }
 .theme-toggle-btn:hover { border-color:var(--accent); color:var(--accent); }
-/* Indicador de tema ativo no botão */
-.theme-toggle-btn .theme-dot {
-  width:7px; height:7px; border-radius:50%;
-  background:var(--accent); display:inline-block;
-  box-shadow:0 0 6px var(--accent);
-  flex-shrink:0;
-}
+.theme-dot { width:7px; height:7px; border-radius:50%; background:var(--accent); display:inline-block; box-shadow:0 0 6px var(--accent); flex-shrink:0; }
 
-/* ══ PALETTE BUTTON & PANEL ══ */
+/* ── PALETTE BUTTON & PANEL ── */
 .theme-palette-btn {
   width:32px; height:32px; border-radius:8px;
   border:1px solid var(--border2); background:transparent;
@@ -129,7 +117,7 @@ body.theme-especial body::before {
 .tpp-swatches { display:flex; gap:.32rem; flex-wrap:wrap; align-items:center; }
 .tpp-swatch { width:22px; height:22px; border-radius:5px; cursor:pointer; border:2px solid transparent; transition:all .15s; flex-shrink:0; }
 .tpp-swatch:hover { transform:scale(1.18); }
-.tpp-swatch.active { border-color:#fff; box-shadow:0 0 0 2px currentColor; }
+.tpp-swatch.active { border-color:#fff; box-shadow:0 0 0 2px var(--accent); }
 .tpp-color-input { width:22px; height:22px; border-radius:5px; border:1px dashed var(--border2); background:var(--card2); cursor:pointer; padding:1px; overflow:hidden; flex-shrink:0; }
 .tpp-color-input::-webkit-color-swatch-wrapper { padding:0; border-radius:4px; }
 .tpp-color-input::-webkit-color-swatch { border:none; border-radius:4px; }
@@ -189,7 +177,10 @@ header{padding:0 2.5rem;height:76px;display:flex;align-items:center;justify-cont
 .wk-slot-area{font-size:.62rem;font-family:'DM Mono',monospace;color:var(--muted);}
 .wk-btn-row{display:flex;align-items:center;gap:.45rem;}
 
-.toolbar{display:flex;align-items:center;gap:.55rem;margin-bottom:.85rem;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:.65rem;}
+.toolbar{display:flex;flex-direction:column;gap:0;margin-bottom:.85rem;background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.toolbar-row{display:flex;align-items:center;gap:.45rem;padding:.6rem .7rem;flex-wrap:wrap;}
+.toolbar-row+.toolbar-row{border-top:1px solid var(--border);}
+.toolbar-sep{width:1px;height:22px;background:var(--border);flex-shrink:0;align-self:center;}
 .search-wrap{flex:1;min-width:180px;display:flex;align-items:center;gap:.45rem;background:var(--card2);border:1px solid var(--border);border-radius:9px;padding:.52rem .9rem;}
 .search-wrap .s-ico{color:var(--muted);font-size:.82rem;}
 .search-wrap input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'DM Mono',monospace;font-size:.78rem;}
@@ -324,6 +315,10 @@ body.theme-especial .dawn-tag{color:#A3E635;border-color:rgba(163,230,53,.28);ba
 .data-row{display:flex;gap:.4rem;align-items:baseline;margin-bottom:.22rem;}
 .data-label{font-family:'DM Mono',monospace;font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:38px;flex-shrink:0;}
 .data-val{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--text2);}
+/* TEL — link clicável */
+.data-val.tel-val{color:var(--accent);cursor:pointer;text-decoration:none;}
+.data-val.tel-val:hover{text-decoration:underline;}
+
 .areas-tags{margin-top:.75rem;display:flex;flex-wrap:wrap;gap:.24rem;}
 .area-tag{font-family:'DM Mono',monospace;font-size:.58rem;background:var(--tag-bg);border:1px solid var(--border);border-radius:5px;padding:.13rem .4rem;color:var(--muted);}
 
@@ -375,31 +370,53 @@ body.theme-especial .dawn-tag{color:#A3E635;border-color:rgba(163,230,53,.28);ba
 header    {animation:fade-up .4s ease both;}
 .container{animation:fade-up .4s .08s ease both;}
 
-/* Especial: scanline overlay sutil */
-body.theme-especial::after {
-  content:'';
-  position:fixed;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background:repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,230,100,0.012) 2px,
-    rgba(0,230,100,0.012) 4px
-  );
-}
-body.theme-especial .tech-card:not(.is-offline):hover {
-  box-shadow:0 0 18px rgba(0,230,100,0.18),0 6px 24px rgba(0,0,0,.12);
-}
+
+/* ── ÁREA TAG DESTACADA ── */
+.area-tag.highlight{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;}
+
+/* ── MODO COMPACTO ── */
+body.compact-mode .tech-card{padding:.65rem .85rem;}
+body.compact-mode .areas-tags{display:none;}
+body.compact-mode .data-row{display:none;}
+body.compact-mode .card-comment{display:none;}
+body.compact-mode .timer-row{display:none;}
+body.compact-mode .successor-hint{display:none;}
+body.compact-mode .tech-full-name{display:none;}
+body.compact-mode .obs-tag{display:none;}
+body.compact-mode .cards-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.5rem;}
+body.compact-mode .card-top{margin-bottom:.25rem;}
+body.compact-mode .tech-name{font-size:.82rem;}
+
+/* ── HISTÓRICO DE COMENTÁRIOS ── */
+.comment-log{margin-top:.6rem;}
+.comment-log-entry{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);padding:.2rem 0;border-bottom:1px solid var(--border);line-height:1.4;}
+.comment-log-entry:last-child{border-bottom:none;}
+.comment-log-entry .cl-ts{color:var(--accent);font-weight:600;margin-right:.4rem;}
+.comment-log-input-row{display:flex;gap:.4rem;margin-top:.5rem;align-items:flex-end;}
+.comment-log-input{flex:1;padding:.38rem .6rem;background:var(--tag-bg);border:1px solid var(--border);border-radius:7px;color:var(--muted);font-family:'DM Mono',monospace;font-size:.68rem;outline:none;transition:border-color .2s;resize:none;min-height:28px;line-height:1.4;}
+.comment-log-input:focus{border-color:var(--accent);color:var(--text);}
+.comment-log-input::placeholder{color:var(--muted);opacity:.55;}
+.comment-log-send{padding:.3rem .6rem;background:var(--btn-grd);border:none;border-radius:6px;color:#fff;font-family:'DM Mono',monospace;font-size:.65rem;font-weight:700;cursor:pointer;white-space:nowrap;box-shadow:0 1px 6px var(--glow);}
+.comment-log-send:hover{filter:brightness(1.1);}
+.comment-log-clear{padding:.28rem .55rem;border:1px solid rgba(255,34,68,.28);background:transparent;border-radius:6px;color:var(--danger);font-family:'DM Mono',monospace;font-size:.62rem;cursor:pointer;}
+.comment-log-clear:hover{background:rgba(255,34,68,.07);}
+
+/* ── FILTROS DE STATUS ── */
+.status-filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.6rem;}
+
+/* ── ATALHOS HINT ── */
+.kbd-hint{position:fixed;bottom:5.5rem;right:2rem;z-index:990;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:.65rem .9rem;font-family:'DM Mono',monospace;font-size:.62rem;color:var(--muted);box-shadow:0 8px 28px rgba(0,0,0,.18);opacity:0;pointer-events:none;transition:opacity .22s;}
+.kbd-hint.show{opacity:1;}
+.kbd-hint kbd{display:inline-block;background:var(--card2);border:1px solid var(--border2);border-radius:4px;padding:.1rem .35rem;font-family:'DM Mono',monospace;font-size:.6rem;color:var(--text);margin:0 .1rem;}
 
 @media(max-width:768px){
   header{padding:0 1.25rem;height:auto;padding-top:.75rem;padding-bottom:.75rem;}
   .container{padding:1.25rem;}
-  .toolbar{flex-direction:column;}
-  .tbtn,.search-wrap{width:100%;}
+  .toolbar-row{flex-wrap:wrap;}
+  .search-wrap{min-width:100%!important;}
+  .toolbar-sep{display:none;}
   .cards-grid{grid-template-columns:1fr;}
+  .theme-palette-panel{width:90vw;right:auto;left:0;}
 }
 </style>
 </head>
@@ -420,13 +437,13 @@ body.theme-especial .tech-card:not(.is-offline):hover {
         <span class="theme-dot"></span>
         <span id="themeToggleLabel">☀️ Modo Dia</span>
       </button>
-      <button class="theme-palette-btn" id="themePaletteBtn" title="Personalizar cores dos temas">🎨</button>
+      <button class="theme-palette-btn" id="themePaletteBtn" title="Personalizar cores">🎨</button>
       <div class="theme-palette-panel" id="themePalettePanel">
         <div class="tpp-header">
           <span class="tpp-title">🎨 Cores dos Temas</span>
           <button class="tpp-reset" id="tppReset">↺ Resetar</button>
         </div>
-        <div class="tpp-body" id="tppBody"></div>
+        <div id="tppBody"></div>
       </div>
     </div>
     <div class="shift-pill" id="shiftBadge">
@@ -440,16 +457,13 @@ body.theme-especial .tech-card:not(.is-offline):hover {
 </header>
 
 <div class="container">
-
   <div class="shift-warn day" id="shiftWarn">
     <span id="shiftWarnIcon">🌙</span><span id="shiftWarnText"></span>
   </div>
-
   <div class="busy-panel" id="busyPanel">
     <div class="panel-label">⚠ Status alterado</div>
     <div class="busy-chips" id="busyList"></div>
   </div>
-
   <div class="forecast-alert" id="forecastAlert">
     <span>⚠</span>
     <div>
@@ -457,7 +471,6 @@ body.theme-especial .tech-card:not(.is-offline):hover {
       <div class="forecast-alert-list" id="forecastAlertList"></div>
     </div>
   </div>
-
   <div class="weekend-panel" id="weekendPanel">
     <div class="weekend-panel-header" id="weekendPanelHdr">
       <div class="weekend-panel-title">
@@ -470,32 +483,41 @@ body.theme-especial .tech-card:not(.is-offline):hover {
         <em class="weekend-panel-chevron">▾</em>
       </div>
     </div>
-    <div class="weekend-body" id="weekendBody">
-      <div id="weekendSlots"></div>
-    </div>
+    <div class="weekend-body" id="weekendBody"><div id="weekendSlots"></div></div>
   </div>
-
   <div class="toolbar">
-    <div class="search-wrap">
-      <span class="s-ico">🔍</span>
-      <input type="text" id="searchInput" placeholder="Buscar técnico ou área...">
+    <!-- LINHA 1: Busca + Filtros de conteúdo -->
+    <div class="toolbar-row">
+      <div class="search-wrap" style="flex:1;min-width:160px;">
+        <span class="s-ico">🔍</span>
+        <input type="text" id="searchInput" placeholder="Buscar técnico ou área... (/)">
+      </div>
+      <div class="toolbar-sep"></div>
+      <button class="tbtn" id="areaToggleBtn"><span>🗺 Áreas</span><em class="chevron">▾</em></button>
+      <span class="area-badge-pill" id="activeAreaBadge">Todas</span>
+      <button class="tbtn" id="clearAreasBtn" style="display:none">✕ Limpar</button>
+      <div class="toolbar-sep"></div>
+      <button class="tbtn" id="filterOnlineBtn" title="Ver só online">🟢 Online</button>
+      <button class="tbtn" id="filterForecastBtn" title="Ver só com previsão">📋 Previsões</button>
+      <div class="toolbar-sep"></div>
+      <button class="tbtn" id="regFilterBtn" data-reg="">🗂 Região: Todas</button>
     </div>
-    <button class="tbtn" id="areaToggleBtn"><span>🗺 Áreas</span><em class="chevron">▾</em></button>
-    <span class="area-badge-pill" id="activeAreaBadge">Todas</span>
-    <button class="tbtn" id="clearAreasBtn" style="display:none">✕ Limpar seleção</button>
-    <button class="tbtn night-btn" id="nightToggleBtn">🌙 Mostrar todos os turnos</button>
-    <button class="tbtn" id="expandAllBtn">⊞ Expandir todos</button>
-    <button class="tbtn tbtn-primary" id="copyAllBtn">⧉ Copiar visíveis</button>
+    <!-- LINHA 2: Visualização + Ações -->
+    <div class="toolbar-row">
+      <button class="tbtn" id="expandAllBtn" title="Expandir/colapsar regiões (E)">⊞ Expandir</button>
+      <button class="tbtn" id="compactBtn" title="Modo compacto (C)">⊡ Compacto</button>
+      <div class="toolbar-sep"></div>
+      <button class="tbtn" id="sortBtn" title="Alternar ordenação">🔃 A→Z</button>
+      <button class="tbtn" id="exportBtn" title="Exportar relatório .txt">⬇ Exportar</button>
+      <button class="tbtn tbtn-primary" id="copyAllBtn">⧉ Copiar visíveis</button>
+    </div>
   </div>
-
   <div class="areas-panel" id="areasPanel">
     <div class="areas-scroll" id="areasBtns"></div>
   </div>
-
   <div class="results-header">
     <div class="results-count">Exibindo <span id="countDisplay">0</span> técnico(s)</div>
   </div>
-
   <div id="mainContent"></div>
 </div>
 
@@ -532,58 +554,95 @@ body.theme-especial .tech-card:not(.is-offline):hover {
 <script>
 const T_DIA=7,T_NOITE=15,T_DIA_END=17,T_MAD=23;
 
-/* ══ TEMA MANUAL — declarado aqui para evitar ReferenceError ══ */
-let manualTheme = null; // null = automático por horário
-const THEME_META = {
-  dia:       { label:"☀️ Modo Dia",      next:"noite",     classes:[] },
-  noite:     { label:"🌙 Modo Noite",     next:"madrugada", classes:["theme-night"] },
-  madrugada: { label:"🌃 Modo Madrugada", next:"especial",  classes:["theme-dawn"] },
-  especial:  { label:"🌿 Modo Especial",  next:"dia",       classes:["theme-especial"] },
+/* ══ TEMA MANUAL ══ */
+let manualTheme=null; // null=auto | "dia"|"noite"|"madrugada"|"especial"
+const THEME_META={
+  dia:       {label:"☀️ Modo Dia",      next:"noite",     classes:[]},
+  noite:     {label:"🌙 Modo Noite",     next:"madrugada", classes:["theme-night"]},
+  madrugada: {label:"🌃 Modo Madrugada", next:"especial",  classes:["theme-dawn"]},
+  especial:  {label:"🌿 Modo Especial",  next:"dia",       classes:["theme-especial"]},
 };
+
 function getTurnoAtual(){const h=new Date().getHours();if(h>=T_DIA&&h<T_NOITE)return"dia";if(h>=T_NOITE&&h<T_MAD)return"noite";return"madrugada";}
 function isOverlap(){const h=new Date().getHours();return h>=T_NOITE&&h<T_DIA_END;}
 function turnoAtivoAgora(turno){const h=new Date().getHours();if(turno==="dia")return h>=T_DIA&&h<T_DIA_END;if(turno==="noite")return h>=T_NOITE&&h<T_MAD;if(turno==="madrugada")return h>=T_MAD||h<T_DIA;return false;}
 function estaOnline(t){if(offlineState[t.nome])return false;if(onlineForced[t.nome])return true;return turnoAtivoAgora(t.turno);}
+
 const busyState={},offlineState={},onlineForced={},wkState={},commentState={},timerState={};
-let showNightOverride=false,showOnlyPlantao=false;
+let showOnlyPlantao=false;
 let activeAreas=new Set(["Todas"]);
+let filterOnlyOnline=false;
+let filterOnlyForecast=false;
+let compactMode=false;
+let sortMode="status"; // "status" = online→busy→offline | "alpha" = A→Z
+let filterRegion=""; // "" = todas | "RJ" | "BXD" | "OESTE"
+const logState={}; // nome → [{ts, text}]
 const REGIOES=[{id:"RJ",label:"Rio de Janeiro / Niterói",color:"var(--rj-color)"},{id:"BXD",label:"Baixada",color:"var(--bxd-color)"},{id:"OESTE",label:"Oeste",color:"var(--oeste-color)"}];
 const collapseState={};
+
+/* ══ DADOS — campo tel pronto para preenchimento ══ */
 const T=[
-  {nome:"Carlos Miranda",    nc:"CARLOS ALBERTO FIDALGO MIRANDA",   reg:"RJ",    turno:"dia",       cpf:"699.675.807-63",rg:"05728184-2",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"Residente",                         areas:["FTS","Central Ana Neri","Rocha","Engenho Novo","Pilares","Méier","Piedade","Encantado","Riachuelo"]},
-  {nome:"José Duque",        nc:"JOSÉ CARLOS DUQUE ESTRADA FILHO",  reg:"RJ",    turno:"dia",       cpf:"078.938.447-79",rg:"6775760-9",   crea:"2005105212", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Cascadura","Madureira","Rocha Miranda","Bento Ribeiro","Vila da Penha","Penha Circular","Brás de Pina","Oswaldo Cruz","Vila Valqueire","Honório Gurgel","Turiaçu","Campinho","Cavalcanti","Coelho Neto","Acari","Deodoro"]},
-  {nome:"Alex Cunha",        nc:"ALEX CORREA DA CUNHA",             reg:"RJ",    turno:"dia",       cpf:"108.401.007-01",rg:"122470222",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Bento Ribeiro","Madureira","Oswaldo Cruz","Campinho","Colégio","Turiaçu","Honório Gurgel","Cavalcanti","Rocha Miranda","Vila Valqueire"]},
-  {nome:"Adenilson Avelino", nc:"ADENILSON AVELINO DA S. JR",       reg:"RJ",    turno:"dia",       cpf:"056.712.747-88",rg:"20.315.099-0",crea:"2011122302", cargo:"TÉCNICO TELECOM",obs:"Chamados FTTH – prioridade",        areas:["Meier","Del Castilho","Cachambi","DDC","Engenho de Dentro","Todos os Santos","Lins","Piedade","Abolição","Rocha","Riachuelo","Jacaré","Encantado"]},
-  {nome:"Gustavo Cabral",    nc:"GUSTAVO CABRAL DOS SANTOS",        reg:"RJ",    turno:"dia",       cpf:"138.707.757-00",rg:"262948581",   crea:"2015104645", cargo:"TÉCNICO TELECOM",obs:"Chamados FTTC – prioridade",        areas:["São Cristóvão","Meier","Cachambi","Jacarezinho","DDC","Del Castilho","Engenho de Dentro","Benfica","Manguinhos","Bonsucesso"]},
-  {nome:"Flavio Borges",     nc:"FLÁVIO BORGES GOMES",              reg:"RJ",    turno:"dia",       cpf:"088.597.827-75",rg:"128867041",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Quintino","São Cristóvão","Benfica","Eng. de Dentro","Lins","Todos os Santos","Abolição","Cachambi","Méier","Riachuelo","Piedade","Rocha","Del Castilho","Jacaré","Encantado","Pilares"]},
-  {nome:"Moises Alves",      nc:"MOISÉS ALVES DA SILVEIRA",         reg:"RJ",    turno:"dia",       cpf:"147.179.907-73",rg:"24627910-3",  crea:"2012106328", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Humaitá","Leblon","Laranjeiras","Jardim Botânico","Lagoa","Zona Sul","Centro","Flamengo","Botafogo","Catete","Glória","Santa Teresa","Lapa","Copacabana","Ipanema","Gávea","Urca","Cosme Velho"]},
-  {nome:"Orlando Ferreira",  nc:"ORLANDO FERREIRA DOS SANTOS JR.",  reg:"RJ",    turno:"dia",       cpf:"077.544.197-00",rg:"10814849-5",  crea:"150799465-6",cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Centro","Lapa","Estácio","Santa Teresa","Catumbi","São Gonçalo","Niterói","Fonseca","Alcântara","Pendotiba"]},
-  {nome:"Marcelo Raimundo",  nc:"MARCELO RAIMUNDO DOS SANTOS",      reg:"RJ",    turno:"dia",       cpf:"913.166.507-15",rg:"82289562",    crea:null,         cargo:"TÉCNICO TELECOM",obs:"Verificar disponibilidade (Olaria)",areas:["Irajá","Olaria","Colégio","Jardim América","VGE","Ilha do Governador","Penha","Ramos","Bonsucesso","Vigário Geral","Parada de Lucas","Cordovil","Brás de Pina","Higienópolis","Tomás Coelho","Vicente de Carvalho","Galeão"]},
-  {nome:"Francisco Alex",    nc:"FRANCISCO ALEX DE SOUSA SILVA",    reg:"RJ",    turno:"dia",       cpf:"098.024.617-25",rg:"125900332",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Andaraí","Grajaú","Tijuca","LPD","Vila Isabel","Maracanã","Praça da Bandeira","Alto da Boa Vista","Usina","Muda","Água Santa","Cachambi"]},
-  {nome:"Marcelo G. Rocha",  nc:"MARCELO GOMES DA ROCHA",           reg:"RJ",    turno:"dia",       cpf:null,            rg:null,           crea:null,         cargo:"TÉCNICO TELECOM",obs:"Sábado e Domingo",                 areas:["Rocha","Ana Neri","Fonseca Teles"]},
-  {nome:"Bispo",             nc:"LUIZ CLAUDIO BISPO PIRES",         reg:"RJ",    turno:"noite",     cpf:"072.154.167-47",rg:"10434530-1",  crea:"2011116337", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Centro","Botafogo","Zona Sul","Flamengo","Catete","Glória","Lapa","Santa Teresa","Copacabana","Ipanema","Urca","Humaitá","Laranjeiras","Cosme Velho"]},
-  {nome:"Glaucio Hipolito",  nc:"GLAUCIO HIPOLITO GONZAGA",         reg:"RJ",    turno:"noite",     cpf:"105.514.857-44",rg:"20309013-9",  crea:"2008148830", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Tijuca","São Cristóvão","Grajaú","Andaraí","Rio Comprido","Rocha","Riachuelo","Ana Neri","Fonseca Teles","Maracanã","Vila Isabel","Estácio","Engenho Novo","Pilares","Encantado","Praça da Bandeira","Alto da Boa Vista"]},
-  {nome:"Waldir Motta",      nc:"WALDIR MOTTA PRENDA JUNIOR",       reg:"RJ",    turno:"noite",     cpf:"143.212.857-47",rg:"257337162",   crea:"2015111941", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Cascadura","Meier","Engenho de Dentro","Cachambi","Madureira","DDC","Engenho Novo","Todos os Santos","Lins","Abolição","Piedade","Pilares","Del Castilho","Rocha","Campinho","Quintino","Honório Gurgel"]},
-  {nome:"Jorge Luiz",        nc:"JORGE LUIS DA SILVA",              reg:"RJ",    turno:"noite",     cpf:"071.784.037-99",rg:"11007505-8",  crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Penha","Irajá","Penha Circular","Ramos","Vila Isabel","Olaria","Bonsucesso","Bento Ribeiro","Brás de Pina","Higienópolis","Cordovil","Parada de Lucas","Vigário Geral","Manguinhos","Maré","Inhaúma","Tomás Coelho","Vicente de Carvalho","Jardim América","Colégio"]},
-  {nome:"Gleisson Fagundes", nc:"GLEISSON ALBINO FAGUNDES",         reg:"RJ",    turno:"madrugada", cpf:"059.198.067-37",rg:"215168840",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Zona Sul","Centro","Humaitá","Leblon","Laranjeiras","Jardim Botânico","Lagoa","Flamengo","Botafogo","Catete","Glória","Santa Teresa","Lapa","Copacabana","Ipanema","Gávea","Urca","Cosme Velho","Ana Neri","Rocha","FTS"]},
-  {nome:"Renato Lima",       nc:"RENATO SANTOS DE LIMA",            reg:"RJ",    turno:"madrugada", cpf:"099.873.447-04",rg:"002050957-6", crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Zona Norte","Tijuca","Vila Isabel","Maracanã","Andaraí","Grajaú","São Cristóvão","Benfica","Manguinhos","Meier","Cachambi","Madureira","Cascadura","Bento Ribeiro","Penha","Ramos","Olaria","Irajá","Inhaúma","Vigário Geral","Cordovil","Brás de Pina"]},
-  {nome:"Michael",           nc:"MICHAEL JOSÉ QUEIROZ DA SILVEIRA", reg:"BXD",   turno:"dia",       cpf:"075.593.707-48",rg:"11557141-6",  crea:"2009118823", cargo:"TÉCNICO TELECOM",obs:"Fixa e IHS",                        areas:["Mesquita","Nilópolis","Anchieta","São João de Meriti","Barros Filho","Coelho da Rocha","Guadalupe","Olinda","Pavuna"]},
-  {nome:"Cremildo",          nc:"CREMILDO DELFINO RANGEL",           reg:"BXD",   turno:"dia",       cpf:"027.157.057-19",rg:"09086097-4",  crea:null,         cargo:"ASSISTENTE TÉC. TELECOM",obs:"Fixa e IHS",               areas:["Nova Iguaçu","Queimados","Belford Roxo","Japeri","Adjacências"]},
-  {nome:"Vanessa",           nc:"VANESSA CRISTINA SANTOS DA SILVA",  reg:"BXD",   turno:"dia",       cpf:"090.416.897-29",rg:"011345390-6", crea:"2006127503", cargo:"TÉCNICO TELECOM",obs:"FTTH – Fixa. NÃO usa escada / NÃO atende MSAN",areas:["Duque de Caxias","Adjacências"]},
-  {nome:"Valter Neves",      nc:"VALTER NEVES JUNIOR",              reg:"BXD",   turno:"dia",       cpf:"033.738.017-10",rg:"09946138-6",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"FTTC – Fixa e IHS",                 areas:["Pavuna","Jardim América","Duque de Caxias","Adjacências"]},
-  {nome:"Marcelo Caetano",   nc:"MARCELO CAETANO GOMES",             reg:"BXD",   turno:"dia",       cpf:"041.519.837-24",rg:"104202049",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Duque de Caxias","Adjacências"]},
-  {nome:"Anderson dos Santos",nc:"ANDERSON DOS SANTOS ILDEFONSO",   reg:"BXD",   turno:"noite",     cpf:"114.152.427-98",rg:null,           crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Mesquita","Anchieta","São João de Meriti","Duque de Caxias","Coelho da Rocha","Guadalupe","Olinda","Pavuna","Adjacências"]},
-  {nome:"Tiago Ângelo",      nc:"TIAGO ANGELO PIMENTA RANGEL",      reg:"BXD",   turno:"noite",     cpf:"150.960.947-40",rg:"279500300",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Nova Iguaçu","Nilópolis","Belford Roxo","Queimados","Japeri","Adjacências"]},
-  {nome:"Agnaldo",           nc:"AGNALDO DA SILVA COSTA",            reg:"OESTE", turno:"dia",       cpf:"087.508.387-09",rg:"11647699-5",  crea:"2011100922", cargo:"TÉCNICO TELECOM",obs:"RJCG",                              areas:["Campo Grande","Recreio dos Bandeirantes","Curicica","Adjacências"]},
-  {nome:"Luciano Rocha",     nc:"LUCIANO ROCHA DA SILVA",            reg:"OESTE", turno:"dia",       cpf:"073.852.077-23",rg:"10.522.156-8",crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJCG / RJBT / RJBA",               areas:["Campo Grande","Recreio dos Bandeirantes","Barra da Tijuca","Santa Cruz"]},
-  {nome:"Leonardo Paulino",  nc:"LEONARDO PAULINO DO NASCIMENTO",   reg:"OESTE", turno:"dia",       cpf:"123.348.977-10",rg:"26.878.145-7",crea:"201670001902",cargo:"TÉCNICO TELECOM",obs:"RJSZ",                              areas:["Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
-  {nome:"Eder Luiz",         nc:"EDER LUIZ DA SILVA PINTO",          reg:"OESTE", turno:"dia",       cpf:"052.387.647-58",rg:"12989740-1",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJBT / RJBA",                      areas:["Barra da Tijuca","Recreio dos Bandeirantes","Vargem Grande","Vargem Pequena","Adjacências"]},
-  {nome:"Danilo Eduardo",    nc:"DANILO EDUARDO",                    reg:"OESTE", turno:"dia",       cpf:"054.171.977-77",rg:"110198587",   crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJJP / CUR",                        areas:["Jacarepaguá","Taquara","Tanque","Pechincha","Curicica","Anil","Freguesia","Gardênia Azul","Praça Seca","Rio das Pedras"]},
-  {nome:"Ivson de Jesus",    nc:"IVSON DE JESUS DO ROSÁRIO",         reg:"OESTE", turno:"dia",       cpf:"053.651.387-24",rg:"09513041-5",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJBG / RJPV / RJMD",               areas:["Bangu","Realengo","Deodoro","Senador Camará","Padre Miguel","Santíssimo","Magalhães Bastos","Adjacências"]},
-  {nome:"Leandro Cardoso",   nc:"LEANDRO DE JESUS CARDOSO",          reg:"OESTE", turno:"noite",     cpf:"088.677.657-01",rg:"117938654",   crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJCG / RJSZ",                      areas:["Campo Grande","Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
-  {nome:"Francisco Orcino",  nc:"FRANCISCO ORCINO DE SOUSA FILHO",  reg:"OESTE", turno:"noite",     cpf:"010.331.297-80",rg:"08537602-8",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJBT / RJBA / RJJP / CUR",          areas:["Barra da Tijuca","Pechincha","Recreio dos Bandeirantes","Taquara","Jacarepaguá","Freguesia","Tanque","Curicica","Anil"]},
+  {nome:"Carlos Miranda",    nc:"CARLOS ALBERTO FIDALGO MIRANDA",   reg:"RJ",    turno:"dia",       tel:null, cpf:"699.675.807-63",rg:"05728184-2",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"Residente",                         areas:["FTS","Central Ana Neri","Rocha","Engenho Novo","Pilares","Méier","Piedade","Encantado","Riachuelo"]},
+  {nome:"José Duque",        nc:"JOSÉ CARLOS DUQUE ESTRADA FILHO",  reg:"RJ",    turno:"dia",       tel:null, cpf:"078.938.447-79",rg:"6775760-9",   crea:"2005105212", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Cascadura","Madureira","Rocha Miranda","Bento Ribeiro","Vila da Penha","Penha Circular","Brás de Pina","Oswaldo Cruz","Vila Valqueire","Honório Gurgel","Turiaçu","Campinho","Cavalcanti","Coelho Neto","Acari","Deodoro"]},
+  {nome:"Alex Cunha",        nc:"ALEX CORREA DA CUNHA",             reg:"RJ",    turno:"dia",       tel:null, cpf:"108.401.007-01",rg:"122470222",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Bento Ribeiro","Madureira","Oswaldo Cruz","Campinho","Colégio","Turiaçu","Honório Gurgel","Cavalcanti","Rocha Miranda","Vila Valqueire"]},
+  {nome:"Adenilson Avelino", nc:"ADENILSON AVELINO DA S. JR",       reg:"RJ",    turno:"dia",       tel:null, cpf:"056.712.747-88",rg:"20.315.099-0",crea:"2011122302", cargo:"TÉCNICO TELECOM",obs:"Chamados FTTH – prioridade",        areas:["Meier","Del Castilho","Cachambi","DDC","Engenho de Dentro","Todos os Santos","Lins","Piedade","Abolição","Rocha","Riachuelo","Jacaré","Encantado"]},
+  {nome:"Gustavo Cabral",    nc:"GUSTAVO CABRAL DOS SANTOS",        reg:"RJ",    turno:"dia",       tel:null, cpf:"138.707.757-00",rg:"262948581",   crea:"2015104645", cargo:"TÉCNICO TELECOM",obs:"Chamados FTTC – prioridade",        areas:["São Cristóvão","Meier","Cachambi","Jacarezinho","DDC","Del Castilho","Engenho de Dentro","Benfica","Manguinhos","Bonsucesso"]},
+  {nome:"Flavio Borges",     nc:"FLÁVIO BORGES GOMES",              reg:"RJ",    turno:"dia",       tel:null, cpf:"088.597.827-75",rg:"128867041",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Quintino","São Cristóvão","Benfica","Eng. de Dentro","Lins","Todos os Santos","Abolição","Cachambi","Méier","Riachuelo","Piedade","Rocha","Del Castilho","Jacaré","Encantado","Pilares"]},
+  {nome:"Moises Alves",      nc:"MOISÉS ALVES DA SILVEIRA",         reg:"RJ",    turno:"dia",       tel:null, cpf:"147.179.907-73",rg:"24627910-3",  crea:"2012106328", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Humaitá","Leblon","Laranjeiras","Jardim Botânico","Lagoa","Zona Sul","Centro","Flamengo","Botafogo","Catete","Glória","Santa Teresa","Lapa","Copacabana","Ipanema","Gávea","Urca","Cosme Velho"]},
+  {nome:"Orlando Ferreira",  nc:"ORLANDO FERREIRA DOS SANTOS JR.",  reg:"RJ",    turno:"dia",       tel:null, cpf:"077.544.197-00",rg:"10814849-5",  crea:"150799465-6",cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Centro","Lapa","Estácio","Santa Teresa","Catumbi","São Gonçalo","Niterói","Fonseca","Alcântara","Pendotiba"]},
+  {nome:"Marcelo Raimundo",  nc:"MARCELO RAIMUNDO DOS SANTOS",      reg:"RJ",    turno:"dia",       tel:null, cpf:"913.166.507-15",rg:"82289562",    crea:null,         cargo:"TÉCNICO TELECOM",obs:"Verificar disponibilidade (Olaria)",areas:["Irajá","Olaria","Colégio","Jardim América","VGE","Ilha do Governador","Penha","Ramos","Bonsucesso","Vigário Geral","Parada de Lucas","Cordovil","Brás de Pina","Higienópolis","Tomás Coelho","Vicente de Carvalho","Galeão"]},
+  {nome:"Francisco Alex",    nc:"FRANCISCO ALEX DE SOUSA SILVA",    reg:"RJ",    turno:"dia",       tel:null, cpf:"098.024.617-25",rg:"125900332",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Andaraí","Grajaú","Tijuca","LPD","Vila Isabel","Maracanã","Praça da Bandeira","Alto da Boa Vista","Usina","Muda","Água Santa","Cachambi"]},
+  {nome:"Marcelo G. Rocha",  nc:"MARCELO GOMES DA ROCHA",           reg:"RJ",    turno:"dia",       tel:null, cpf:null,            rg:null,           crea:null,         cargo:"TÉCNICO TELECOM",obs:"Sábado e Domingo",                 areas:["Rocha","Ana Neri","Fonseca Teles"]},
+  {nome:"Bispo",             nc:"LUIZ CLAUDIO BISPO PIRES",         reg:"RJ",    turno:"noite",     tel:null, cpf:"072.154.167-47",rg:"10434530-1",  crea:"2011116337", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Centro","Botafogo","Zona Sul","Flamengo","Catete","Glória","Lapa","Santa Teresa","Copacabana","Ipanema","Urca","Humaitá","Laranjeiras","Cosme Velho"]},
+  {nome:"Glaucio Hipolito",  nc:"GLAUCIO HIPOLITO GONZAGA",         reg:"RJ",    turno:"noite",     tel:null, cpf:"105.514.857-44",rg:"20309013-9",  crea:"2008148830", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Tijuca","São Cristóvão","Grajaú","Andaraí","Rio Comprido","Rocha","Riachuelo","Ana Neri","Fonseca Teles","Maracanã","Vila Isabel","Estácio","Engenho Novo","Pilares","Encantado","Praça da Bandeira","Alto da Boa Vista"]},
+  {nome:"Waldir Motta",      nc:"WALDIR MOTTA PRENDA JUNIOR",       reg:"RJ",    turno:"noite",     tel:null, cpf:"143.212.857-47",rg:"257337162",   crea:"2015111941", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Cascadura","Meier","Engenho de Dentro","Cachambi","Madureira","DDC","Engenho Novo","Todos os Santos","Lins","Abolição","Piedade","Pilares","Del Castilho","Rocha","Campinho","Quintino","Honório Gurgel"]},
+  {nome:"Jorge Luiz",        nc:"JORGE LUIS DA SILVA",              reg:"RJ",    turno:"noite",     tel:null, cpf:"071.784.037-99",rg:"11007505-8",  crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Penha","Irajá","Penha Circular","Ramos","Vila Isabel","Olaria","Bonsucesso","Bento Ribeiro","Brás de Pina","Higienópolis","Cordovil","Parada de Lucas","Vigário Geral","Manguinhos","Maré","Inhaúma","Tomás Coelho","Vicente de Carvalho","Jardim América","Colégio"]},
+  {nome:"Gleisson Fagundes", nc:"GLEISSON ALBINO FAGUNDES",         reg:"RJ",    turno:"madrugada", tel:null, cpf:"059.198.067-37",rg:"215168840",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Zona Sul","Centro","Humaitá","Leblon","Laranjeiras","Jardim Botânico","Lagoa","Flamengo","Botafogo","Catete","Glória","Santa Teresa","Lapa","Copacabana","Ipanema","Gávea","Urca","Cosme Velho","Ana Neri","Rocha","FTS"]},
+  {nome:"Renato Lima",       nc:"RENATO SANTOS DE LIMA",            reg:"RJ",    turno:"madrugada", tel:null, cpf:"099.873.447-04",rg:"002050957-6", crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Zona Norte","Tijuca","Vila Isabel","Maracanã","Andaraí","Grajaú","São Cristóvão","Benfica","Manguinhos","Meier","Cachambi","Madureira","Cascadura","Bento Ribeiro","Penha","Ramos","Olaria","Irajá","Inhaúma","Vigário Geral","Cordovil","Brás de Pina"]},
+  {nome:"Michael",           nc:"MICHAEL JOSÉ QUEIROZ DA SILVEIRA", reg:"BXD",   turno:"dia",       tel:null, cpf:"075.593.707-48",rg:"11557141-6",  crea:"2009118823", cargo:"TÉCNICO TELECOM",obs:"Fixa e IHS",                        areas:["Mesquita","Nilópolis","Anchieta","São João de Meriti","Barros Filho","Coelho da Rocha","Guadalupe","Olinda","Pavuna"]},
+  {nome:"Cremildo",          nc:"CREMILDO DELFINO RANGEL",           reg:"BXD",   turno:"dia",       tel:null, cpf:"027.157.057-19",rg:"09086097-4",  crea:null,         cargo:"ASSISTENTE TÉC. TELECOM",obs:"Fixa e IHS",               areas:["Nova Iguaçu","Queimados","Belford Roxo","Japeri","Adjacências"]},
+  {nome:"Vanessa",           nc:"VANESSA CRISTINA SANTOS DA SILVA",  reg:"BXD",   turno:"dia",       tel:null, cpf:"090.416.897-29",rg:"011345390-6", crea:"2006127503", cargo:"TÉCNICO TELECOM",obs:"FTTH – Fixa. NÃO usa escada / NÃO atende MSAN",areas:["Duque de Caxias","Adjacências"]},
+  {nome:"Valter Neves",      nc:"VALTER NEVES JUNIOR",              reg:"BXD",   turno:"dia",       tel:null, cpf:"033.738.017-10",rg:"09946138-6",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"FTTC – Fixa e IHS",                 areas:["Pavuna","Jardim América","Duque de Caxias","Adjacências"]},
+  {nome:"Marcelo Caetano",   nc:"MARCELO CAETANO GOMES",             reg:"BXD",   turno:"dia",       tel:null, cpf:"041.519.837-24",rg:"104202049",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Duque de Caxias","Adjacências"]},
+  {nome:"Anderson dos Santos",nc:"ANDERSON DOS SANTOS ILDEFONSO",   reg:"BXD",   turno:"noite",     tel:null, cpf:"114.152.427-98",rg:null,           crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Mesquita","Anchieta","São João de Meriti","Duque de Caxias","Coelho da Rocha","Guadalupe","Olinda","Pavuna","Adjacências"]},
+  {nome:"Tiago Ângelo",      nc:"TIAGO ANGELO PIMENTA RANGEL",      reg:"BXD",   turno:"noite",     tel:null, cpf:"150.960.947-40",rg:"279500300",   crea:null,         cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Nova Iguaçu","Nilópolis","Belford Roxo","Queimados","Japeri","Adjacências"]},
+  {nome:"Agnaldo",           nc:"AGNALDO DA SILVA COSTA",            reg:"OESTE", turno:"dia",       tel:null, cpf:"087.508.387-09",rg:"11647699-5",  crea:"2011100922", cargo:"TÉCNICO TELECOM",obs:"RJCG",                              areas:["Campo Grande","Recreio dos Bandeirantes","Curicica","Adjacências"]},
+  {nome:"Luciano Rocha",     nc:"LUCIANO ROCHA DA SILVA",            reg:"OESTE", turno:"dia",       tel:null, cpf:"073.852.077-23",rg:"10.522.156-8",crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJCG / RJBT / RJBA",               areas:["Campo Grande","Recreio dos Bandeirantes","Barra da Tijuca","Santa Cruz"]},
+  {nome:"Leonardo Paulino",  nc:"LEONARDO PAULINO DO NASCIMENTO",   reg:"OESTE", turno:"dia",       tel:null, cpf:"123.348.977-10",rg:"26.878.145-7",crea:"201670001902",cargo:"TÉCNICO TELECOM",obs:"RJSZ",                              areas:["Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
+  {nome:"Eder Luiz",         nc:"EDER LUIZ DA SILVA PINTO",          reg:"OESTE", turno:"dia",       tel:null, cpf:"052.387.647-58",rg:"12989740-1",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJBT / RJBA",                      areas:["Barra da Tijuca","Recreio dos Bandeirantes","Vargem Grande","Vargem Pequena","Adjacências"]},
+  {nome:"Danilo Eduardo",    nc:"DANILO EDUARDO",                    reg:"OESTE", turno:"dia",       tel:null, cpf:"054.171.977-77",rg:"110198587",   crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJJP / CUR",                        areas:["Jacarepaguá","Taquara","Tanque","Pechincha","Curicica","Anil","Freguesia","Gardênia Azul","Praça Seca","Rio das Pedras"]},
+  {nome:"Ivson de Jesus",    nc:"IVSON DE JESUS DO ROSÁRIO",         reg:"OESTE", turno:"dia",       tel:null, cpf:"053.651.387-24",rg:"09513041-5",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJBG / RJPV / RJMD",               areas:["Bangu","Realengo","Deodoro","Senador Camará","Padre Miguel","Santíssimo","Magalhães Bastos","Adjacências"]},
+  {nome:"Leandro Cardoso",   nc:"LEANDRO DE JESUS CARDOSO",          reg:"OESTE", turno:"noite",     tel:null, cpf:"088.677.657-01",rg:"117938654",   crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJCG / RJSZ",                      areas:["Campo Grande","Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
+  {nome:"Francisco Orcino",  nc:"FRANCISCO ORCINO DE SOUSA FILHO",  reg:"OESTE", turno:"noite",     tel:null, cpf:"010.331.297-80",rg:"08537602-8",  crea:null,         cargo:"TÉCNICO TELECOM",obs:"RJBT / RJBA / RJJP / CUR",          areas:["Barra da Tijuca","Pechincha","Recreio dos Bandeirantes","Taquara","Jacarepaguá","Freguesia","Tanque","Curicica","Anil"]},
 ];
+
 const busyLabels=["","Pouco ocupado","Ocupado","Bem ocupado","Muito ocupado","Indisponível"];
+
+/* ══ PERSISTÊNCIA localStorage ══ */
+const LS="rj_state_v2";
+function saveState(){
+  try{
+    const s={
+      busy:busyState,offline:offlineState,online:onlineForced,
+      wk:wkState,comment:commentState,timer:timerState,log:logState
+    };
+    localStorage.setItem(LS,JSON.stringify(s));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const raw=localStorage.getItem(LS);if(!raw)return;
+    const s=JSON.parse(raw);
+    Object.assign(busyState,s.busy||{});
+    Object.assign(offlineState,s.offline||{});
+    Object.assign(onlineForced,s.online||{});
+    Object.assign(wkState,s.wk||{});
+    Object.assign(commentState,s.comment||{});
+    Object.assign(timerState,s.timer||{});
+    Object.assign(logState,s.log||{});
+  }catch(e){}
+}
+loadState();
 const busyColors=["","var(--busy1)","var(--busy2)","var(--busy3)","var(--busy4)","var(--busy5)"];
 
 const allAreas=["Todas"];
@@ -591,26 +650,46 @@ T.forEach(t=>t.areas.forEach(a=>{if(!allAreas.includes(a))allAreas.push(a);}));
 const areasBtnsEl=document.getElementById("areasBtns");
 allAreas.forEach(area=>{const b=document.createElement("button");b.className="area-btn"+(area==="Todas"?" selected":"");b.textContent=area;b.dataset.area=area;areasBtnsEl.appendChild(b);});
 
+/* ══ EVENTOS ══ */
 document.getElementById("areaToggleBtn").addEventListener("click",()=>{const p=document.getElementById("areasPanel"),b=document.getElementById("areaToggleBtn");const o=p.classList.toggle("open");b.classList.toggle("open",o);});
 areasBtnsEl.addEventListener("click",e=>{const b=e.target.closest(".area-btn");if(!b)return;const area=b.dataset.area;if(area==="Todas"){activeAreas=new Set(["Todas"]);document.querySelectorAll(".area-btn").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");}else{activeAreas.delete("Todas");if(b.classList.contains("selected")){b.classList.remove("selected");activeAreas.delete(area);if(!activeAreas.size){activeAreas.add("Todas");document.querySelector('.area-btn[data-area="Todas"]').classList.add("selected");}}else{b.classList.add("selected");activeAreas.add(area);document.querySelector('.area-btn[data-area="Todas"]').classList.remove("selected");}}updateAreaBadge();renderAll();});
 document.getElementById("clearAreasBtn").addEventListener("click",()=>{activeAreas=new Set(["Todas"]);document.querySelectorAll(".area-btn").forEach(x=>x.classList.remove("selected"));document.querySelector('.area-btn[data-area="Todas"]').classList.add("selected");updateAreaBadge();renderAll();});
 document.getElementById("searchInput").addEventListener("input",renderAll);
-document.getElementById("nightToggleBtn").addEventListener("click",()=>{showNightOverride=!showNightOverride;updateNightToggleBtn();renderAll();});
 document.getElementById("copyAllBtn").addEventListener("click",()=>{const vis=T.filter(shouldShow);copyClip(vis.map(cardText).join("\n\n---\n\n"),()=>showToast(vis.length+" técnico(s) copiados!"));});
 document.getElementById("weekendPanelHdr").addEventListener("click",()=>{document.getElementById("weekendPanel").classList.toggle("collapsed");renderWeekendPanel();});
 document.getElementById("mainContent").addEventListener("click",e=>{
   const cb=e.target.closest(".copy-btn");if(cb){const t=T.find(x=>x.nome===cb.dataset.key);if(!t)return;copyClip(cardText(t),()=>{cb.textContent="✓ Copiado";cb.classList.add("copied");setTimeout(()=>{cb.textContent="⧉ Copiar";cb.classList.remove("copied");},2000);showToast("Dados copiados!");});return;}
-  const ob=e.target.closest(".offline-btn");if(ob){const k=ob.dataset.key;const t=T.find(x=>x.nome===k);const inShift=t&&turnoAtivoAgora(t.turno);if(inShift){offlineState[k]=!offlineState[k];}else{onlineForced[k]=!onlineForced[k];}renderAll();renderBusyPanel();return;}
+  const ob=e.target.closest(".offline-btn");if(ob){const k=ob.dataset.key;const t=T.find(x=>x.nome===k);const inShift=t&&turnoAtivoAgora(t.turno);if(inShift){offlineState[k]=!offlineState[k];}else{onlineForced[k]=!onlineForced[k];}renderAll();renderBusyPanel();saveState();return;}
   const tb=e.target.closest(".timer-btn");if(tb){openTimerModal(tb.dataset.key);return;}
   const cu=e.target.closest("[data-clear-unavail]");if(cu){const k=cu.dataset.clearUnavail;if(timerState[k]){timerState[k].unavailUntil=null;timerState[k].unavailReason=null;}renderAll();return;}
   const cf=e.target.closest("[data-clear-forecast]");if(cf){const k=cf.dataset.clearForecast;if(timerState[k]){timerState[k].forecast=null;timerState[k].forecastReason=null;}renderForecastAlert();renderAll();return;}
-  const bb=e.target.closest(".busy-toggle");if(bb){busyState[bb.dataset.key]=((busyState[bb.dataset.key]||0)+1)%6;renderAll();renderBusyPanel();return;}
-  const wk=e.target.closest(".wk-card-check");if(wk){const k=wk.dataset.key;wkState[k]=!wkState[k];renderAll();renderWeekendPanel();return;}
+  const bb=e.target.closest(".busy-toggle");if(bb){busyState[bb.dataset.key]=((busyState[bb.dataset.key]||0)+1)%6;renderAll();renderBusyPanel();saveState();return;}
+  const wk=e.target.closest(".wk-card-check");if(wk){const k=wk.dataset.key;wkState[k]=!wkState[k];renderAll();renderWeekendPanel();saveState();return;}
   const rh=e.target.closest(".region-header");if(rh){const id=rh.dataset.regid;collapseState[id]=!collapseState[id];const body=document.getElementById("rb-"+id);const arrow=rh.querySelector(".region-collapse-btn");if(body)body.classList.toggle("collapsed",!!collapseState[id]);if(arrow)arrow.textContent=collapseState[id]?"▶":"▼";return;}
 });
-document.getElementById("mainContent").addEventListener("input",e=>{const ci=e.target.closest(".card-comment");if(ci)commentState[ci.dataset.key]=ci.value;});
+document.getElementById("mainContent").addEventListener("input",e=>{
+  const ci=e.target.closest(".card-comment");if(ci){commentState[ci.dataset.key]=ci.value;saveState();}
+});
+document.getElementById("mainContent").addEventListener("keydown",e=>{
+  const li=e.target.closest(".comment-log-input");
+  if(li&&(e.key==="Enter"&&!e.shiftKey)){
+    e.preventDefault();
+    const txt=li.value.trim();if(!txt)return;
+    const k=li.dataset.logkey;
+    if(!logState[k])logState[k]=[];
+    const now=new Date();
+    const ts=String(now.getHours()).padStart(2,"0")+":"+String(now.getMinutes()).padStart(2,"0");
+    logState[k].push({ts,text:txt});
+    li.value="";
+    saveState();renderAll();renderBusyPanel();
+  }
+});
+document.getElementById("mainContent").addEventListener("click",e=>{
+  const cl=e.target.closest("[data-clearlog]");
+  if(cl){const k=cl.dataset.clearlog;delete logState[k];saveState();renderAll();}
+});
 document.getElementById("plantaoFilterBtn").addEventListener("click",()=>{showOnlyPlantao=!showOnlyPlantao;const b=document.getElementById("plantaoFilterBtn");b.classList.toggle("active",showOnlyPlantao);b.textContent=showOnlyPlantao?"✕ Mostrar todos":"📅 Somente plantão";renderAll();});
-document.getElementById("clearPlantaoBtn").addEventListener("click",()=>{T.forEach(t=>{wkState[t.nome]=false;});showOnlyPlantao=false;const fb=document.getElementById("plantaoFilterBtn");fb.classList.remove("active");fb.textContent="📅 Somente plantão";renderAll();renderWeekendPanel();showToast("Plantão limpo.");});
+document.getElementById("clearPlantaoBtn").addEventListener("click",()=>{T.forEach(t=>{wkState[t.nome]=false;});showOnlyPlantao=false;const fb=document.getElementById("plantaoFilterBtn");fb.classList.remove("active");fb.textContent="📅 Somente plantão";renderAll();renderWeekendPanel();saveState();showToast("Plantão limpo.");});
 
 let timerModalTarget=null;
 function openTimerModal(nome){timerModalTarget=nome;document.getElementById("timerModalTitle").textContent="⏱ Horários — "+nome;const ts=timerState[nome]||{};document.getElementById("tmUnavailInput").value=ts.unavailUntil||"";document.getElementById("tmUnavailReason").value=ts.unavailReason||"";document.getElementById("tmForecastInput").value=ts.forecast||"";document.getElementById("tmForecastReason").value=ts.forecastReason||"";document.getElementById("timerModal").classList.add("open");}
@@ -619,12 +698,21 @@ document.getElementById("timerModal").addEventListener("click",e=>{if(e.target==
 document.getElementById("timerModalCancel").addEventListener("click",closeTimerModal);
 document.getElementById("tmUnavailClear").addEventListener("click",()=>{document.getElementById("tmUnavailInput").value="";document.getElementById("tmUnavailReason").value="";});
 document.getElementById("tmForecastClear").addEventListener("click",()=>{document.getElementById("tmForecastInput").value="";document.getElementById("tmForecastReason").value="";});
-document.getElementById("timerModalSave").addEventListener("click",()=>{if(!timerModalTarget)return;const u=document.getElementById("tmUnavailInput").value;const ur=document.getElementById("tmUnavailReason").value.trim();const f=document.getElementById("tmForecastInput").value;const fr=document.getElementById("tmForecastReason").value.trim();timerState[timerModalTarget]={unavailUntil:u||null,unavailReason:ur||null,forecast:f||null,forecastReason:fr||null};closeTimerModal();renderAll();showToast("Horários salvos para "+timerModalTarget);});
+document.getElementById("timerModalSave").addEventListener("click",()=>{if(!timerModalTarget)return;const u=document.getElementById("tmUnavailInput").value;const ur=document.getElementById("tmUnavailReason").value.trim();const f=document.getElementById("tmForecastInput").value;const fr=document.getElementById("tmForecastReason").value.trim();timerState[timerModalTarget]={unavailUntil:u||null,unavailReason:ur||null,forecast:f||null,forecastReason:fr||null};closeTimerModal();renderAll();saveState();showToast("Horários salvos para "+timerModalTarget);});
 
+/* ══ HELPERS ══ */
 function updateAreaBadge(){const badge=document.getElementById("activeAreaBadge"),clearBtn=document.getElementById("clearAreasBtn");if(activeAreas.has("Todas")||!activeAreas.size){badge.textContent="Todas";clearBtn.style.display="none";}else{badge.textContent=activeAreas.size===1?[...activeAreas][0]:activeAreas.size+" áreas";clearBtn.style.display="flex";}}
-function updateNightToggleBtn(){const turno=getTurnoAtual(),b=document.getElementById("nightToggleBtn");b.classList.toggle("active",showNightOverride);if(turno==="madrugada")b.textContent=showNightOverride?"🌙 Somente madrugada":"🌙 Mostrar dia e noite";else if(turno==="noite")b.textContent=showNightOverride?"🌙 Somente noite":"☀️ Mostrar todos os turnos";else b.textContent=showNightOverride?"☀️ Somente dia":"🌙 Mostrar todos os turnos";}
-function shouldShow(t){if(!activeAreas.has("Todas")&&!t.areas.some(a=>activeAreas.has(a)))return false;const q=document.getElementById("searchInput").value.toLowerCase();if(q&&!t.nome.toLowerCase().includes(q)&&!t.nc.toLowerCase().includes(q)&&!t.areas.some(a=>a.toLowerCase().includes(q)))return false;if(showNightOverride&&!turnoAtivoAgora(t.turno))return false;if(showOnlyPlantao&&!wkState[t.nome])return false;return true;}
-function cardText(t){const l=["NOME: "+t.nc];if(t.cpf)l.push("CPF: "+t.cpf);if(t.rg)l.push("RG/IDENTIDADE: "+t.rg);if(t.crea)l.push("CREA: "+t.crea);return l.join("\n");}
+function shouldShow(t){
+  if(!activeAreas.has("Todas")&&!t.areas.some(a=>activeAreas.has(a)))return false;
+  const q=document.getElementById("searchInput").value.toLowerCase();
+  if(q&&!t.nome.toLowerCase().includes(q)&&!t.nc.toLowerCase().includes(q)&&!t.areas.some(a=>a.toLowerCase().includes(q)))return false;
+  if(showOnlyPlantao&&!wkState[t.nome])return false;
+  if(filterOnlyOnline&&!estaOnline(t))return false;
+  if(filterOnlyForecast&&!forecastStatus(t.nome))return false;
+  if(filterRegion&&t.reg!==filterRegion)return false;
+  return true;
+}
+function cardText(t){const l=["NOME: "+t.nc];if(t.tel)l.push("TEL: "+t.tel);if(t.cpf)l.push("CPF: "+t.cpf);if(t.rg)l.push("RG/IDENTIDADE: "+t.rg);if(t.crea)l.push("CREA: "+t.crea);return l.join("\n");}
 function copyClip(text,cb){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(cb).catch(()=>fbCopy(text,cb));}else fbCopy(text,cb);}
 function fbCopy(text,cb){const ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;top:0;left:0;opacity:0";document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");cb();}catch(e){}document.body.removeChild(ta);}
 function showToast(m){const el=document.getElementById("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2500);}
@@ -643,7 +731,6 @@ function renderBusyPanel(){const panel=document.getElementById("busyPanel"),list
 function updateShiftUI(){
   const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,"0");
   const turno=getTurnoAtual(),overlap=isOverlap();
-  // Só aplica tema automático se não houver tema manual ativo
   if(manualTheme===null){
     document.body.classList.remove("theme-night","theme-dawn","theme-especial");
     if(turno==="noite")document.body.classList.add("theme-night");
@@ -651,15 +738,14 @@ function updateShiftUI(){
   }
   const badge=document.getElementById("shiftBadge"),warn=document.getElementById("shiftWarn");
   if(turno==="dia"){
-    badge.className="shift-pill";document.getElementById("shiftIcon").textContent="☀️";document.getElementById("shiftLabel").textContent="Turno Diurno";document.getElementById("shiftLabel").style.color="var(--accent)";document.getElementById("shiftClock").textContent=h+":"+m+" · noturno entra às 15:00";warn.className="shift-warn day"+(showNightOverride?"":" active");document.getElementById("shiftWarnIcon").textContent="🌙";document.getElementById("shiftWarnText").textContent="Noite e madrugada visíveis mas offline.";
+    badge.className="shift-pill";document.getElementById("shiftIcon").textContent="☀️";document.getElementById("shiftLabel").textContent="Turno Diurno";document.getElementById("shiftLabel").style.color="var(--accent)";document.getElementById("shiftClock").textContent=h+":"+m+" · noturno entra às 15:00";warn.className="shift-warn day"+(filterOnlyOnline?"":" active");document.getElementById("shiftWarnIcon").textContent="🌙";document.getElementById("shiftWarnText").textContent="Noite e madrugada visíveis mas offline.";
   }else if(overlap){
     badge.className="shift-pill overlap";document.getElementById("shiftIcon").textContent="🌗";document.getElementById("shiftLabel").textContent="Overlap Dia + Noite";document.getElementById("shiftLabel").style.color="var(--success)";document.getElementById("shiftClock").textContent=h+":"+m+" · dia encerra às 17:00";warn.className="shift-warn night active";document.getElementById("shiftWarnIcon").textContent="⚡";document.getElementById("shiftWarnText").textContent="Transição 15–17h: dia e noite online simultaneamente.";
   }else if(turno==="noite"){
-    badge.className="shift-pill";document.getElementById("shiftIcon").textContent="🌙";document.getElementById("shiftLabel").textContent="Turno Noturno";document.getElementById("shiftLabel").style.color="var(--accent)";document.getElementById("shiftClock").textContent=h+":"+m+" · madrugada às 23:00";warn.className="shift-warn night"+(showNightOverride?"":" active");document.getElementById("shiftWarnIcon").textContent="🌃";document.getElementById("shiftWarnText").textContent="Diurno encerrado (17h). Madrugada offline.";
+    badge.className="shift-pill";document.getElementById("shiftIcon").textContent="🌙";document.getElementById("shiftLabel").textContent="Turno Noturno";document.getElementById("shiftLabel").style.color="var(--accent)";document.getElementById("shiftClock").textContent=h+":"+m+" · madrugada às 23:00";warn.className="shift-warn night"+(filterOnlyOnline?"":" active");document.getElementById("shiftWarnIcon").textContent="🌃";document.getElementById("shiftWarnText").textContent="Diurno encerrado (17h). Madrugada offline.";
   }else{
-    badge.className="shift-pill";document.getElementById("shiftIcon").textContent="🌃";document.getElementById("shiftLabel").textContent="Turno Madrugada";document.getElementById("shiftLabel").style.color="var(--accent)";document.getElementById("shiftClock").textContent=h+":"+m+" · diurno às 07:00";warn.className="shift-warn dawn"+(showNightOverride?"":" active");document.getElementById("shiftWarnIcon").textContent="☀️";document.getElementById("shiftWarnText").textContent="Dia e noite offline — só madrugada em plantão.";
+    badge.className="shift-pill";document.getElementById("shiftIcon").textContent="🌃";document.getElementById("shiftLabel").textContent="Turno Madrugada";document.getElementById("shiftLabel").style.color="var(--accent)";document.getElementById("shiftClock").textContent=h+":"+m+" · diurno às 07:00";warn.className="shift-warn dawn"+(filterOnlyOnline?"":" active");document.getElementById("shiftWarnIcon").textContent="☀️";document.getElementById("shiftWarnText").textContent="Dia e noite offline — só madrugada em plantão.";
   }
-  updateNightToggleBtn();
 }
 
 function getNextTurno(t){if(t==="dia")return"noite";if(t==="noite")return"madrugada";return"dia";}
@@ -685,11 +771,22 @@ function makeCard(t){
   const unavail=isUnavailActive(t.nome),fStatus=forecastStatus(t.nome),ts=timerState[t.nome]||{};
   let timerHTML='<div class="timer-row">';
   if(unavail)timerHTML+='<span class="timer-tag unavail">⛔ Indisponível até '+ts.unavailUntil+(ts.unavailReason?' · '+ts.unavailReason:'')+'<button class="ttag-clear" data-clear-unavail="'+t.nome+'" title="Remover">✕</button></span>';
-  if(fStatus==="ok")timerHTML+='<span class="timer-tag forecast">📋 Prev: '+ts.forecast+(ts.forecastReason?' · '+ts.forecastReason:'')+'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
-  if(fStatus==="warn")timerHTML+='<span class="timer-tag forecast warn">⚠ Prev: '+ts.forecast+' — vencendo!'+(ts.forecastReason?' · '+ts.forecastReason:'')+'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
+  if(fStatus==="ok"){
+    const diff=hmToMinutes(ts.forecast)-nowMinutes();
+    const countdown=diff>0?' · em '+diff+'min':'';
+    timerHTML+='<span class="timer-tag forecast">📋 Prev: '+ts.forecast+countdown+(ts.forecastReason?' · '+ts.forecastReason:'')+'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
+  }
+  if(fStatus==="warn"){
+    const diff2=hmToMinutes(ts.forecast)-nowMinutes();
+    const cd2=diff2>0?' · em '+diff2+'min':'';
+    timerHTML+='<span class="timer-tag forecast warn">⚠ Prev: '+ts.forecast+cd2+' — vencendo!'+(ts.forecastReason?' · '+ts.forecastReason:'')+'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
+  }
   if(fStatus==="expired")timerHTML+='<span class="timer-tag forecast expired">❌ Prev vencida: '+ts.forecast+(ts.forecastReason?' · '+ts.forecastReason:'')+'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
   timerHTML+='<button class="timer-btn" data-key="'+t.nome+'">⏱ Horários</button></div>';
   const successorHTML=buildSuccessorHint(t);
+  const telHTML=t.tel
+    ?'<div class="data-row"><span class="data-label">TEL</span><a class="data-val tel-val" href="tel:'+t.tel+'" onclick="event.stopPropagation()">'+t.tel+'</a></div>'
+    :'';
   card.innerHTML=
     '<div class="card-top"><div class="card-info">'
     +'<div class="card-name-row"><div class="status-dot '+stClass+'"></div><div class="tech-name">'+t.nome+'</div><span class="status-text '+stClass+'">'+stText+'</span></div>'
@@ -703,24 +800,52 @@ function makeCard(t){
     +'<div class="wk-card-check'+(isWk?" checked":"")+'" data-key="'+t.nome+'"><div class="wk-box"></div><span class="wk-label">Sáb/Dom</span></div>'
     +'<div class="busy-row"><button class="busy-toggle" data-level="'+lvl+'" data-key="'+t.nome+'">'+dots+'</button><span class="busy-label '+blc+'">'+blt+'</span></div>'
     +'</div></div>'
+    +telHTML
     +(t.cpf?'<div class="data-row"><span class="data-label">CPF</span><span class="data-val">'+t.cpf+'</span></div>':'')
     +(t.rg ?'<div class="data-row"><span class="data-label">RG</span><span class="data-val">'+t.rg+'</span></div>':'')
     +(t.crea?'<div class="data-row"><span class="data-label">CREA</span><span class="data-val">'+t.crea+'</span></div>':'')
-    +'<div class="areas-tags">'+t.areas.map(a=>'<span class="area-tag">'+a+'</span>').join('')+'</div>'
+    +(()=>{
+    const q=document.getElementById("searchInput").value.toLowerCase().trim();
+    const tags=t.areas.map(a=>{
+      const hl=q&&a.toLowerCase().includes(q);
+      return '<span class="area-tag'+(hl?' highlight':'')+'">'+a+'</span>';
+    }).join('');
+    return '<div class="areas-tags">'+tags+'</div>';
+  })()
     +timerHTML+successorHTML
-    +'<textarea class="card-comment" data-key="'+t.nome+'" placeholder="Comentário..." rows="1">'+comment+'</textarea>';
+    +(()=>{
+    const log=logState[t.nome]||[];
+    const entries=log.slice(-5).map(e=>'<div class="comment-log-entry"><span class="cl-ts">'+e.ts+'</span>'+e.text+'</div>').join('');
+    const hasLog=log.length>0;
+    return '<div class="comment-log">'
+      +(hasLog?'<div style="max-height:80px;overflow-y:auto;margin-bottom:.3rem;">'+entries+'</div>':'')
+      +'<div class="comment-log-input-row">'
+      +'<textarea class="comment-log-input" data-logkey="'+t.nome+'" placeholder="Registrar... (Enter para salvar)" rows="1"></textarea>'
+      +(hasLog?'<button class="comment-log-clear" data-clearlog="'+t.nome+'" title="Limpar histórico">🗑</button>':'')
+      +'</div></div>';
+  })();
   return card;
 }
 
 function makeDiv(cls,icon,lbl){const d=document.createElement("div");d.className="turno-divider";d.innerHTML='<div class="turno-divider-line"></div><span class="turno-divider-label '+cls+'">'+icon+' '+lbl+'</span><div class="turno-divider-line"></div>';return d;}
 
+function sortCards(arr){
+  return arr.slice().sort((a,b)=>{
+    if(sortMode==="alpha") return a.nome.localeCompare(b.nome,"pt-BR");
+    // status: online primeiro → mais ocupado → offline
+    const ao=estaOnline(a)?0:1, bo=estaOnline(b)?0:1;
+    if(ao!==bo)return ao-bo;
+    const ab=busyState[a.nome]||0, bb2=busyState[b.nome]||0;
+    return bb2-ab;
+  });
+}
 function renderAll(){
   updateShiftUI();
   const content=document.getElementById("mainContent");content.innerHTML="";let total=0;
   REGIOES.forEach(reg=>{
-    const dia=T.filter(t=>t.reg===reg.id&&t.turno==="dia"&&shouldShow(t));
-    const noite=T.filter(t=>t.reg===reg.id&&t.turno==="noite"&&shouldShow(t));
-    const mad=T.filter(t=>t.reg===reg.id&&t.turno==="madrugada"&&shouldShow(t));
+    const dia=sortCards(T.filter(t=>t.reg===reg.id&&t.turno==="dia"&&shouldShow(t)));
+    const noite=sortCards(T.filter(t=>t.reg===reg.id&&t.turno==="noite"&&shouldShow(t)));
+    const mad=sortCards(T.filter(t=>t.reg===reg.id&&t.turno==="madrugada"&&shouldShow(t)));
     if(!dia.length&&!noite.length&&!mad.length)return;
     total+=dia.length+noite.length+mad.length;
     const collapsed=!!collapseState[reg.id];
@@ -743,19 +868,18 @@ function renderAll(){
 }
 
 updateShiftUI();renderAll();renderBusyPanel();renderWeekendPanel();renderForecastAlert();
-setInterval(()=>{renderAll();renderBusyPanel();renderForecastAlert();},60000);
+setInterval(()=>{renderAll();renderBusyPanel();renderForecastAlert();updateTabBadge();},60000);
 
-/* ── BADGE TÍTULO ABA ── */
+/* ══ BADGE TÍTULO ABA ══ */
 function updateTabBadge(){
-  const expired=T.filter(t=>forecastStatus(t.nome)==="expired").length;
-  const warn=T.filter(t=>forecastStatus(t.nome)==="warn").length;
-  const total=expired+warn;
-  document.title=(total>0?"("+total+") ":"")+"Técnicos por Área — RJ";
+  const exp=T.filter(t=>forecastStatus(t.nome)==="expired").length;
+  const wrn=T.filter(t=>forecastStatus(t.nome)==="warn").length;
+  const tot=exp+wrn;
+  document.title=(tot>0?"("+tot+") ":"")+"Técnicos por Área — RJ";
 }
-setInterval(updateTabBadge,30000);
 updateTabBadge();
 
-/* ── EXPANDIR / COLAPSAR TODOS ── */
+/* ══ EXPANDIR / COLAPSAR TODOS ══ */
 let allCollapsed=false;
 document.getElementById("expandAllBtn").addEventListener("click",()=>{
   allCollapsed=!allCollapsed;
@@ -764,233 +888,225 @@ document.getElementById("expandAllBtn").addEventListener("click",()=>{
     const body=document.getElementById("rb-"+reg.id);
     const arrow=document.querySelector('.region-header[data-regid="'+reg.id+'"] .region-collapse-btn');
     if(body){body.classList.toggle("collapsed",allCollapsed);
-      if(!allCollapsed)requestAnimationFrame(()=>{body.style.maxHeight=body.scrollHeight+20+"px";});
-      else body.style.maxHeight="0";}
+      if(!allCollapsed)requestAnimationFrame(()=>{body.style.maxHeight=body.scrollHeight+20+"px";});else body.style.maxHeight="0";}
     if(arrow)arrow.textContent=allCollapsed?"▶":"▼";
   });
   document.getElementById("expandAllBtn").textContent=allCollapsed?"⊟ Expandir todos":"⊞ Colapsar todos";
 });
 
 /* ══ TOGGLE TEMA — ciclo: dia → noite → madrugada → especial → dia ══ */
-
-function applyManualTheme() {
-  document.body.classList.remove("theme-night", "theme-dawn", "theme-especial");
-  if (manualTheme === null) {
-    // automático
-    const turno = getTurnoAtual();
-    if (turno === "noite")      document.body.classList.add("theme-night");
-    else if (turno === "madrugada") document.body.classList.add("theme-dawn");
-  } else {
-    const meta = THEME_META[manualTheme];
-    meta.classes.forEach(c => document.body.classList.add(c));
+function applyManualTheme(){
+  document.body.classList.remove("theme-night","theme-dawn","theme-especial");
+  if(manualTheme===null){
+    const turno=getTurnoAtual();
+    if(turno==="noite")document.body.classList.add("theme-night");
+    else if(turno==="madrugada")document.body.classList.add("theme-dawn");
+  }else{
+    THEME_META[manualTheme].classes.forEach(c=>document.body.classList.add(c));
   }
   updateThemeBtn();
 }
 
-function updateThemeBtn() {
-  const btn   = document.getElementById("themeToggleBtn");
-  const label = document.getElementById("themeToggleLabel");
-
-  // Descobre qual tema está visualmente ativo agora
-  let current;
-  if (manualTheme !== null) {
-    current = manualTheme;
-  } else {
-    const turno = getTurnoAtual();
-    current = turno; // "dia" | "noite" | "madrugada"
-  }
-
-  // O próximo tema no ciclo
-  const nextTheme = THEME_META[current] ? THEME_META[current].next : "noite";
-  const nextMeta  = THEME_META[nextTheme];
-
-  label.textContent = nextMeta.label;
-
-  // Tooltips informativos
-  btn.title = "Tema atual: " + (current === "dia" ? "Dia 🟠" :
-               current === "noite" ? "Noite 🔵" :
-               current === "madrugada" ? "Madrugada 🟣" : "Especial 🟢");
+function updateThemeBtn(){
+  const btn=document.getElementById("themeToggleBtn");
+  const label=document.getElementById("themeToggleLabel");
+  const current=manualTheme!==null?manualTheme:getTurnoAtual();
+  const nextTheme=THEME_META[current]?THEME_META[current].next:"noite";
+  label.textContent=THEME_META[nextTheme]?THEME_META[nextTheme].label:"☀️ Modo Dia";
+  btn.title="Tema atual: "+(current==="dia"?"Dia ☀️":current==="noite"?"Noite 🌙":current==="madrugada"?"Madrugada 🌃":"Especial 🌿");
 }
 
-document.getElementById("themeToggleBtn").addEventListener("click", () => {
-  // Determina o tema atual (manual ou auto)
-  let current;
-  if (manualTheme !== null) {
-    current = manualTheme;
-  } else {
-    const turno = getTurnoAtual();
-    current = turno;
-  }
-
-  // Avança para o próximo
-  const nextTheme = THEME_META[current] ? THEME_META[current].next : "noite";
-
-  // Se o próximo tema coincide com o automático, volta ao modo auto
-  const autoTurno = getTurnoAtual();
-  if (nextTheme === autoTurno) {
-    manualTheme = null;
-  } else {
-    manualTheme = nextTheme;
-  }
-
+document.getElementById("themeToggleBtn").addEventListener("click",()=>{
+  const current=manualTheme!==null?manualTheme:getTurnoAtual();
+  const nextTheme=THEME_META[current]?THEME_META[current].next:"noite";
+  const autoTurno=getTurnoAtual();
+  manualTheme=nextTheme===autoTurno?null:nextTheme;
   applyManualTheme();
-
-  // Feedback toast
-  const names = {
-    dia:"☀️ Modo Dia ativado",
-    noite:"🌙 Modo Noite ativado",
-    madrugada:"🌃 Modo Madrugada ativado",
-    especial:"🌿 Modo Especial ativado"
-  };
-  showToast(names[manualTheme !== null ? manualTheme : autoTurno] || "Tema automático");
+  const names={dia:"☀️ Modo Dia ativado",noite:"🌙 Modo Noite ativado",madrugada:"🌃 Modo Madrugada ativado",especial:"🌿 Modo Especial ativado"};
+  showToast(names[manualTheme!==null?manualTheme:autoTurno]||"Tema automático");
 });
-
-// Aplica tema inicial (respeita horário)
 applyManualTheme();
 
-/* ══════════════════════════════════════════════════
-   PERSONALIZAÇÃO DE CORES DOS TEMAS
-   ══════════════════════════════════════════════════ */
+/* ══ FILTRO DE REGIÃO ══ */
+const REG_CYCLE=[
+  {id:"",      label:"🗂 Região: Todas", color:""},
+  {id:"RJ",    label:"🔵 Rio / Niterói", color:"var(--rj-color)"},
+  {id:"BXD",   label:"🟣 Baixada",        color:"var(--bxd-color)"},
+  {id:"OESTE", label:"🟢 Oeste",          color:"var(--oeste-color)"},
+];
+document.getElementById("regFilterBtn").addEventListener("click",()=>{
+  const idx=REG_CYCLE.findIndex(r=>r.id===filterRegion);
+  const next=REG_CYCLE[(idx+1)%REG_CYCLE.length];
+  filterRegion=next.id;
+  const btn=document.getElementById("regFilterBtn");
+  btn.textContent=next.label;
+  btn.classList.toggle("active",filterRegion!=="");
+  renderAll();
+  showToast(next.label);
+});
 
-const THEME_DEFAULTS = {
-  dia:       { accent:'#FF4500', accent2:'#FF8800', label:'☀️ Dia',       icon:'☀️' },
-  noite:     { accent:'#1E64FF', accent2:'#22B8FF', label:'🌙 Noite',      icon:'🌙' },
-  madrugada: { accent:'#7C3AED', accent2:'#C084FC', label:'🌃 Madrugada',  icon:'🌃' },
-  especial:  { accent:'#00E664', accent2:'#00FFB2', label:'🌿 Especial',   icon:'🌿' },
+/* ══ ORDENAÇÃO ══ */
+document.getElementById("sortBtn").addEventListener("click",()=>{
+  sortMode=sortMode==="status"?"alpha":"status";
+  const btn=document.getElementById("sortBtn");
+  btn.classList.toggle("active",sortMode==="alpha");
+  btn.textContent=sortMode==="alpha"?"🔃 Status":"🔃 A→Z";
+  btn.title=sortMode==="alpha"?"Ordenar por status (online→busy→offline)":"Ordenar alfabeticamente";
+  renderAll();
+  showToast(sortMode==="alpha"?"Ordem: A → Z":"Ordem: Status");
+});
+
+/* ══ FILTROS DE STATUS ══ */
+document.getElementById("filterOnlineBtn").addEventListener("click",()=>{
+  filterOnlyOnline=!filterOnlyOnline;
+  if(filterOnlyOnline)filterOnlyForecast=false;
+  document.getElementById("filterOnlineBtn").classList.toggle("active",filterOnlyOnline);
+  document.getElementById("copyAllBtn").style.display=filterOnlyOnline?"none":"";
+  document.getElementById("filterForecastBtn").classList.remove("active");
+  renderAll();
+});
+document.getElementById("filterForecastBtn").addEventListener("click",()=>{
+  filterOnlyForecast=!filterOnlyForecast;
+  if(filterOnlyForecast)filterOnlyOnline=false;
+  document.getElementById("filterForecastBtn").classList.toggle("active",filterOnlyForecast);
+  document.getElementById("filterOnlineBtn").classList.remove("active");
+  renderAll();
+});
+
+/* ══ MODO COMPACTO ══ */
+document.getElementById("compactBtn").addEventListener("click",()=>{
+  compactMode=!compactMode;
+  document.body.classList.toggle("compact-mode",compactMode);
+  document.getElementById("compactBtn").classList.toggle("active",compactMode);
+  document.getElementById("compactBtn").textContent=compactMode?"⊠ Compacto":"⊡ Compacto";
+});
+
+/* ══ EXPORTAR RELATÓRIO ══ */
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const now=new Date();
+  const ts=now.toLocaleDateString("pt-BR")+" "+now.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+  const lines=["RELATÓRIO DE EQUIPE — "+ts,"=".repeat(50),""];
+  const vis=T.filter(shouldShow);
+  const online=vis.filter(t=>estaOnline(t));
+  const offline=vis.filter(t=>!estaOnline(t));
+  lines.push("ONLINE ("+online.length+"):");
+  online.forEach(t=>{
+    const lvl=busyState[t.nome]||0;
+    const busy=lvl>0?" ["+busyLabels[lvl]+"]":"";
+    const fs=forecastStatus(t.nome);
+    const fstr=fs?" [Prev:"+timerState[t.nome].forecast+"]":"";
+    lines.push("  ✓ "+t.nome+" — "+t.reg+busy+fstr);
+  });
+  lines.push("");
+  lines.push("OFFLINE ("+offline.length+"):");
+  offline.forEach(t=>{lines.push("  ✗ "+t.nome+" — "+t.reg);});
+  lines.push("");
+  const forecasts=vis.filter(t=>forecastStatus(t.nome));
+  if(forecasts.length){
+    lines.push("PREVISÕES ATIVAS:");
+    forecasts.forEach(t=>{
+      const fs=forecastStatus(t.nome),ts2=timerState[t.nome];
+      lines.push("  "+t.nome+" — "+ts2.forecast+" ("+fs+")"+(ts2.forecastReason?" · "+ts2.forecastReason:""));
+    });
+    lines.push("");
+  }
+  const blob=new Blob([lines.join("\n")],{type:"text/plain;charset=utf-8"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="equipe_rj_"+now.toISOString().slice(0,16).replace("T","_").replace(":","h")+".txt";
+  a.click();URL.revokeObjectURL(a.href);
+  showToast("Relatório exportado!");
+});
+
+/* ══ ATALHOS DE TECLADO ══ */
+let kbdHintTimer=null;
+document.addEventListener("keydown",e=>{
+  const tag=document.activeElement.tagName.toLowerCase();
+  const isInput=tag==="input"||tag==="textarea";
+  // / — focar busca
+  if(e.key==="/"&&!isInput){e.preventDefault();document.getElementById("searchInput").focus();return;}
+  // Esc — limpar busca ou fechar modal
+  if(e.key==="Escape"){
+    if(document.getElementById("timerModal").classList.contains("open")){closeTimerModal();return;}
+    if(document.getElementById("searchInput").value){document.getElementById("searchInput").value="";renderAll();return;}
+    if(isInput){document.activeElement.blur();return;}
+  }
+  // E — expandir/colapsar (só fora de inputs)
+  if((e.key==="e"||e.key==="E")&&!isInput){
+    document.getElementById("expandAllBtn").click();return;
+  }
+  // C — modo compacto
+  if((e.key==="c"||e.key==="C")&&!isInput){
+    document.getElementById("compactBtn").click();return;
+  }
+  // ? — mostrar hint
+  if(e.key==="?"&&!isInput){
+    const hint=document.getElementById("kbdHint");
+    hint.classList.toggle("show");
+    clearTimeout(kbdHintTimer);
+    if(hint.classList.contains("show"))kbdHintTimer=setTimeout(()=>hint.classList.remove("show"),4000);
+    return;
+  }
+});
+
+/* ══ PERSONALIZAÇÃO DE CORES DOS TEMAS ══ */
+const THEME_DEFAULTS={
+  dia:      {accent:"#FF4500",accent2:"#FF8800",label:"☀️ Dia"},
+  noite:    {accent:"#1E64FF",accent2:"#22B8FF",label:"🌙 Noite"},
+  madrugada:{accent:"#7C3AED",accent2:"#C084FC",label:"🌃 Madrugada"},
+  especial: {accent:"#00E664",accent2:"#00FFB2",label:"🌿 Especial"},
 };
-
-// Paletas de swatches por tema
-const THEME_SWATCHES = {
-  dia:       ['#FF4500','#FF6B00','#E63946','#FF0080','#FF9500','#F7C59F','#E07B39','#B5451B'],
-  noite:     ['#1E64FF','#0047AB','#00BFFF','#7B2FBE','#4361EE','#4CC9F0','#023E8A','#0077B6'],
-  madrugada: ['#7C3AED','#9333EA','#A855F7','#6D28D9','#4C1D95','#DB2777','#BE185D','#5B21B6'],
-  especial:  ['#00E664','#00C957','#00FFB2','#22C55E','#16A34A','#84CC16','#65A30D','#15803D'],
+const THEME_SWATCHES={
+  dia:      ["#FF4500","#FF6B00","#E63946","#FF0080","#FF9500","#E07B39","#B5451B","#CC2200"],
+  noite:    ["#1E64FF","#0047AB","#00BFFF","#7B2FBE","#4361EE","#4CC9F0","#023E8A","#0077B6"],
+  madrugada:["#7C3AED","#9333EA","#A855F7","#6D28D9","#4C1D95","#DB2777","#BE185D","#5B21B6"],
+  especial: ["#00E664","#00C957","#00FFB2","#22C55E","#16A34A","#84CC16","#65A30D","#15803D"],
 };
-
-// Carrega cores salvas do localStorage
-let themeCustomColors = {};
-try {
-  const saved = localStorage.getItem('themeCustomColors');
-  if (saved) themeCustomColors = JSON.parse(saved);
-} catch(e) {}
-
-function saveColors() {
-  try { localStorage.setItem('themeCustomColors', JSON.stringify(themeCustomColors)); } catch(e) {}
+let themeCustomColors={};
+try{const s=localStorage.getItem("rj_themeColors");if(s)themeCustomColors=JSON.parse(s);}catch(e){}
+function saveColors(){try{localStorage.setItem("rj_themeColors",JSON.stringify(themeCustomColors));}catch(e){}}
+function hexToRgb(hex){const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return r+","+g+","+b;}
+function lightenHex(hex,f=0.32){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);r=Math.round(r+(255-r)*f);g=Math.round(g+(255-g)*f);b=Math.round(b+(255-b)*f);return"#"+[r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("");}
+function applyThemeColor(theme,color){
+  themeCustomColors[theme]=color;saveColors();
+  const rgb=hexToRgb(color),light=lightenHex(color),lrgb=hexToRgb(light);
+  let el=document.getElementById("custom-color-"+theme);
+  if(!el){el=document.createElement("style");el.id="custom-color-"+theme;document.head.appendChild(el);}
+  const sel=theme==="dia"?":root":theme==="noite"?"body.theme-night":theme==="madrugada"?"body.theme-dawn":"body.theme-especial";
+  el.textContent=sel+`{--accent:${color};--accent2:${light};--logo-grd:linear-gradient(135deg,${color},${light});--btn-grd:linear-gradient(135deg,${color},${light});--glow:rgba(${rgb},0.18);--glow2:rgba(${lrgb},0.09);--border:rgba(${rgb},0.14);--border2:rgba(${rgb},0.32);--tag-bg:rgba(${rgb},0.07);--rj-color:${color};}`;
 }
+Object.entries(themeCustomColors).forEach(([t,c])=>applyThemeColor(t,c));
 
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  return `${r},${g},${b}`;
-}
-
-function lightenHex(hex, factor=0.35) {
-  let r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  r = Math.round(r + (255-r)*factor); g = Math.round(g + (255-g)*factor); b = Math.round(b + (255-b)*factor);
-  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
-}
-
-function applyThemeColor(theme, color) {
-  themeCustomColors[theme] = color;
-  saveColors();
-  const rgb = hexToRgb(color);
-  const light = lightenHex(color, 0.28);
-  const lightRgb = hexToRgb(light);
-  // Override vars on body via a dynamic <style> tag per theme
-  let styleEl = document.getElementById('custom-color-'+theme);
-  if (!styleEl) { styleEl = document.createElement('style'); styleEl.id = 'custom-color-'+theme; document.head.appendChild(styleEl); }
-  const selector = theme === 'dia' ? ':root' :
-                   theme === 'noite' ? 'body.theme-night' :
-                   theme === 'madrugada' ? 'body.theme-dawn' : 'body.theme-especial';
-  styleEl.textContent = `${selector} {
-    --accent:${color};
-    --accent2:${light};
-    --logo-grd:linear-gradient(135deg,${color},${light});
-    --btn-grd:linear-gradient(135deg,${color},${light});
-    --glow:rgba(${rgb},0.18);
-    --glow2:rgba(${lightRgb},0.09);
-    --border:rgba(${rgb},0.14);
-    --border2:rgba(${rgb},0.32);
-    --tag-bg:rgba(${rgb},0.07);
-    --rj-color:${color};
-  }`;
-}
-
-// Aplica cores salvas ao iniciar
-Object.entries(themeCustomColors).forEach(([theme, color]) => applyThemeColor(theme, color));
-
-// ── Constrói o painel de paleta ──
-function buildPalettePanel() {
-  const body = document.getElementById('tppBody');
-  body.innerHTML = '';
-  Object.entries(THEME_DEFAULTS).forEach(([themeKey, meta]) => {
-    const current = themeCustomColors[themeKey] || meta.accent;
-    const row = document.createElement('div');
-    row.className = 'tpp-theme-row';
-    const label = document.createElement('div');
-    label.className = 'tpp-row-label';
-    label.innerHTML = `<span class="tpp-label-dot" style="background:${current}"></span>${meta.label}`;
-    row.appendChild(label);
-    const swatchRow = document.createElement('div');
-    swatchRow.className = 'tpp-swatches';
-    THEME_SWATCHES[themeKey].forEach(hex => {
-      const sw = document.createElement('div');
-      sw.className = 'tpp-swatch' + (current === hex ? ' active' : '');
-      sw.style.background = hex;
-      sw.title = hex;
-      sw.addEventListener('click', () => {
-        applyThemeColor(themeKey, hex);
-        buildPalettePanel(); // refresh
-        showToast('Cor aplicada ao tema '+meta.label);
-      });
-      swatchRow.appendChild(sw);
+function buildPalettePanel(){
+  const body=document.getElementById("tppBody");body.innerHTML="";
+  Object.entries(THEME_DEFAULTS).forEach(([key,meta])=>{
+    const cur=themeCustomColors[key]||meta.accent;
+    const row=document.createElement("div");row.className="tpp-theme-row";
+    const lbl=document.createElement("div");lbl.className="tpp-row-label";
+    lbl.innerHTML='<span class="tpp-label-dot" style="background:'+cur+'"></span>'+meta.label;
+    row.appendChild(lbl);
+    const sw=document.createElement("div");sw.className="tpp-swatches";
+    THEME_SWATCHES[key].forEach(hex=>{
+      const s=document.createElement("div");s.className="tpp-swatch"+(cur===hex?" active":"");
+      s.style.background=hex;s.title=hex;
+      s.addEventListener("click",()=>{applyThemeColor(key,hex);buildPalettePanel();showToast("Cor aplicada ao tema "+meta.label);});
+      sw.appendChild(s);
     });
-    // Custom color input
-    const inp = document.createElement('input');
-    inp.type = 'color';
-    inp.className = 'tpp-color-input';
-    inp.value = current;
-    inp.title = 'Cor personalizada';
-    inp.addEventListener('input', () => {
-      applyThemeColor(themeKey, inp.value);
-      label.querySelector('.tpp-label-dot').style.background = inp.value;
-    });
-    inp.addEventListener('change', () => {
-      buildPalettePanel();
-      showToast('Cor personalizada aplicada!');
-    });
-    swatchRow.appendChild(inp);
-    row.appendChild(swatchRow);
-    body.appendChild(row);
+    const inp=document.createElement("input");inp.type="color";inp.className="tpp-color-input";inp.value=cur;inp.title="Cor personalizada";
+    inp.addEventListener("input",()=>{applyThemeColor(key,inp.value);lbl.querySelector(".tpp-label-dot").style.background=inp.value;});
+    inp.addEventListener("change",()=>{buildPalettePanel();showToast("Cor personalizada aplicada!");});
+    sw.appendChild(inp);row.appendChild(sw);body.appendChild(row);
   });
 }
 
-// ── Abre/fecha painel ──
-const paletteBtn = document.getElementById('themePaletteBtn');
-const palettePanel = document.getElementById('themePalettePanel');
-
-paletteBtn.addEventListener('click', (e) => {
-  e.stopPropagation();
-  const open = palettePanel.classList.toggle('open');
-  paletteBtn.classList.toggle('open', open);
-  if (open) buildPalettePanel();
-});
-
-document.addEventListener('click', (e) => {
-  if (!palettePanel.contains(e.target) && e.target !== paletteBtn) {
-    palettePanel.classList.remove('open');
-    paletteBtn.classList.remove('open');
-  }
-});
-
-// ── Reset ──
-document.getElementById('tppReset').addEventListener('click', () => {
-  themeCustomColors = {};
-  saveColors();
-  document.querySelectorAll('[id^="custom-color-"]').forEach(el => el.remove());
-  buildPalettePanel();
-  showToast('Cores resetadas para o padrão!');
-});
-
+const paletteBtn=document.getElementById("themePaletteBtn");
+const palettePanel=document.getElementById("themePalettePanel");
+paletteBtn.addEventListener("click",e=>{e.stopPropagation();const open=palettePanel.classList.toggle("open");paletteBtn.classList.toggle("open",open);if(open)buildPalettePanel();});
+document.addEventListener("click",e=>{if(!palettePanel.contains(e.target)&&e.target!==paletteBtn){palettePanel.classList.remove("open");paletteBtn.classList.remove("open");}});
+document.getElementById("tppReset").addEventListener("click",()=>{themeCustomColors={};saveColors();document.querySelectorAll("[id^='custom-color-']").forEach(el=>el.remove());buildPalettePanel();showToast("Cores resetadas para o padrão!");});
 </script>
+<div class="kbd-hint" id="kbdHint">
+  <kbd>/</kbd> buscar &nbsp; <kbd>Esc</kbd> limpar &nbsp; <kbd>E</kbd> expandir &nbsp; <kbd>C</kbd> compacto &nbsp; <kbd>?</kbd> ocultar
+</div>
 </body>
 </html>
