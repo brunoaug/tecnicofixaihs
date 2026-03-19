@@ -1,554 +1,857 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Técnicos por Área — RJ</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-/* ══ TEMA DIURNO ══ */
+/* ══ VARIÁVEIS BASE (tema diurno / padrão) ══ */
 :root {
-  --bg:      #FFF7F2;
-  --surface: #FFFFFF;
-  --card:    #FFFFFF;
-  --card2:   #FFF0E8;
-  --border:  rgba(255,80,0,0.12);
-  --border2: rgba(255,80,0,0.28);
-
-  --accent:  #FF4500;
-  --accent2: #FF8800;
-  --accent3: #FFCC00;
-
-  --text:    #1A0A00;
-  --text2:   #5C3010;
-  --muted:   #B07040;
-
-  --success: #00C97A;
-  --danger:  #FF2244;
-  --warn:    #FF8C00;
-
-  --logo-grd: linear-gradient(135deg,#FF4500,#FF8800);
-  --btn-grd:  linear-gradient(135deg,#FF4500,#FF8800);
-
-  --glow:    rgba(255,69,0,0.13);
-  --glow2:   rgba(255,136,0,0.07);
-
-  /* busy palette */
-  --busy1:#E8A800; --busy2:#E07000; --busy3:#D04000;
-  --busy4:#CC1A1A; --busy5:#990000;
-
-  /* region colors */
-  --rj-color:    #FF4500;
-  --bxd-color:   #8B5CF6;
-  --oeste-color: #00A86B;
-  --wk-color:    #D946EF;
-
-  --online:  #00C97A;
-  --offline: #FF2244;
-
-  --tag-bg:  rgba(255,80,0,0.06);
+  --bg:       #060d1f;
+  --navy2:    #0b1630;
+  --navy3:    #0f2040;
+  --surface:  #0b1630;
+  --card:     rgba(255,255,255,0.038);
+  --card-hov: rgba(255,255,255,0.065);
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.13);
+  --accent:   #2d8cf0;
+  --accent2:  #00d2ff;
+  --text:     #e8edf7;
+  --muted:    #6b7fa6;
+  --success:  #00e89a;
+  --tag-bg:   rgba(255,255,255,0.03);
+  --busy1:#ffe066;--busy2:#ffb830;--busy3:#ff8c00;--busy4:#ff4d4d;--busy5:#cc0000;
+  --rj-color:    #2d8cf0;
+  --bxd-color:   #a78bfa;
+  --oeste-color: #00e89a;
+  --wk-color:    #f0abfc;
+  --online:  #00e89a;
+  --offline: #ff4d4d;
+  --dawn-color: #c084fc;
+  --grad1: rgba(26,111,232,.18);
+  --grad2: rgba(0,210,255,.12);
+  --logo-a: #2d8cf0;
+  --logo-b: #00d2ff;
+  --shift-accent: #2d8cf0;
 }
 
-/* ══ TEMA NOTURNO ══ */
+/* ══ TEMA NOTURNO (15:00–23:00) ══ */
 body.theme-night {
-  --bg:      #03080F;
-  --surface: #060E1C;
-  --card:    #09132A;
-  --card2:   #0D1A33;
-  --border:  rgba(30,100,255,0.18);
-  --border2: rgba(30,100,255,0.38);
-
-  --accent:  #1E64FF;
-  --accent2: #22B8FF;
-  --accent3: #A3D4FF;
-
-  --text:    #E0ECFF;
-  --text2:   #7BA0D8;
-  --muted:   #3A5A90;
-
-  --success: #00FFB2;
-  --danger:  #FF3B5C;
-  --warn:    #FFB800;
-
-  --logo-grd: linear-gradient(135deg,#1E64FF,#22B8FF);
-  --btn-grd:  linear-gradient(135deg,#1E64FF,#22B8FF);
-
-  --glow:    rgba(30,100,255,0.15);
-  --glow2:   rgba(34,184,255,0.08);
-
-  --busy1:#FFCC00; --busy2:#FF9900; --busy3:#FF6600;
-  --busy4:#FF3333; --busy5:#CC0000;
-
-  --rj-color:    #FF6B35;
-  --bxd-color:   #A78BFA;
-  --oeste-color: #34D399;
-  --wk-color:    #F0ABFC;
-
-  --online:  #00FFB2;
-  --offline: #FF3B5C;
-  --tag-bg:  rgba(30,100,255,0.08);
+  --accent:  #00d2ff;
+  --accent2: #2d8cf0;
+  --rj-color: #00d2ff;
+  --grad1: rgba(0,210,255,.14);
+  --grad2: rgba(45,140,240,.1);
+  --logo-a: #00d2ff;
+  --logo-b: #2d8cf0;
+  --shift-accent: #00d2ff;
 }
 
-body.theme-night header { background: rgba(3,8,15,0.90); }
+/* ══ TEMA MADRUGADA (23:00–07:00) ══ */
+body.theme-dawn {
+  --accent:  #a855f7;
+  --accent2: #c084fc;
+  --rj-color: #a78bfa;
+  --grad1: rgba(124,58,237,.12);
+  --grad2: rgba(192,132,252,.08);
+  --logo-a: #a855f7;
+  --logo-b: #c084fc;
+  --shift-accent: #c084fc;
+}
 
-/* ─── RESET ─── */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  background-color: var(--bg);
+html, body {
+  background: var(--bg);
   color: var(--text);
-  font-family: 'DM Sans', sans-serif;
+  font-family: 'Syne', sans-serif;
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background .5s, color .3s;
+  transition: background .6s, color .4s;
 }
 
+/* ── grade de fundo ── */
 body::before {
-  content:'';
-  position:fixed; inset:0; z-index:0; pointer-events:none;
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── brilhos atmosféricos ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
   background:
-    radial-gradient(ellipse 70% 55% at 10% 0%, var(--glow) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 90% 100%, var(--glow2) 0%, transparent 55%);
+    radial-gradient(ellipse 60% 50% at 20% 20%, var(--grad1) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 80% 80%, var(--grad2) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+  transition: background .6s;
 }
-body > * { position:relative; z-index:1; }
 
-/* ══ HEADER ══ */
+/* tudo acima do z-index 0 */
+header, .container, .toast, .tmodal-overlay { position: relative; z-index: 1; }
+
+/* ════ HEADER ════ */
 header {
-  padding: 0 2.5rem;
-  height: 76px;
-  display: flex; align-items: center; justify-content: space-between; gap:1rem; flex-wrap:wrap;
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(14px);
-  background: rgba(255,247,242,0.92);
-  box-shadow: 0 1px 0 var(--border);
-  position: sticky; top:0; z-index:100;
+  padding: 1.4rem 2rem 1.2rem;
+  border-bottom: 1px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  backdrop-filter: blur(10px);
+  background: rgba(6,13,31,.65);
+  transition: border-color .5s;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.logo-mark { display:flex; align-items:center; gap:.85rem; }
+.header-left { display: flex; align-items: center; gap: 1rem; }
 
-.logo-badge {
-  background: var(--logo-grd);
-  border-radius:10px; width:48px; height:48px;
-  display:flex; align-items:center; justify-content:center;
-  flex-shrink:0;
-  box-shadow:0 0 24px var(--glow), 0 3px 12px rgba(0,0,0,.12);
-  position:relative; overflow:hidden;
-}
-.logo-badge::after {
-  content:''; position:absolute; top:-30%; left:-10%;
-  width:60%; height:160%; background:rgba(255,255,255,.18); transform:rotate(20deg);
-}
-.logo-badge span {
-  font-family:'Bebas Neue',sans-serif; font-size:1.4rem; color:#fff; letter-spacing:.06em; line-height:1;
+.logo-mark {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg, var(--logo-a), var(--logo-b));
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 800; color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(0,0,0,.35);
+  transition: background .5s;
 }
 
-.logo-text h1 {
-  font-family:'Bebas Neue',sans-serif; font-size:1.35rem; letter-spacing:.08em; color:var(--text); line-height:1;
+.header-titles h1 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -.03em;
+  color: var(--text);
 }
-.logo-text p {
-  font-family:'DM Mono',monospace; font-size:.58rem; color:var(--muted);
-  letter-spacing:.12em; text-transform:uppercase; margin-top:3px;
+
+.header-titles p {
+  font-size: .7rem;
+  color: var(--muted);
+  margin-top: 2px;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .05em;
 }
 
-.header-right { display:flex; align-items:center; gap:.6rem; flex-wrap:wrap; }
-
-.btn-home {
-  display:flex; align-items:center; gap:.4rem;
-  padding:.42rem 1rem; border-radius:8px;
-  border:1px solid var(--border2); background:transparent;
-  color:var(--text2); font-family:'DM Sans',sans-serif;
-  font-size:.76rem; font-weight:600; cursor:pointer; text-decoration:none; transition:all .2s;
+/* EYEBROW line from index style */
+.header-eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--accent2);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
 }
-.btn-home:hover { background:var(--border); color:var(--text); border-color:var(--accent); }
-
-.shift-pill {
-  display:flex; align-items:center; gap:.6rem;
-  padding:.42rem 1rem; border-radius:8px;
-  border:1px solid var(--border2); background:var(--surface);
+.header-eyebrow::before {
+  content: '';
+  display: block;
+  width: 18px; height: 1px;
+  background: currentColor; opacity: .6;
 }
-.shift-icon { font-size:1rem; }
-.shift-label { font-size:.74rem; font-weight:700; color:var(--accent); line-height:1; }
-.shift-clock { font-family:'DM Mono',monospace; font-size:.56rem; color:var(--muted); margin-top:2px; line-height:1; }
 
-/* ══ CONTAINER ══ */
-.container { max-width:1360px; margin:0 auto; padding:1.75rem 2.5rem; }
+/* SHIFT BADGE */
+.shift-badge {
+  display: flex; align-items: center; gap: .55rem;
+  padding: .45rem 1rem;
+  border-radius: 10px;
+  border: 1px solid;
+  font-family: 'Syne', sans-serif;
+  font-size: .78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: all .4s;
+}
+.shift-badge.day   { border-color: rgba(45,140,240,.45); background: rgba(45,140,240,.1); color: #2d8cf0; }
+.shift-badge.night { border-color: rgba(0,210,255,.4);   background: rgba(0,210,255,.08); color: #00d2ff; }
+.shift-badge.dawn  { border-color: rgba(168,85,247,.45); background: rgba(168,85,247,.1); color: #c084fc; }
+.shift-badge.night.overlap-badge { border-color: rgba(0,232,154,.45); background: rgba(0,232,154,.08); color: #00e89a; }
 
-/* ══ SHIFT WARN ══ */
+.shift-clock {
+  font-size: .62rem;
+  font-family: 'DM Mono', monospace;
+  opacity: .7;
+  margin-top: 1px;
+}
+
+/* HOME BTN */
+.home-btn {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .45rem .95rem;
+  border-radius: 999px;
+  border: 1px solid var(--border2);
+  background: rgba(255,255,255,.04);
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: .76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.home-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ════ CONTAINER ════ */
+.container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+}
+
+/* SHIFT WARN */
 .shift-warn {
-  display:none; align-items:center; gap:.65rem;
-  padding:.8rem 1.2rem; border-radius:12px;
-  background:rgba(30,100,255,.06); border:1px solid rgba(30,100,255,.2);
-  color:var(--accent); font-family:'DM Mono',monospace; font-size:.75rem;
-  margin-bottom:1rem; animation:slideIn .3s ease;
+  border-radius: 12px;
+  padding: .7rem 1.2rem;
+  margin-bottom: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  font-size: .74rem;
+  font-family: 'DM Mono', monospace;
 }
-body:not(.theme-night) .shift-warn { background:rgba(255,69,0,.05); border-color:rgba(255,69,0,.18); }
-.shift-warn.active { display:flex; }
-@keyframes slideIn { from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);} }
+.shift-warn.day   { background: rgba(45,140,240,.07); border: 1px solid rgba(45,140,240,.25); color: #2d8cf0; }
+.shift-warn.night { background: rgba(0,210,255,.07);  border: 1px solid rgba(0,210,255,.22);  color: #00d2ff; }
+.shift-warn.dawn  { background: rgba(168,85,247,.08); border: 1px solid rgba(168,85,247,.28); color: #c084fc; }
 
-/* ══ BUSY PANEL ══ */
+/* BUSY PANEL */
 .busy-panel {
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:14px; padding:.85rem 1.2rem; margin-bottom:1rem;
-  display:none;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: .9rem 1.3rem;
+  margin-bottom: 1.1rem;
+  backdrop-filter: blur(8px);
 }
-.busy-panel.active { display:block; }
-.panel-label {
-  font-family:'DM Mono',monospace; font-size:.6rem;
-  text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin-bottom:.6rem;
+.busy-panel-title {
+  font-size: .65rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--muted);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  margin-bottom: .65rem;
 }
-.busy-chips { display:flex; flex-wrap:wrap; gap:.4rem; }
+.busy-list { display: flex; flex-wrap: wrap; gap: .45rem; }
 .busy-chip {
-  display:flex; align-items:center; gap:.3rem;
-  padding:.22rem .65rem; border-radius:100px;
-  font-family:'DM Mono',monospace; font-size:.7rem; font-weight:600; border:1.5px solid;
+  display: flex; align-items: center; gap: .35rem;
+  padding: .28rem .7rem;
+  border-radius: 999px;
+  font-size: .72rem;
+  font-weight: 700;
+  border: 2px solid;
+  font-family: 'DM Mono', monospace;
 }
 
-/* ══ WEEKEND PANEL ══ */
+/* WEEKEND PANEL */
 .weekend-panel {
-  background:rgba(217,70,239,.04); border:1px solid rgba(217,70,239,.18);
-  border-radius:14px; padding:.9rem 1.2rem; margin-bottom:1rem;
+  background: rgba(240,171,252,.04);
+  border: 1px solid rgba(240,171,252,.18);
+  border-radius: 14px;
+  padding: 1rem 1.4rem;
+  margin-bottom: 1.1rem;
+  backdrop-filter: blur(6px);
 }
-.weekend-hdr {
-  display:flex; align-items:center; justify-content:space-between;
-  cursor:pointer; user-select:none; gap:.75rem;
+.weekend-panel-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  gap: .75rem;
 }
-.weekend-title {
-  font-size:.82rem; font-weight:700; color:var(--wk-color);
-  display:flex; align-items:center; gap:.45rem;
+.weekend-panel-title {
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--wk-color);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
 }
-.weekend-count { font-size:.65rem; color:var(--muted); font-weight:400; font-family:'DM Mono',monospace; }
-.weekend-chevron { font-size:.7rem; color:var(--wk-color); transition:transform .25s; }
-.weekend-panel.collapsed .weekend-chevron { transform:rotate(-90deg); }
-.weekend-body { overflow:hidden; transition:max-height .3s ease, opacity .25s; }
-.weekend-panel.collapsed .weekend-body { max-height:0!important; opacity:0; margin-top:0!important; }
-.weekend-body { margin-top:.9rem; }
-.weekend-empty { font-family:'DM Mono',monospace; font-size:.73rem; color:var(--muted); font-style:italic; }
-.weekend-slots { display:flex; flex-wrap:wrap; gap:.5rem; }
+.weekend-panel-chevron {
+  font-size: .7rem;
+  color: var(--wk-color);
+  transition: transform .25s;
+  font-style: normal;
+}
+.weekend-panel.collapsed .weekend-panel-chevron { transform: rotate(-90deg); }
+.weekend-body {
+  margin-top: .9rem;
+  overflow: hidden;
+  transition: max-height .3s ease, opacity .25s;
+}
+.weekend-panel.collapsed .weekend-body { max-height: 0 !important; opacity: 0; margin-top: 0; }
+.weekend-empty {
+  font-size: .74rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--muted);
+  padding: .5rem 0;
+  font-style: italic;
+}
+.weekend-slots { display: flex; flex-wrap: wrap; gap: .6rem; }
 .wk-slot {
-  display:flex; align-items:center; gap:.45rem;
-  padding:.4rem .85rem; border-radius:10px;
-  border:1px solid rgba(217,70,239,.22); background:rgba(217,70,239,.05);
+  display: flex; align-items: center; gap: .5rem;
+  padding: .45rem .9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(240,171,252,.22);
+  background: rgba(240,171,252,.05);
 }
-.wk-slot-name { font-size:.78rem; font-weight:700; color:var(--wk-color); }
-.wk-slot-area { font-size:.62rem; font-family:'DM Mono',monospace; color:var(--muted); }
+.wk-slot-name { font-size: .8rem; font-weight: 700; color: var(--wk-color); }
+.wk-slot-area { font-size: .65rem; font-family: 'DM Mono', monospace; color: var(--muted); }
 
-/* ══ TOOLBAR ══ */
+/* FORECAST ALERT */
+.forecast-alert {
+  background: rgba(255,77,77,.08);
+  border: 1px solid rgba(255,77,77,.28);
+  border-radius: 12px;
+  padding: .7rem 1.1rem;
+  margin-bottom: 1rem;
+  display: none;
+  align-items: center;
+  gap: .65rem;
+  font-size: .74rem;
+  font-family: 'DM Mono', monospace;
+  color: #ff4d4d;
+}
+.forecast-alert.active { display: flex; }
+.forecast-alert-list { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .3rem; }
+
+/* TOOLBAR */
 .toolbar {
-  display:flex; align-items:center; gap:.55rem; margin-bottom:.85rem; flex-wrap:wrap;
-  background:var(--surface); border:1px solid var(--border);
-  border-radius:14px; padding:.65rem;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  margin-bottom: .75rem;
+  flex-wrap: wrap;
 }
-.search-wrap {
-  flex:1; min-width:180px;
-  display:flex; align-items:center; gap:.45rem;
-  background:var(--card2); border:1px solid var(--border);
-  border-radius:9px; padding:.52rem .9rem;
+.search-bar { flex: 1; min-width: 180px; position: relative; }
+.search-bar input {
+  width: 100%;
+  padding: .72rem 1rem .72rem 2.6rem;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: .82rem;
+  outline: none;
+  transition: border-color .2s;
+  backdrop-filter: blur(6px);
 }
-.search-wrap .s-ico { color:var(--muted); font-size:.82rem; }
-.search-wrap input {
-  flex:1; background:transparent; border:none; outline:none;
-  color:var(--text); font-family:'DM Mono',monospace; font-size:.78rem;
+.search-bar input:focus { border-color: var(--accent); }
+.search-bar input::placeholder { color: var(--muted); opacity: .7; }
+.search-bar .icon { position: absolute; left: .85rem; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .85rem; }
+
+.tb-btn {
+  display: flex; align-items: center; gap: .4rem;
+  padding: .47rem .95rem;
+  border-radius: 999px;
+  border: 1px solid var(--border2);
+  background: var(--card);
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: .76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
+  user-select: none;
+  backdrop-filter: blur(6px);
 }
-.search-wrap input::placeholder { color:var(--muted); }
+.tb-btn:hover { border-color: var(--accent); color: var(--accent); }
+.tb-btn.open  { border-color: var(--accent); color: var(--accent); background: rgba(45,140,240,.08); }
+.tb-btn .chevron { font-style: normal; font-size: .68rem; transition: transform .25s; }
+.tb-btn.open .chevron { transform: rotate(180deg); }
+.tb-btn.night-btn  { border-color: rgba(0,210,255,.3); color: var(--accent2); }
+.tb-btn.night-btn:hover, .tb-btn.night-btn.active { border-color: var(--accent2); background: rgba(0,210,255,.08); color: var(--accent2); }
+.tb-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(45,140,240,.08); }
+.tb-btn.clear-areas-btn { border-color: var(--accent); color: var(--accent); }
 
-.tbtn {
-  display:inline-flex; align-items:center; gap:.38rem;
-  padding:.48rem .95rem; border-radius:100px;
-  border:1px solid var(--border); background:transparent;
-  color:var(--text2); font-family:'DM Sans',sans-serif;
-  font-size:.74rem; font-weight:600;
-  cursor:pointer; transition:all .18s; white-space:nowrap; user-select:none;
+.copy-all-btn {
+  padding: .44rem .95rem;
+  background: transparent;
+  border: 1px solid var(--accent2);
+  border-radius: 8px;
+  color: var(--accent2);
+  font-family: 'Syne', sans-serif;
+  font-size: .74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
 }
-.tbtn:hover { border-color:var(--border2); color:var(--text); background:var(--card2); }
-.tbtn.on { border-color:var(--accent); color:var(--accent); background:rgba(255,69,0,.06); }
-body.theme-night .tbtn.on { background:rgba(30,100,255,.08); }
+.copy-all-btn:hover { background: var(--accent2); color: #060d1f; }
 
-.tbtn .chv { font-style:normal; font-size:.65rem; transition:transform .22s; }
-.tbtn.open .chv { transform:rotate(180deg); }
-
-.tbtn-primary {
-  background:var(--btn-grd); border-color:transparent; color:#fff;
-  box-shadow:0 4px 14px var(--glow);
+.active-area-badge {
+  font-size: .69rem;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent);
+  background: rgba(45,140,240,.1);
+  border: 1px solid rgba(45,140,240,.3);
+  border-radius: 6px;
+  padding: .18rem .55rem;
 }
-.tbtn-primary:hover { filter:brightness(1.08); transform:translateY(-1px); box-shadow:0 6px 20px var(--glow); }
 
-.tbtn-night { border-color:rgba(30,100,255,.4); color:#4d9fff; }
-body:not(.theme-night) .tbtn-night { border-color:var(--border2); color:var(--muted); }
-.tbtn-night.on { border-color:#4d9fff; background:rgba(30,100,255,.08); color:#4d9fff; }
-
-.area-badge-pill {
-  font-family:'DM Mono',monospace; font-size:.66rem; font-weight:600;
-  color:var(--accent); background:rgba(255,69,0,.07);
-  border:1px solid var(--border2); border-radius:100px;
-  padding:.22rem .65rem;
-}
-body.theme-night .area-badge-pill { background:rgba(30,100,255,.1); }
-
-/* ══ AREAS PANEL ══ */
+/* AREAS PANEL */
 .areas-panel {
-  overflow:hidden; max-height:0; opacity:0;
-  transition:max-height .35s ease, opacity .25s, margin-bottom .25s;
-  margin-bottom:0;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .35s ease, opacity .25s, margin-bottom .25s;
+  opacity: 0;
+  margin-bottom: 0;
 }
-.areas-panel.open { max-height:500px; opacity:1; margin-bottom:.85rem; }
-.areas-scroll { display:flex; flex-wrap:wrap; gap:.4rem; padding:.6rem 0 .25rem; }
+.areas-panel.open { max-height: 700px; opacity: 1; margin-bottom: 1.1rem; }
+.areas-scroll { display: flex; flex-wrap: wrap; gap: .45rem; padding: .7rem 0 .3rem; }
 .area-btn {
-  padding:.35rem .78rem; border-radius:100px;
-  border:1px solid var(--border); background:var(--surface);
-  color:var(--muted); font-family:'DM Sans',sans-serif;
-  font-size:.72rem; font-weight:600; cursor:pointer; transition:all .18s; white-space:nowrap;
+  padding: .38rem .82rem;
+  border-radius: 999px;
+  border: 1px solid var(--border2);
+  background: var(--card);
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: .73rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .18s;
+  white-space: nowrap;
 }
-.area-btn:hover { border-color:var(--border2); color:var(--text); }
-.area-btn.selected {
-  background:var(--accent); border-color:var(--accent); color:#fff; font-weight:700;
-}
-body.theme-night .area-btn.selected { color:#fff; }
+.area-btn:hover { border-color: var(--accent); color: var(--accent); }
+.area-btn.selected { background: var(--accent); border-color: var(--accent); color: #060d1f; font-weight: 700; }
 
-/* ══ RESULTS ROW ══ */
-.results-row {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-bottom:.9rem; flex-wrap:wrap; gap:.4rem;
+/* RESULTS HEADER */
+.results-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: .9rem;
+  flex-wrap: wrap;
+  gap: .4rem;
 }
-.results-count { font-family:'DM Mono',monospace; font-size:.72rem; color:var(--muted); }
-.results-count strong { color:var(--accent); }
+.results-count { font-size: .72rem; font-family: 'DM Mono', monospace; color: var(--muted); }
+.results-count span { color: var(--accent); font-weight: 600; }
 
-/* ══ REGION ══ */
-.region-section { margin-bottom:2rem; }
-.region-hdr {
-  display:flex; align-items:center; gap:.65rem;
-  padding-bottom:.55rem; margin-bottom:.9rem;
-  border-bottom:1px solid var(--border);
-  cursor:pointer; user-select:none;
+/* REGION SECTION */
+.region-section { margin-bottom: 1.75rem; }
+.region-header {
+  display: flex; align-items: center; gap: .7rem;
+  margin-bottom: .9rem;
+  padding-bottom: .55rem;
+  border-bottom: 1px solid var(--border2);
+  cursor: pointer;
+  user-select: none;
 }
-.region-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
-.region-name {
-  font-family:'Bebas Neue',sans-serif; font-size:1.2rem; letter-spacing:.05em;
+.region-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.region-title { font-size: .97rem; font-weight: 800; letter-spacing: -.02em; }
+.region-count { font-size: .66rem; font-family: 'DM Mono', monospace; color: var(--muted); }
+.region-collapse-btn {
+  margin-left: auto;
+  font-size: .7rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: .2rem .4rem;
+  border-radius: 5px;
+  transition: all .15s;
+  font-style: normal;
 }
-.region-count { font-family:'DM Mono',monospace; font-size:.65rem; color:var(--muted); }
-.region-toggle { margin-left:auto; font-style:normal; font-size:.72rem; color:var(--muted); transition:transform .22s; }
-.region-section.collapsed .region-toggle { transform:rotate(-90deg); }
+.region-header:hover .region-collapse-btn { color: var(--accent); }
+.region-body { overflow: hidden; transition: max-height .35s ease, opacity .25s; }
+.region-body.collapsed { max-height: 0 !important; opacity: 0; }
 
-.region-body { overflow:hidden; transition:max-height .35s ease, opacity .25s; }
-.region-section.collapsed .region-body { max-height:0!important; opacity:0; }
-
-/* ══ TURNO DIVIDER ══ */
-.turno-div {
-  display:flex; align-items:center; gap:.5rem;
-  margin:.85rem 0 .7rem;
+/* TURNO DIVIDER */
+.turno-divider {
+  display: flex; align-items: center; gap: .55rem;
+  margin: .9rem 0 .7rem;
 }
-.turno-div-line { flex:1; height:1px; background:var(--border); }
-.turno-div-pill {
-  font-family:'DM Mono',monospace; font-size:.6rem; letter-spacing:.1em;
-  text-transform:uppercase; padding:.18rem .6rem;
-  border-radius:100px; border:1px solid; white-space:nowrap;
+.turno-divider-line { flex: 1; height: 1px; background: var(--border2); }
+.turno-divider-label {
+  font-size: .62rem;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding: .2rem .6rem;
+  border-radius: 999px;
+  border: 1px solid;
 }
-.turno-div-pill.dia   { color:var(--accent2);  border-color:rgba(255,136,0,.35);  background:rgba(255,136,0,.07); }
-.turno-div-pill.noite { color:#4d9fff; border-color:rgba(30,100,255,.35); background:rgba(30,100,255,.07); }
-body:not(.theme-night) .turno-div-pill.dia   { color:#c06000; border-color:rgba(192,96,0,.35); background:rgba(255,136,0,.07); }
-body:not(.theme-night) .turno-div-pill.noite { color:#1a6aff; }
+.turno-divider-label.day   { color: #2d8cf0; border-color: rgba(45,140,240,.35); background: rgba(45,140,240,.08); }
+.turno-divider-label.night { color: #00d2ff; border-color: rgba(0,210,255,.3);   background: rgba(0,210,255,.07); }
+.turno-divider-label.dawn  { color: #c084fc; border-color: rgba(192,132,252,.35);background: rgba(192,132,252,.08); }
 
-/* ══ CARDS GRID ══ */
+/* ════ TECH CARDS ════ */
 .cards-grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(315px, 1fr));
-  gap:.85rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: .85rem;
 }
 
-/* ══ TECH CARD ══ */
 .tech-card {
-  background:var(--card); border:1px solid var(--border);
-  border-radius:14px; padding:1.1rem 1.2rem;
-  transition:border-color .2s, transform .15s, box-shadow .2s, opacity .25s, filter .25s;
-  position:relative; overflow:hidden;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  transition: border-color .2s, transform .15s, box-shadow .2s, opacity .25s, filter .25s;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
 }
-.tech-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2.5px;
-  opacity:0; transition:opacity .2s; border-radius:14px 14px 0 0;
-}
-.tech-card:not(.is-offline):hover { transform:translateY(-2px); }
-.tech-card:not(.is-offline):hover::before { opacity:1; }
 
-/* region tint on hover top bar */
+/* barra colorida no topo */
+.tech-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.tech-card:not(.is-offline):hover { transform: translateY(-3px); }
+.tech-card:not(.is-offline):hover::before { opacity: 1; }
+.tech-card:not(.is-offline):hover { border-color: var(--rc, var(--accent)); box-shadow: 0 8px 30px rgba(0,0,0,.3); }
+
 .tech-card[data-region="RJ"]    { --rc: var(--rj-color); }
 .tech-card[data-region="BXD"]   { --rc: var(--bxd-color); }
 .tech-card[data-region="OESTE"] { --rc: var(--oeste-color); }
 .tech-card::before { background: var(--rc, var(--accent)); }
-.tech-card:not(.is-offline):hover { border-color:var(--rc, var(--accent)); }
-.tech-card:not(.is-offline):hover { box-shadow:0 6px 24px rgba(0,0,0,.07); }
 
-/* night card subtle tint */
-.tech-card.night-card { border-color:rgba(30,100,255,.2); }
-body:not(.theme-night) .tech-card.night-card { border-color:rgba(30,100,255,.18); }
+/* night/dawn card accents */
+.tech-card.night-card { border-color: rgba(0,210,255,.18); }
+.tech-card.dawn-card  { border-color: rgba(168,85,247,.22); }
 
 /* offline */
-.tech-card.is-offline { opacity:.42; filter:grayscale(.6); }
-.tech-card.is-offline::before { background:var(--offline)!important; opacity:1!important; }
-.tech-card.is-offline { border-color:rgba(255,34,68,.28)!important; }
+.tech-card.is-offline { opacity: .35; filter: grayscale(.7); }
+.tech-card.is-offline::before { background: var(--offline) !important; opacity: 1 !important; }
+.tech-card.is-offline { border-color: rgba(255,77,77,.22) !important; }
 
-/* busy levels */
-.tech-card.busy-1 { border-color:var(--busy1)!important; box-shadow:0 0 10px rgba(232,168,0,.12); }
-.tech-card.busy-2 { border-color:var(--busy2)!important; box-shadow:0 0 12px rgba(224,112,0,.16); }
-.tech-card.busy-3 { border-color:var(--busy3)!important; box-shadow:0 0 14px rgba(208,64,0,.2); }
-.tech-card.busy-4 { border-color:var(--busy4)!important; box-shadow:0 0 16px rgba(204,26,26,.22); }
-.tech-card.busy-5 { border-color:var(--busy5)!important; box-shadow:0 0 20px rgba(153,0,0,.28); }
-.tech-card.busy-1::before,.tech-card.busy-2::before,.tech-card.busy-3::before,
-.tech-card.busy-4::before,.tech-card.busy-5::before { opacity:1!important; }
-.tech-card.busy-1::before { background:var(--busy1); }
-.tech-card.busy-2::before { background:var(--busy2); }
-.tech-card.busy-3::before { background:var(--busy3); }
-.tech-card.busy-4::before { background:var(--busy4); }
-.tech-card.busy-5::before { background:var(--busy5); }
+/* busy states */
+.tech-card.busy-1 { border-color: var(--busy1) !important; box-shadow: 0 0 14px rgba(255,224,102,.16); }
+.tech-card.busy-2 { border-color: var(--busy2) !important; box-shadow: 0 0 14px rgba(255,184,48,.2); }
+.tech-card.busy-3 { border-color: var(--busy3) !important; box-shadow: 0 0 16px rgba(255,140,0,.26); }
+.tech-card.busy-4 { border-color: var(--busy4) !important; box-shadow: 0 0 18px rgba(255,77,77,.3); }
+.tech-card.busy-5 { border-color: var(--busy5) !important; box-shadow: 0 0 22px rgba(204,0,0,.36); }
+.tech-card.busy-1::before { opacity:1!important; background:var(--busy1); }
+.tech-card.busy-2::before { opacity:1!important; background:var(--busy2); }
+.tech-card.busy-3::before { opacity:1!important; background:var(--busy3); }
+.tech-card.busy-4::before { opacity:1!important; background:var(--busy4); }
+.tech-card.busy-5::before { opacity:1!important; background:var(--busy5); }
 
-/* ── card internals ── */
-.card-top { display:flex; justify-content:space-between; align-items:flex-start; gap:.75rem; margin-bottom:.8rem; }
-.card-info { flex:1; min-width:0; }
-
-.name-row { display:flex; align-items:center; gap:.4rem; flex-wrap:wrap; }
+/* CARD INTERNALS */
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .8rem; }
+.card-info { flex: 1; min-width: 0; }
+.card-name-row { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
 .status-dot {
-  width:7px; height:7px; border-radius:50%; flex-shrink:0; transition:background .3s, box-shadow .3s;
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  transition: background .3s, box-shadow .3s;
 }
-.status-dot.online  { background:var(--online);  box-shadow:0 0 6px rgba(0,201,122,.5); }
-.status-dot.offline { background:var(--offline); box-shadow:0 0 5px rgba(255,34,68,.4); }
+.status-dot.online  { background: var(--online);  box-shadow: 0 0 7px rgba(0,232,154,.55); }
+.status-dot.offline { background: var(--offline); box-shadow: 0 0 6px rgba(255,77,77,.4); }
+.tech-name { font-size: .95rem; font-weight: 700; letter-spacing: -.02em; line-height: 1.3; }
+.status-text { font-size: .6rem; font-family: 'DM Mono', monospace; font-weight: 600; }
+.status-text.online  { color: var(--online); }
+.status-text.offline { color: var(--offline); }
+.tech-full-name { font-size: .65rem; font-family: 'DM Mono', monospace; color: var(--muted); margin-top: .12rem; line-height: 1.4; }
+.tech-role { font-size: .65rem; font-family: 'DM Mono', monospace; color: var(--success); margin-top: .18rem; }
 
-.tech-name {
-  font-family:'DM Sans',sans-serif; font-size:.92rem; font-weight:700;
-  color:var(--text); letter-spacing:-.01em; line-height:1.3;
+.card-tags { display: flex; flex-wrap: wrap; gap: .25rem; margin-top: .28rem; }
+.night-tag   { font-size: .58rem; font-family: 'DM Mono', monospace; color: #00d2ff;  background: rgba(0,210,255,.08);    border: 1px solid rgba(0,210,255,.25);    border-radius: 4px; padding: .12rem .4rem; }
+.dawn-tag    { font-size: .58rem; font-family: 'DM Mono', monospace; color: #c084fc;  background: rgba(192,132,252,.08);  border: 1px solid rgba(192,132,252,.25);  border-radius: 4px; padding: .12rem .4rem; }
+.weekend-tag { font-size: .58rem; font-family: 'DM Mono', monospace; color: var(--wk-color); background: rgba(240,171,252,.08); border: 1px solid rgba(240,171,252,.25); border-radius: 4px; padding: .12rem .4rem; }
+.obs-tag     { font-size: .6rem;  font-family: 'DM Mono', monospace; background: rgba(255,184,48,.1); border: 1px solid rgba(255,184,48,.3); border-radius: 5px; padding: .14rem .44rem; color: #ffb830; margin-top: .4rem; display: inline-block; }
+
+.card-actions { display: flex; flex-direction: column; align-items: flex-end; gap: .42rem; flex-shrink: 0; margin-left: .55rem; }
+
+.copy-btn {
+  padding: .3rem .65rem;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: .67rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
 }
-.status-txt {
-  font-family:'DM Mono',monospace; font-size:.58rem; font-weight:600;
+.copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+.copy-btn.copied { border-color: var(--success) !important; color: var(--success) !important; }
+
+.offline-btn {
+  padding: .3rem .65rem;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  color: var(--muted);
+  font-family: 'Syne', sans-serif;
+  font-size: .67rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
 }
-.status-txt.online  { color:var(--online); }
-.status-txt.offline { color:var(--offline); }
-
-.tech-fullname { font-family:'DM Mono',monospace; font-size:.63rem; color:var(--muted); margin-top:.1rem; line-height:1.45; }
-.tech-role     { font-family:'DM Mono',monospace; font-size:.63rem; color:var(--success); margin-top:.15rem; }
-
-.card-tags { display:flex; flex-wrap:wrap; gap:.22rem; margin-top:.25rem; }
-.tag {
-  font-family:'DM Mono',monospace; font-size:.58rem;
-  padding:.1rem .38rem; border-radius:5px; border:1px solid;
-}
-.tag-night   { color:#4d9fff;          border-color:rgba(30,100,255,.28); background:rgba(30,100,255,.07); }
-.tag-obs     { color:var(--warn);      border-color:rgba(255,140,0,.28);  background:rgba(255,140,0,.07); }
-.tag-ferias  { color:#F97316;          border-color:rgba(249,115,22,.28); background:rgba(249,115,22,.06); }
-
-/* ── card actions ── */
-.card-actions { display:flex; flex-direction:column; align-items:flex-end; gap:.38rem; flex-shrink:0; }
-
-.action-btn {
-  padding:.28rem .6rem; border-radius:7px;
-  border:1px solid var(--border); background:transparent;
-  color:var(--muted); font-family:'DM Sans',sans-serif;
-  font-size:.65rem; font-weight:600; cursor:pointer;
-  transition:all .15s; white-space:nowrap;
-}
-.action-btn:hover { border-color:var(--accent); color:var(--accent); }
-.action-btn.copied { border-color:var(--success)!important; color:var(--success)!important; }
-.action-btn.offline-on { border-color:var(--online)!important; color:var(--online)!important; }
-.action-btn.offline-off:hover { border-color:var(--offline); color:var(--offline); }
+.offline-btn:hover { border-color: var(--offline); color: var(--offline); }
+.offline-btn.is-forced { border-color: var(--online) !important; color: var(--online) !important; }
 
 /* wk check */
-.wk-check {
-  display:flex; align-items:center; gap:.28rem;
-  padding:.22rem .48rem; border-radius:7px;
-  border:1px solid rgba(217,70,239,.22); background:rgba(217,70,239,.04);
-  cursor:pointer; user-select:none; transition:all .15s;
+.wk-card-check {
+  display: flex; align-items: center; gap: .3rem;
+  cursor: pointer; user-select: none;
+  padding: .25rem .5rem;
+  border-radius: 6px;
+  border: 1px solid rgba(240,171,252,.22);
+  background: rgba(240,171,252,.04);
+  transition: all .15s;
 }
-.wk-check:hover { border-color:var(--wk-color); }
-.wk-check.on { border-color:var(--wk-color); background:rgba(217,70,239,.1); }
-.wk-box {
-  width:12px; height:12px; border-radius:3px;
-  border:1.5px solid rgba(217,70,239,.4); background:transparent;
-  display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0;
+.wk-card-check:hover { border-color: var(--wk-color); }
+.wk-card-check.checked { border-color: var(--wk-color); background: rgba(240,171,252,.1); }
+.wk-card-check .wk-box {
+  width: 13px; height: 13px; border-radius: 3px;
+  border: 1.5px solid rgba(240,171,252,.5);
+  background: transparent;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; flex-shrink: 0;
 }
-.wk-check.on .wk-box { background:var(--wk-color); border-color:var(--wk-color); }
-.wk-check.on .wk-box::after { content:'✓'; font-size:.52rem; color:#fff; font-weight:800; }
-.wk-lbl { font-family:'DM Mono',monospace; font-size:.56rem; color:rgba(217,70,239,.65); }
-.wk-check.on .wk-lbl { color:var(--wk-color); }
+.wk-card-check.checked .wk-box { background: var(--wk-color); border-color: var(--wk-color); }
+.wk-card-check.checked .wk-box::after { content: '✓'; font-size: .55rem; color: #060d1f; font-weight: 800; }
+.wk-card-check .wk-label { font-size: .58rem; font-family: 'DM Mono', monospace; color: rgba(240,171,252,.65); }
+.wk-card-check.checked .wk-label { color: var(--wk-color); }
 
-/* busy toggle */
-.busy-row { display:flex; align-items:center; gap:.28rem; }
+/* busy dots */
+.busy-row { display: flex; align-items: center; gap: .3rem; }
 .busy-toggle {
-  display:flex; align-items:center; gap:2px;
-  padding:3px 5px; border-radius:6px;
-  border:1px solid var(--border); background:transparent; cursor:pointer;
-  transition:border-color .15s;
+  display: flex; align-items: center; gap: 2px;
+  cursor: pointer; user-select: none;
+  padding: 3px 5px; border-radius: 6px;
+  border: 1px solid var(--border2);
+  background: transparent;
 }
-.busy-toggle:hover { border-color:var(--border2); }
-.busy-d { width:7px; height:7px; border-radius:50%; background:var(--border); transition:background .15s; }
-.busy-toggle[data-lvl="1"] .busy-d:nth-child(-n+1) { background:var(--busy1); }
-.busy-toggle[data-lvl="2"] .busy-d:nth-child(-n+2) { background:var(--busy2); }
-.busy-toggle[data-lvl="3"] .busy-d:nth-child(-n+3) { background:var(--busy3); }
-.busy-toggle[data-lvl="4"] .busy-d:nth-child(-n+4) { background:var(--busy4); }
-.busy-toggle[data-lvl="5"] .busy-d:nth-child(-n+5) { background:var(--busy5); }
-.busy-lbl { font-family:'DM Mono',monospace; font-size:.56rem; color:var(--muted); white-space:nowrap; }
-.busy-lbl.l1 { color:var(--busy1); } .busy-lbl.l2 { color:var(--busy2); }
-.busy-lbl.l3 { color:var(--busy3); } .busy-lbl.l4 { color:var(--busy4); }
-.busy-lbl.l5 { color:var(--busy5); }
+.busy-toggle:hover { border-color: var(--muted); }
+.busy-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.1); transition: background .15s; }
+.busy-toggle[data-level="1"] .busy-dot:nth-child(-n+1) { background: var(--busy1); }
+.busy-toggle[data-level="2"] .busy-dot:nth-child(-n+2) { background: var(--busy2); }
+.busy-toggle[data-level="3"] .busy-dot:nth-child(-n+3) { background: var(--busy3); }
+.busy-toggle[data-level="4"] .busy-dot:nth-child(-n+4) { background: var(--busy4); }
+.busy-toggle[data-level="5"] .busy-dot:nth-child(-n+5) { background: var(--busy5); }
+.busy-label { font-size: .58rem; font-family: 'DM Mono', monospace; color: var(--muted); white-space: nowrap; }
+.busy-label.l1{color:var(--busy1);}.busy-label.l2{color:var(--busy2);}.busy-label.l3{color:var(--busy3);}
+.busy-label.l4{color:var(--busy4);}.busy-label.l5{color:var(--busy5);}
 
-/* ── data rows ── */
-.data-row { display:flex; gap:.4rem; align-items:baseline; margin-bottom:.24rem; }
+/* data rows */
+.data-row { display: flex; gap: .45rem; align-items: baseline; margin-bottom: .28rem; }
 .data-label {
-  font-family:'DM Mono',monospace; font-size:.58rem; color:var(--muted);
-  text-transform:uppercase; letter-spacing:.05em; min-width:42px; flex-shrink:0;
+  font-size: .6rem; font-family: 'DM Mono', monospace;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: .05em; min-width: 46px; flex-shrink: 0;
 }
-.data-val { font-family:'DM Mono',monospace; font-size:.72rem; color:var(--text2); }
+.data-val { font-size: .74rem; font-family: 'DM Mono', monospace; color: var(--text); }
 
-.areas-tags { margin-top:.75rem; display:flex; flex-wrap:wrap; gap:.24rem; }
+.areas-tags { margin-top: .8rem; display: flex; flex-wrap: wrap; gap: .28rem; }
 .area-tag {
-  font-family:'DM Mono',monospace; font-size:.58rem;
-  background:var(--tag-bg); border:1px solid var(--border);
-  border-radius:5px; padding:.13rem .4rem; color:var(--muted);
+  font-size: .6rem; font-family: 'DM Mono', monospace;
+  background: var(--tag-bg);
+  border: 1px solid var(--border2);
+  border-radius: 5px; padding: .15rem .44rem;
+  color: var(--muted);
 }
 
-/* ══ EMPTY STATE ══ */
-.empty-state {
-  text-align:center; padding:4rem 2rem; color:var(--muted);
+/* COMMENT BOX */
+.card-comment {
+  display: block; width: 100%; margin-top: .75rem;
+  padding: .45rem .65rem;
+  background: var(--tag-bg);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  font-size: .7rem;
+  resize: none; outline: none;
+  transition: border-color .2s, color .2s;
+  min-height: 32px; line-height: 1.4;
 }
-.empty-state .big { font-size:3rem; margin-bottom:.5rem; }
-.empty-state p { font-family:'DM Mono',monospace; font-size:.8rem; }
+.card-comment:focus { border-color: var(--accent); color: var(--text); }
+.card-comment::placeholder { color: var(--muted); opacity: .55; }
 
-/* ══ TOAST ══ */
+/* TIMER TAGS */
+.timer-tag {
+  display: inline-flex; align-items: center; gap: .3rem;
+  font-size: .58rem; font-family: 'DM Mono', monospace;
+  border-radius: 4px; padding: .12rem .45rem;
+  border: 1px solid; margin-top: .25rem;
+}
+.timer-tag.unavail  { color: #fb923c; background: rgba(251,146,60,.08); border-color: rgba(251,146,60,.28); }
+.timer-tag.forecast { color: #facc15; background: rgba(250,204,21,.07); border-color: rgba(250,204,21,.22); }
+.timer-tag.forecast.warn    { color: #ff4d4d; background: rgba(255,77,77,.09); border-color: rgba(255,77,77,.3); animation: pulse-warn .9s ease infinite; }
+.timer-tag.forecast.expired { color: #ff4d4d; background: rgba(255,77,77,.1);  border-color: rgba(255,77,77,.38); }
+@keyframes pulse-warn { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+
+.timer-btn {
+  padding: .3rem .65rem;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  color: #060d1f;
+  font-family: 'DM Mono', monospace;
+  font-size: .67rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .15s;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(0,0,0,.3);
+}
+.timer-btn:hover { filter: brightness(1.18); transform: translateY(-1px); }
+
+.timer-row { display: flex; align-items: center; gap: .35rem; margin-top: .35rem; flex-wrap: wrap; }
+
+.ttag-clear {
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: .25rem; width: 13px; height: 13px; border-radius: 50%;
+  background: rgba(255,255,255,.18); border: none; cursor: pointer;
+  font-size: .55rem; color: inherit; line-height: 1;
+  transition: background .15s; flex-shrink: 0;
+}
+.ttag-clear:hover { background: rgba(255,255,255,.38); }
+
+/* SUCCESSOR HINT */
+.successor-hint {
+  margin-top: .55rem; padding: .4rem .65rem;
+  background: rgba(0,232,154,.05);
+  border: 1px solid rgba(0,232,154,.18);
+  border-radius: 7px;
+  font-size: .62rem; font-family: 'DM Mono', monospace;
+  color: var(--success); line-height: 1.5;
+}
+.successor-hint strong { color: var(--success); font-weight: 700; }
+.successor-hint .sh-label { opacity: .7; font-size: .58rem; display: block; margin-bottom: .2rem; }
+
+/* EMPTY STATE */
+.empty-state { text-align: center; padding: 3.5rem 2rem; color: var(--muted); }
+.empty-state .big { font-size: 3rem; margin-bottom: .5rem; }
+
+/* TOAST */
 .toast {
-  position:fixed; bottom:2rem; right:2rem; z-index:9999;
-  background:var(--surface); border:1px solid rgba(0,201,122,.4);
-  border-radius:12px; padding:.8rem 1.3rem;
-  font-family:'DM Sans',monospace; font-size:.78rem; font-weight:600; color:var(--text);
-  box-shadow:0 10px 36px rgba(0,0,0,.18);
-  display:flex; align-items:center; gap:.5rem;
-  transform:translateY(80px) scale(.96); opacity:0;
-  transition:all .32s cubic-bezier(.34,1.56,.64,1);
+  position: fixed; bottom: 2rem; right: 2rem;
+  background: var(--success);
+  color: #060d1f;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: .84rem;
+  padding: .72rem 1.4rem;
+  border-radius: 10px;
+  transform: translateY(100px); opacity: 0;
+  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  z-index: 999;
 }
-.toast.show { transform:translateY(0) scale(1); opacity:1; }
+.toast.show { transform: translateY(0); opacity: 1; }
 
-/* ══ RESPONSIVE ══ */
-@media(max-width:768px) {
-  header { padding:0 1.25rem; height:auto; padding-top:.75rem; padding-bottom:.75rem; }
-  .container { padding:1.25rem; }
-  .toolbar { flex-direction:column; }
-  .tbtn, .search-wrap { width:100%; }
-  .cards-grid { grid-template-columns:1fr; }
+/* ════ TIMER MODAL ════ */
+.tmodal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(6px);
+  z-index: 600;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .22s;
 }
+.tmodal-overlay.open { opacity: 1; pointer-events: all; }
+
+.tmodal {
+  background: var(--navy2);
+  border: 1px solid var(--border2);
+  border-radius: 18px;
+  padding: 1.6rem;
+  width: min(440px, 90vw);
+  transform: translateY(18px);
+  transition: transform .26s;
+  box-shadow: 0 24px 60px rgba(0,0,0,.5);
+}
+.tmodal-overlay.open .tmodal { transform: translateY(0); }
+.tmodal h3 { font-size: .95rem; font-weight: 800; color: var(--accent); margin-bottom: 1.1rem; }
+.tmodal-section { margin-bottom: 1.1rem; }
+.tmodal-section label {
+  display: block;
+  font-size: .62rem; font-family: 'DM Mono', monospace;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: .06em; margin-bottom: .35rem;
+}
+.tmodal-row { display: flex; gap: .5rem; align-items: center; }
+.tmodal-input {
+  flex: 1; padding: .55rem .75rem;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: .82rem;
+  outline: none;
+  transition: border-color .2s;
+}
+.tmodal-input:focus { border-color: var(--accent); }
+.tmodal-acts { display: flex; gap: .6rem; margin-top: 1.1rem; }
+.tmodal-btn {
+  flex: 1; padding: .5rem;
+  border: none; border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Syne', sans-serif;
+  font-size: .8rem;
+  font-weight: 700;
+  transition: all .15s;
+}
+.tmodal-btn.ok { background: linear-gradient(135deg, var(--accent), var(--accent2)); color: #060d1f; }
+.tmodal-btn.cancel { background: rgba(255,255,255,.04); border: 1px solid var(--border2); color: var(--muted); }
+.tmodal-btn.cancel:hover { border-color: var(--accent); color: var(--accent); }
+.tmodal-clear {
+  padding: .35rem .65rem;
+  background: transparent;
+  border: 1px solid rgba(255,77,77,.3);
+  border-radius: 7px;
+  color: #ff4d4d;
+  font-family: 'DM Mono', monospace;
+  font-size: .67rem;
+  cursor: pointer;
+}
+.tmodal-clear:hover { background: rgba(255,77,77,.1); }
+
+/* ENTRY ANIMATION */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+header { animation: fade-up .45s ease both; }
+.container { animation: fade-up .45s .1s ease both; }
 </style>
 </head>
 <body>
 
-<!-- ══ HEADER ══ -->
 <header>
-  <div class="logo-mark">
-    <div class="logo-badge"><span>TLP</span></div>
-    <div class="logo-text">
+  <div class="header-left">
+    <div class="logo-mark">RJ</div>
+    <div class="header-titles">
+      <div class="header-eyebrow">Sistema de Gestão</div>
       <h1>Técnicos por Área</h1>
       <p>Rio de Janeiro · Telecom Field Team</p>
     </div>
   </div>
-  <div class="header-right">
-    <a href="index.html" class="btn-home">⌂ Início</a>
-    <div class="shift-pill">
-      <span class="shift-icon" id="shiftIcon">☀️</span>
+  <div style="display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;">
+    <a href="index.html" class="home-btn">⌂ Início</a>
+    <div class="shift-badge day" id="shiftBadge">
+      <span id="shiftIcon">☀️</span>
       <div>
-        <div class="shift-label" id="shiftLabel">Turno Diurno</div>
+        <div id="shiftLabel">Turno Diurno</div>
         <div class="shift-clock" id="shiftClock"></div>
       </div>
     </div>
@@ -557,136 +860,195 @@ body:not(.theme-night) .tech-card.night-card { border-color:rgba(30,100,255,.18)
 
 <div class="container">
 
-  <!-- SHIFT WARN -->
-  <div class="shift-warn" id="shiftWarn">
-    <span>🌙</span><span id="shiftWarnText"></span>
+  <div id="shiftWarn" style="display:none" class="shift-warn day">
+    <span id="shiftWarnIcon">🌙</span><span id="shiftWarnText"></span>
   </div>
 
-  <!-- BUSY PANEL -->
-  <div class="busy-panel" id="busyPanel">
-    <div class="panel-label">⚠ Status alterado</div>
-    <div class="busy-chips" id="busyList"></div>
+  <div class="busy-panel" id="busyPanel" style="display:none">
+    <div class="busy-panel-title">⚠ Status alterado</div>
+    <div class="busy-list" id="busyList"></div>
   </div>
 
-  <!-- WEEKEND PANEL -->
+  <div class="forecast-alert" id="forecastAlert">
+    <span>⚠</span>
+    <div>
+      <div style="font-weight:700;margin-bottom:.25rem;">Previsões vencendo / vencidas:</div>
+      <div class="forecast-alert-list" id="forecastAlertList"></div>
+    </div>
+  </div>
+
   <div class="weekend-panel" id="weekendPanel">
-    <div class="weekend-hdr" id="weekendHdr">
-      <div class="weekend-title">
+    <div class="weekend-panel-header" id="weekendPanelHdr">
+      <div class="weekend-panel-title">
         <span>📅</span> Plantão Sábado &amp; Domingo
-        <span class="weekend-count" id="wkCount"></span>
+        <span style="font-size:.68rem;color:var(--muted);font-weight:400;font-family:'DM Mono',monospace;" id="wkCount"></span>
       </div>
-      <span class="weekend-chevron">▾</span>
+      <div style="display:flex;align-items:center;gap:.5rem;">
+        <button class="tb-btn" id="plantaoFilterBtn" style="font-size:.68rem;padding:.3rem .7rem;">📅 Somente plantão</button>
+        <button class="tb-btn" id="clearPlantaoBtn" style="font-size:.68rem;padding:.3rem .7rem;border-color:rgba(255,77,77,.3);color:#ff4d4d;">✕ Limpar plantão</button>
+        <em class="weekend-panel-chevron">▾</em>
+      </div>
     </div>
     <div class="weekend-body" id="weekendBody">
       <div id="weekendSlots"></div>
     </div>
   </div>
 
-  <!-- TOOLBAR -->
   <div class="toolbar">
-    <div class="search-wrap">
-      <span class="s-ico">🔍</span>
+    <div class="search-bar">
+      <span class="icon">🔍</span>
       <input type="text" id="searchInput" placeholder="Buscar técnico ou área...">
     </div>
-    <button class="tbtn" id="areaToggleBtn">🗺 Áreas <em class="chv">▾</em></button>
-    <span class="area-badge-pill" id="areaBadge">Todas</span>
-    <button class="tbtn" id="clearAreasBtn" style="display:none">✕ Limpar</button>
-    <button class="tbtn tbtn-night" id="nightToggleBtn">🌙 Mostrar noturnos</button>
-    <button class="tbtn tbtn-primary" id="copyAllBtn">⧉ Copiar visíveis</button>
+    <button class="tb-btn" id="areaToggleBtn"><span>🗺 Áreas</span><em class="chevron">▾</em></button>
+    <span class="active-area-badge" id="activeAreaBadge">Todas</span>
+    <button class="tb-btn clear-areas-btn" id="clearAreasBtn" style="display:none">✕ Limpar seleção</button>
+    <button class="tb-btn night-btn" id="nightToggleBtn">🌙 Mostrar noturnos</button>
+    <button class="copy-all-btn" id="copyAllBtn">⧉ Copiar visíveis</button>
   </div>
 
-  <!-- AREAS PANEL -->
   <div class="areas-panel" id="areasPanel">
     <div class="areas-scroll" id="areasBtns"></div>
   </div>
 
-  <!-- RESULTS -->
-  <div class="results-row">
-    <div class="results-count">Exibindo <strong id="countDisplay">0</strong> técnico(s)</div>
+  <div class="results-header">
+    <div class="results-count">Exibindo <span id="countDisplay">0</span> técnico(s)</div>
   </div>
 
   <div id="mainContent"></div>
 </div>
 
-<div class="toast" id="toast">✓ <span id="toastMsg"></span></div>
+<div class="toast" id="toast"></div>
+
+<!-- MODAL DE HORÁRIO / PREVISÃO -->
+<div class="tmodal-overlay" id="timerModal">
+  <div class="tmodal">
+    <h3 id="timerModalTitle">⏱ Horários do técnico</h3>
+
+    <div class="tmodal-section">
+      <label>⛔ Indisponível até (HH:MM)</label>
+      <div class="tmodal-row">
+        <input type="time" class="tmodal-input" id="tmUnavailInput">
+        <button class="tmodal-clear" id="tmUnavailClear">✕ Remover</button>
+      </div>
+      <input type="text" class="tmodal-input" id="tmUnavailReason" placeholder="Motivo da indisponibilidade..." style="margin-top:.45rem;">
+      <div style="font-size:.62rem;font-family:'DM Mono',monospace;color:var(--muted);margin-top:.4rem;">
+        O técnico ficará com tag "Indisponível até HH:MM" até esse horário passar.
+      </div>
+    </div>
+
+    <div class="tmodal-section">
+      <label>📋 Previsão de normalização (HH:MM)</label>
+      <div class="tmodal-row">
+        <input type="time" class="tmodal-input" id="tmForecastInput">
+        <button class="tmodal-clear" id="tmForecastClear">✕ Remover</button>
+      </div>
+      <input type="text" class="tmodal-input" id="tmForecastReason" placeholder="O que está sendo previsto? (ex: retorno energia, técnico em rota...)" style="margin-top:.45rem;">
+      <div style="font-size:.62rem;font-family:'DM Mono',monospace;color:var(--muted);margin-top:.4rem;">
+        Aparece como "Prev: HH:MM". Pisca em vermelho quando vence em ≤ 15min.
+      </div>
+    </div>
+
+    <div class="tmodal-acts">
+      <button class="tmodal-btn cancel" id="timerModalCancel">Cancelar</button>
+      <button class="tmodal-btn ok" id="timerModalSave">Salvar</button>
+    </div>
+  </div>
+</div>
 
 <script>
-/* ══ CONFIG ══ */
-const DAY_START=7, NIGHT_START=15;
-function isDayActive(){const h=new Date().getHours();return h>=DAY_START&&h<NIGHT_START;}
-function isNightActive(){return !isDayActive();}
-function isEveningMode(){const h=new Date().getHours();return h>=17||h<7;}
+/* ══ TURNOS ══ */
+const T_DIA=7, T_NOITE=15, T_DIA_END=17, T_MAD=23;
 
-let showNightOverride=false;
-const busyState={}, offlineState={}, wkState={};
+function getTurnoAtual(){
+  const h=new Date().getHours();
+  if(h>=T_DIA&&h<T_NOITE)return"dia";
+  if(h>=T_NOITE&&h<T_MAD)return"noite";
+  return"madrugada";
+}
+function isOverlap(){const h=new Date().getHours();return h>=T_NOITE&&h<T_DIA_END;}
+function turnoAtivoAgora(turno){
+  const h=new Date().getHours();
+  if(turno==="dia")      return h>=T_DIA&&h<T_DIA_END;
+  if(turno==="noite")    return h>=T_NOITE&&h<T_MAD;
+  if(turno==="madrugada")return h>=T_MAD||h<T_DIA;
+  return false;
+}
+function estaOnline(t){
+  if(offlineState[t.nome])return false;
+  if(onlineForced[t.nome])return true;
+  return turnoAtivoAgora(t.turno);
+}
 
-/* ══ REGIÕES ══ */
+/* ── ESTADO ── */
+const busyState={},offlineState={},onlineForced={},wkState={},commentState={},timerState={};
+let showNightOverride=false,showOnlyPlantao=false;
+let activeAreas=new Set(["Todas"]);
+
+/* ── REGIÕES ── */
 const REGIOES=[
-  {id:"RJ",    label:"Rio de Janeiro / Niterói", color:"var(--rj-color)"},
-  {id:"BXD",   label:"Baixada",                  color:"var(--bxd-color)"},
-  {id:"OESTE", label:"Oeste",                    color:"var(--oeste-color)"}
+  {id:"RJ",    label:"Rio de Janeiro / Niterói",color:"var(--rj-color)"},
+  {id:"BXD",   label:"Baixada",                 color:"var(--bxd-color)"},
+  {id:"OESTE", label:"Oeste",                   color:"var(--oeste-color)"}
 ];
 const collapseState={};
 
-/* ══ DADOS ══ */
+/* ── DADOS ── */
 const T=[
-  {nome:"Carlos Miranda",    nc:"CARLOS ALBERTO FIDALGO MIRANDA",   reg:"RJ",    turno:"dia",   cpf:"699.675.807-63", rg:"05728184-2",   crea:null,          cargo:"TÉCNICO TELECOM",        obs:"Residente",                          areas:["FTS","Central Ana Neri","Rocha","Engenho Novo","Pilares","Méier","Piedade","Encantado","Riachuelo"]},
-  {nome:"José Duque",        nc:"JOSÉ CARLOS DUQUE ESTRADA FILHO",  reg:"RJ",    turno:"dia",   cpf:"078.938.447-79", rg:"6775760-9",    crea:"2005105212",  cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Cascadura","Madureira","Rocha Miranda","Bento Ribeiro","Vila da Penha","Penha Circular","Brás de Pina","Oswaldo Cruz","Vila Valqueire","Honório Gurgel","Turiaçu","Campinho","Cavalcanti","Coelho Neto","Acari","Deodoro"]},
-  {nome:"Alex Cunha",        nc:"ALEX CORREA DA CUNHA",             reg:"RJ",    turno:"dia",   cpf:"108.401.007-01", rg:"122470222",    crea:null,          cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Bento Ribeiro","Madureira","Oswaldo Cruz","Campinho","Colégio","Turiaçu","Honório Gurgel","Cavalcanti","Rocha Miranda","Vila Valqueire"]},
-  {nome:"Adenilson Avelino", nc:"ADENILSON AVELINO DA S. JR",       reg:"RJ",    turno:"dia",   cpf:"056.712.747-88", rg:"20.315.099-0", crea:"2011122302",  cargo:"TÉCNICO TELECOM",        obs:"Chamados FTTH – prioridade",         areas:["Meier","Del Castilho","Cachambi","DDC","Engenho de Dentro","Todos os Santos","Lins","Piedade","Abolição","Rocha","Riachuelo","Jacaré","Encantado"]},
-  {nome:"Gustavo Cabral",    nc:"GUSTAVO CABRAL DOS SANTOS",         reg:"RJ",    turno:"dia",   cpf:"138.707.757-00", rg:"262948581",    crea:"2015104645",  cargo:"TÉCNICO TELECOM",        obs:"Chamados FTTC – prioridade",         areas:["São Cristóvão","Meier","Cachambi","Jacarezinho","DDC","Del Castilho","Engenho de Dentro","Benfica","Manguinhos","Bonsucesso"]},
-  {nome:"Flavio Borges",     nc:"FLÁVIO BORGES GOMES",               reg:"RJ",    turno:"dia",   cpf:"088.597.827-75", rg:"128867041",    crea:null,          cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Quintino","São Cristóvão","Benfica","Eng. de Dentro","Lins","Todos os Santos","Abolição","Cachambi","Méier","Riachuelo","Piedade","Rocha","Del Castilho","Jacaré","Encantado","Pilares"]},
-  {nome:"Moises Alves",      nc:"MOISÉS ALVES DA SILVEIRA",          reg:"RJ",    turno:"dia",   cpf:"147.179.907-73", rg:"24627910-3",   crea:"2012106328",  cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Humaitá","Leblon","Laranjeiras","Jardim Botânico","Lagoa","Zona Sul","Centro","Flamengo","Botafogo","Catete","Glória","Santa Teresa","Lapa","Copacabana","Ipanema","Gávea","Urca","Cosme Velho"]},
-  {nome:"Orlando Ferreira",  nc:"ORLANDO FERREIRA DOS SANTOS JR.",   reg:"RJ",    turno:"dia",   cpf:"077.544.197-00", rg:"10814849-5",   crea:"150799465-6", cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Centro","Lapa","Estácio","Santa Teresa","Catumbi","São Gonçalo","Niterói","Fonseca","Alcântara","Pendotiba"]},
-  {nome:"Marcelo Raimundo",  nc:"MARCELO RAIMUNDO DOS SANTOS",       reg:"RJ",    turno:"dia",   cpf:"913.166.507-15", rg:"82289562",     crea:null,          cargo:"TÉCNICO TELECOM",        obs:"Verificar disponibilidade (Olaria)", areas:["Irajá","Olaria","Colégio","Jardim América","VGE","Ilha do Governador","Penha","Ramos","Bonsucesso","Vigário Geral","Parada de Lucas","Cordovil","Brás de Pina","Higienópolis","Tomás Coelho","Vicente de Carvalho","Galeão"]},
-  {nome:"Francisco Alex",    nc:"FRANCISCO ALEX DE SOUSA SILVA",     reg:"RJ",    turno:"dia",   cpf:"098.024.617-25", rg:"125900332",    crea:null,          cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Andaraí","Grajaú","Tijuca","LPD","Vila Isabel","Maracanã","Praça da Bandeira","Alto da Boa Vista","Usina","Muda","Água Santa","Cachambi"]},
-  {nome:"Marcelo G. Rocha",  nc:"MARCELO GOMES DA ROCHA",            reg:"RJ",    turno:"dia",   cpf:null,             rg:null,           crea:null,          cargo:"TÉCNICO TELECOM",        obs:"Sábado e Domingo",                  areas:["Rocha","Ana Neri","Fonseca Teles"]},
-  {nome:"Bispo",             nc:"LUIZ CLAUDIO BISPO PIRES",          reg:"RJ",    turno:"noite", cpf:"072.154.167-47", rg:"10434530-1",   crea:"2011116337",  cargo:"TÉCNICO TELECOM",        obs:"Área do Orlando e Moises",           areas:["Centro","Botafogo","Zona Sul","Flamengo","Catete","Glória","Lapa","Santa Teresa","Copacabana","Ipanema","Urca","Humaitá","Laranjeiras","Cosme Velho"]},
-  {nome:"Glaucio Hipolito",  nc:"GLAUCIO HIPOLITO GONZAGA",          reg:"RJ",    turno:"noite", cpf:"105.514.857-44", rg:"20309013-9",   crea:"2008148830",  cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Tijuca","São Cristóvão","Grajaú","Andaraí","Rio Comprido","Rocha","Riachuelo","Ana Neri","Fonseca Teles","Maracanã","Vila Isabel","Estácio","Engenho Novo","Pilares","Encantado","Praça da Bandeira","Alto da Boa Vista"]},
-  {nome:"Waldir Motta",      nc:"WALDIR MOTTA PRENDA JUNIOR",        reg:"RJ",    turno:"noite", cpf:"143.212.857-47", rg:"257337162",    crea:"2015111941",  cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Cascadura","Meier","Engenho de Dentro","Cachambi","Madureira","DDC","Engenho Novo","Todos os Santos","Lins","Abolição","Piedade","Pilares","Del Castilho","Rocha","Campinho","Quintino","Honório Gurgel"]},
-  {nome:"Jorge Luiz",        nc:"JORGE LUIS DA SILVA",               reg:"RJ",    turno:"noite", cpf:"071.784.037-99", rg:"11007505-8",   crea:null,          cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Penha","Irajá","Penha Circular","Ramos","Vila Isabel","Olaria","Bonsucesso","Bento Ribeiro","Brás de Pina","Higienópolis","Cordovil","Parada de Lucas","Vigário Geral","Manguinhos","Maré","Inhaúma","Tomás Coelho","Vicente de Carvalho","Jardim América","Colégio"]},
-  {nome:"Michael",           nc:"MICHAEL JOSÉ QUEIROZ DA SILVEIRA",  reg:"BXD",   turno:"dia",   cpf:"075.593.707-48", rg:"11557141-6",   crea:"2009118823",  cargo:"TÉCNICO TELECOM",        obs:"Fixa e IHS",                         areas:["Mesquita","Nilópolis","Anchieta","São João de Meriti","Barros Filho","Coelho da Rocha","Guadalupe","Olinda","Pavuna"]},
-  {nome:"Cremildo",          nc:"CREMILDO DELFINO RANGEL",            reg:"BXD",   turno:"dia",   cpf:"027.157.057-19", rg:"09086097-4",   crea:null,          cargo:"ASSISTENTE TÉC. TELECOM",obs:"Fixa e IHS",                         areas:["Nova Iguaçu","Queimados","Belford Roxo","Japeri","Adjacências"]},
-  {nome:"Vanessa",           nc:"VANESSA CRISTINA SANTOS DA SILVA",   reg:"BXD",   turno:"dia",   cpf:"090.416.897-29", rg:"011345390-6",  crea:"2006127503",  cargo:"TÉCNICO TELECOM",        obs:"FTTH – Fixa. NÃO usa escada / NÃO atende MSAN", areas:["Duque de Caxias","Adjacências"]},
-  {nome:"Valter Neves",      nc:"VALTER NEVES JUNIOR",                reg:"BXD",   turno:"dia",   cpf:"033.738.017-10", rg:"09946138-6",   crea:null,          cargo:"TÉCNICO TELECOM",        obs:"FTTC – Fixa e IHS",                  areas:["Pavuna","Jardim América","Duque de Caxias","Adjacências"]},
-  {nome:"Marcelo Caetano",   nc:"MARCELO CAETANO GOMES",              reg:"BXD",   turno:"dia",   cpf:"041.519.837-24", rg:"104202049",    crea:null,          cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Duque de Caxias","Adjacências"]},
-  {nome:"Anderson dos Santos",nc:"ANDERSON DOS SANTOS ILDEFONSO",    reg:"BXD",   turno:"noite", cpf:"114.152.427-98", rg:null,           crea:null,          cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Mesquita","Anchieta","São João de Meriti","Duque de Caxias","Coelho da Rocha","Guadalupe","Olinda","Pavuna","Adjacências"]},
-  {nome:"Tiago Ângelo",      nc:"TIAGO ANGELO PIMENTA RANGEL",       reg:"BXD",   turno:"noite", cpf:"150.960.947-40", rg:"279500300",    crea:null,          cargo:"TÉCNICO TELECOM",        obs:null,                                 areas:["Nova Iguaçu","Nilópolis","Belford Roxo","Queimados","Japeri","Adjacências"]},
-  {nome:"Agnaldo",           nc:"AGNALDO DA SILVA COSTA",             reg:"OESTE", turno:"dia",   cpf:"087.508.387-09", rg:"11647699-5",   crea:"2011100922",  cargo:"TÉCNICO TELECOM",        obs:"RJCG",                               areas:["Campo Grande","Recreio dos Bandeirantes","Curicica","Adjacências"]},
-  {nome:"Luciano Rocha",     nc:"LUCIANO ROCHA DA SILVA",             reg:"OESTE", turno:"dia",   cpf:"073.852.077-23", rg:"10.522.156-8", crea:null,          cargo:"TÉCNICO TELECOM",        obs:"RJCG / RJBT / RJBA",                areas:["Campo Grande","Recreio dos Bandeirantes","Barra da Tijuca","Santa Cruz"]},
-  {nome:"Leonardo Paulino",  nc:"LEONARDO PAULINO DO NASCIMENTO",    reg:"OESTE", turno:"dia",   cpf:"123.348.977-10", rg:"26.878.145-7", crea:"201670001902",cargo:"TÉCNICO TELECOM",        obs:"RJSZ",                               areas:["Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
-  {nome:"Eder Luiz",         nc:"EDER LUIZ DA SILVA PINTO",           reg:"OESTE", turno:"dia",   cpf:"052.387.647-58", rg:"12989740-1",   crea:null,          cargo:"TÉCNICO TELECOM",        obs:"RJBT / RJBA",                       areas:["Barra da Tijuca","Recreio dos Bandeirantes","Vargem Grande","Vargem Pequena","Adjacências"]},
-  {nome:"Danilo Eduardo",    nc:"DANILO EDUARDO",                     reg:"OESTE", turno:"dia",   cpf:"054.171.977-77", rg:"110198587",    crea:null,          cargo:"TÉCNICO TELECOM",        obs:"RJJP / CUR",                        areas:["Jacarepaguá","Taquara","Tanque","Pechincha","Curicica","Anil","Freguesia","Gardênia Azul","Praça Seca","Rio das Pedras"]},
-  {nome:"Ivson de Jesus",    nc:"IVSON DE JESUS DO ROSÁRIO",          reg:"OESTE", turno:"dia",   cpf:"053.651.387-24", rg:"09513041-5",   crea:null,          cargo:"TÉCNICO TELECOM",        obs:"RJBG / RJPV / RJMD",               areas:["Bangu","Realengo","Deodoro","Senador Camará","Padre Miguel","Santíssimo","Magalhães Bastos","Adjacências"]},
-  {nome:"Leandro Cardoso",   nc:"LEANDRO DE JESUS CARDOSO",           reg:"OESTE", turno:"noite", cpf:"088.677.657-01", rg:"117938654",    crea:null,          cargo:"TÉCNICO TELECOM",        obs:"RJCG / RJSZ",                       areas:["Campo Grande","Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
-  {nome:"Denis Lavrador",    nc:"DENIS OLIVEIRA LAVRADOR",            reg:"OESTE", turno:"noite", cpf:"051.366.857-86", rg:"10719936-6",   crea:"2007134786",  cargo:"TÉCNICO TELECOM",        obs:"Cobertura: verificar disponibilidade",areas:["Santa Cruz","Itaguaí","Guaratiba","Bangu","Realengo","Deodoro","Adjacências"]},
-  {nome:"Francisco Orcino",  nc:"FRANCISCO ORCINO DE SOUSA FILHO",   reg:"OESTE", turno:"noite", cpf:"010.331.297-80", rg:"08537602-8",   crea:null,          cargo:"TÉCNICO TELECOM",        obs:"RJBT / RJBA / RJJP / CUR",          areas:["Barra da Tijuca","Pechincha","Recreio dos Bandeirantes","Taquara","Jacarepaguá","Freguesia","Tanque","Curicica","Anil"]},
+  {nome:"Carlos Miranda",    nc:"CARLOS ALBERTO FIDALGO MIRANDA",   reg:"RJ",    turno:"dia",       cpf:"699.675.807-63",rg:"05728184-2",  crea:null,          cargo:"TÉCNICO TELECOM",obs:"Residente",                         areas:["FTS","Central Ana Neri","Rocha","Engenho Novo","Pilares","Méier","Piedade","Encantado","Riachuelo"]},
+  {nome:"José Duque",        nc:"JOSÉ CARLOS DUQUE ESTRADA FILHO",  reg:"RJ",    turno:"dia",       cpf:"078.938.447-79",rg:"6775760-9",   crea:"2005105212",  cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Cascadura","Madureira","Rocha Miranda","Bento Ribeiro","Vila da Penha","Penha Circular","Brás de Pina","Oswaldo Cruz","Vila Valqueire","Honório Gurgel","Turiaçu","Campinho","Cavalcanti","Coelho Neto","Acari","Deodoro"]},
+  {nome:"Alex Cunha",        nc:"ALEX CORREA DA CUNHA",             reg:"RJ",    turno:"dia",       cpf:"108.401.007-01",rg:"122470222",   crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Bento Ribeiro","Madureira","Oswaldo Cruz","Campinho","Colégio","Turiaçu","Honório Gurgel","Cavalcanti","Rocha Miranda","Vila Valqueire"]},
+  {nome:"Adenilson Avelino", nc:"ADENILSON AVELINO DA S. JR",       reg:"RJ",    turno:"dia",       cpf:"056.712.747-88",rg:"20.315.099-0",crea:"2011122302",  cargo:"TÉCNICO TELECOM",obs:"Chamados FTTH – prioridade",        areas:["Meier","Del Castilho","Cachambi","DDC","Engenho de Dentro","Todos os Santos","Lins","Piedade","Abolição","Rocha","Riachuelo","Jacaré","Encantado"]},
+  {nome:"Gustavo Cabral",    nc:"GUSTAVO CABRAL DOS SANTOS",        reg:"RJ",    turno:"dia",       cpf:"138.707.757-00",rg:"262948581",   crea:"2015104645",  cargo:"TÉCNICO TELECOM",obs:"Chamados FTTC – prioridade",        areas:["São Cristóvão","Meier","Cachambi","Jacarezinho","DDC","Del Castilho","Engenho de Dentro","Benfica","Manguinhos","Bonsucesso"]},
+  {nome:"Flavio Borges",     nc:"FLÁVIO BORGES GOMES",              reg:"RJ",    turno:"dia",       cpf:"088.597.827-75",rg:"128867041",   crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Quintino","São Cristóvão","Benfica","Eng. de Dentro","Lins","Todos os Santos","Abolição","Cachambi","Méier","Riachuelo","Piedade","Rocha","Del Castilho","Jacaré","Encantado","Pilares"]},
+  {nome:"Moises Alves",      nc:"MOISÉS ALVES DA SILVEIRA",         reg:"RJ",    turno:"dia",       cpf:"147.179.907-73",rg:"24627910-3",  crea:"2012106328",  cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Humaitá","Leblon","Laranjeiras","Jardim Botânico","Lagoa","Zona Sul","Centro","Flamengo","Botafogo","Catete","Glória","Santa Teresa","Lapa","Copacabana","Ipanema","Gávea","Urca","Cosme Velho"]},
+  {nome:"Orlando Ferreira",  nc:"ORLANDO FERREIRA DOS SANTOS JR.",  reg:"RJ",    turno:"dia",       cpf:"077.544.197-00",rg:"10814849-5",  crea:"150799465-6", cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Centro","Lapa","Estácio","Santa Teresa","Catumbi","São Gonçalo","Niterói","Fonseca","Alcântara","Pendotiba"]},
+  {nome:"Marcelo Raimundo",  nc:"MARCELO RAIMUNDO DOS SANTOS",      reg:"RJ",    turno:"dia",       cpf:"913.166.507-15",rg:"82289562",    crea:null,          cargo:"TÉCNICO TELECOM",obs:"Verificar disponibilidade (Olaria)",areas:["Irajá","Olaria","Colégio","Jardim América","VGE","Ilha do Governador","Penha","Ramos","Bonsucesso","Vigário Geral","Parada de Lucas","Cordovil","Brás de Pina","Higienópolis","Tomás Coelho","Vicente de Carvalho","Galeão"]},
+  {nome:"Francisco Alex",    nc:"FRANCISCO ALEX DE SOUSA SILVA",    reg:"RJ",    turno:"dia",       cpf:"098.024.617-25",rg:"125900332",   crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Andaraí","Grajaú","Tijuca","LPD","Vila Isabel","Maracanã","Praça da Bandeira","Alto da Boa Vista","Usina","Muda","Água Santa","Cachambi"]},
+  {nome:"Marcelo G. Rocha",  nc:"MARCELO GOMES DA ROCHA",           reg:"RJ",    turno:"dia",       cpf:null,            rg:null,           crea:null,          cargo:"TÉCNICO TELECOM",obs:"Sábado e Domingo",                 areas:["Rocha","Ana Neri","Fonseca Teles"]},
+  {nome:"Bispo",             nc:"LUIZ CLAUDIO BISPO PIRES",         reg:"RJ",    turno:"noite",     cpf:"072.154.167-47",rg:"10434530-1",  crea:"2011116337",  cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Centro","Botafogo","Zona Sul","Flamengo","Catete","Glória","Lapa","Santa Teresa","Copacabana","Ipanema","Urca","Humaitá","Laranjeiras","Cosme Velho"]},
+  {nome:"Glaucio Hipolito",  nc:"GLAUCIO HIPOLITO GONZAGA",         reg:"RJ",    turno:"noite",     cpf:"105.514.857-44",rg:"20309013-9",  crea:"2008148830",  cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Tijuca","São Cristóvão","Grajaú","Andaraí","Rio Comprido","Rocha","Riachuelo","Ana Neri","Fonseca Teles","Maracanã","Vila Isabel","Estácio","Engenho Novo","Pilares","Encantado","Praça da Bandeira","Alto da Boa Vista"]},
+  {nome:"Waldir Motta",      nc:"WALDIR MOTTA PRENDA JUNIOR",       reg:"RJ",    turno:"noite",     cpf:"143.212.857-47",rg:"257337162",   crea:"2015111941",  cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Cascadura","Meier","Engenho de Dentro","Cachambi","Madureira","DDC","Engenho Novo","Todos os Santos","Lins","Abolição","Piedade","Pilares","Del Castilho","Rocha","Campinho","Quintino","Honório Gurgel"]},
+  {nome:"Jorge Luiz",        nc:"JORGE LUIS DA SILVA",              reg:"RJ",    turno:"noite",     cpf:"071.784.037-99",rg:"11007505-8",  crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Penha","Irajá","Penha Circular","Ramos","Vila Isabel","Olaria","Bonsucesso","Bento Ribeiro","Brás de Pina","Higienópolis","Cordovil","Parada de Lucas","Vigário Geral","Manguinhos","Maré","Inhaúma","Tomás Coelho","Vicente de Carvalho","Jardim América","Colégio"]},
+  {nome:"Gleisson Fagundes", nc:"GLEISSON ALBINO FAGUNDES",         reg:"RJ",    turno:"madrugada", cpf:"059.198.067-37",rg:"215168840",   crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Zona Sul","Centro","Humaitá","Leblon","Laranjeiras","Jardim Botânico","Lagoa","Flamengo","Botafogo","Catete","Glória","Santa Teresa","Lapa","Copacabana","Ipanema","Gávea","Urca","Cosme Velho","Ana Neri","Rocha","FTS"]},
+  {nome:"Renato Lima",       nc:"RENATO SANTOS DE LIMA",            reg:"RJ",    turno:"madrugada", cpf:"099.873.447-04",rg:"002050957-6", crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Zona Norte","Tijuca","Vila Isabel","Maracanã","Andaraí","Grajaú","São Cristóvão","Benfica","Manguinhos","Meier","Cachambi","Madureira","Cascadura","Bento Ribeiro","Penha","Ramos","Olaria","Irajá","Inhaúma","Vigário Geral","Cordovil","Brás de Pina"]},
+  {nome:"Michael",           nc:"MICHAEL JOSÉ QUEIROZ DA SILVEIRA", reg:"BXD",   turno:"dia",       cpf:"075.593.707-48",rg:"11557141-6",  crea:"2009118823",  cargo:"TÉCNICO TELECOM",obs:"Fixa e IHS",                        areas:["Mesquita","Nilópolis","Anchieta","São João de Meriti","Barros Filho","Coelho da Rocha","Guadalupe","Olinda","Pavuna"]},
+  {nome:"Cremildo",          nc:"CREMILDO DELFINO RANGEL",           reg:"BXD",   turno:"dia",       cpf:"027.157.057-19",rg:"09086097-4",  crea:null,          cargo:"ASSISTENTE TÉC. TELECOM",obs:"Fixa e IHS",               areas:["Nova Iguaçu","Queimados","Belford Roxo","Japeri","Adjacências"]},
+  {nome:"Vanessa",           nc:"VANESSA CRISTINA SANTOS DA SILVA",  reg:"BXD",   turno:"dia",       cpf:"090.416.897-29",rg:"011345390-6", crea:"2006127503",  cargo:"TÉCNICO TELECOM",obs:"FTTH – Fixa. NÃO usa escada / NÃO atende MSAN",areas:["Duque de Caxias","Adjacências"]},
+  {nome:"Valter Neves",      nc:"VALTER NEVES JUNIOR",              reg:"BXD",   turno:"dia",       cpf:"033.738.017-10",rg:"09946138-6",  crea:null,          cargo:"TÉCNICO TELECOM",obs:"FTTC – Fixa e IHS",                 areas:["Pavuna","Jardim América","Duque de Caxias","Adjacências"]},
+  {nome:"Marcelo Caetano",   nc:"MARCELO CAETANO GOMES",             reg:"BXD",   turno:"dia",       cpf:"041.519.837-24",rg:"104202049",   crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Duque de Caxias","Adjacências"]},
+  {nome:"Anderson dos Santos",nc:"ANDERSON DOS SANTOS ILDEFONSO",   reg:"BXD",   turno:"noite",     cpf:"114.152.427-98",rg:null,           crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Mesquita","Anchieta","São João de Meriti","Duque de Caxias","Coelho da Rocha","Guadalupe","Olinda","Pavuna","Adjacências"]},
+  {nome:"Tiago Ângelo",      nc:"TIAGO ANGELO PIMENTA RANGEL",      reg:"BXD",   turno:"noite",     cpf:"150.960.947-40",rg:"279500300",   crea:null,          cargo:"TÉCNICO TELECOM",obs:null,                                areas:["Nova Iguaçu","Nilópolis","Belford Roxo","Queimados","Japeri","Adjacências"]},
+  {nome:"Agnaldo",           nc:"AGNALDO DA SILVA COSTA",            reg:"OESTE", turno:"dia",       cpf:"087.508.387-09",rg:"11647699-5",  crea:"2011100922",  cargo:"TÉCNICO TELECOM",obs:"RJCG",                              areas:["Campo Grande","Recreio dos Bandeirantes","Curicica","Adjacências"]},
+  {nome:"Luciano Rocha",     nc:"LUCIANO ROCHA DA SILVA",            reg:"OESTE", turno:"dia",       cpf:"073.852.077-23",rg:"10.522.156-8",crea:null,          cargo:"TÉCNICO TELECOM",obs:"RJCG / RJBT / RJBA",               areas:["Campo Grande","Recreio dos Bandeirantes","Barra da Tijuca","Santa Cruz"]},
+  {nome:"Leonardo Paulino",  nc:"LEONARDO PAULINO DO NASCIMENTO",   reg:"OESTE", turno:"dia",       cpf:"123.348.977-10",rg:"26.878.145-7",crea:"201670001902", cargo:"TÉCNICO TELECOM",obs:"RJSZ",                              areas:["Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
+  {nome:"Eder Luiz",         nc:"EDER LUIZ DA SILVA PINTO",          reg:"OESTE", turno:"dia",       cpf:"052.387.647-58",rg:"12989740-1",  crea:null,          cargo:"TÉCNICO TELECOM",obs:"RJBT / RJBA",                      areas:["Barra da Tijuca","Recreio dos Bandeirantes","Vargem Grande","Vargem Pequena","Adjacências"]},
+  {nome:"Danilo Eduardo",    nc:"DANILO EDUARDO",                    reg:"OESTE", turno:"dia",       cpf:"054.171.977-77",rg:"110198587",   crea:null,          cargo:"TÉCNICO TELECOM",obs:"RJJP / CUR",                        areas:["Jacarepaguá","Taquara","Tanque","Pechincha","Curicica","Anil","Freguesia","Gardênia Azul","Praça Seca","Rio das Pedras"]},
+  {nome:"Ivson de Jesus",    nc:"IVSON DE JESUS DO ROSÁRIO",         reg:"OESTE", turno:"dia",       cpf:"053.651.387-24",rg:"09513041-5",  crea:null,          cargo:"TÉCNICO TELECOM",obs:"RJBG / RJPV / RJMD",               areas:["Bangu","Realengo","Deodoro","Senador Camará","Padre Miguel","Santíssimo","Magalhães Bastos","Adjacências"]},
+  {nome:"Leandro Cardoso",   nc:"LEANDRO DE JESUS CARDOSO",          reg:"OESTE", turno:"noite",     cpf:"088.677.657-01",rg:"117938654",   crea:null,          cargo:"TÉCNICO TELECOM",obs:"RJCG / RJSZ",                      areas:["Campo Grande","Santa Cruz","Sepetiba","Paciência","Cosmos","Adjacências"]},
+  {nome:"Francisco Orcino",  nc:"FRANCISCO ORCINO DE SOUSA FILHO",  reg:"OESTE", turno:"noite",     cpf:"010.331.297-80",rg:"08537602-8",  crea:null,          cargo:"TÉCNICO TELECOM",obs:"RJBT / RJBA / RJJP / CUR",          areas:["Barra da Tijuca","Pechincha","Recreio dos Bandeirantes","Taquara","Jacarepaguá","Freguesia","Tanque","Curicica","Anil"]},
 ];
 
-const BUSY_LABELS=["","Pouco ocupado","Ocupado","Bem ocupado","Muito ocupado","Indisponível"];
-const BUSY_COLORS=["","var(--busy1)","var(--busy2)","var(--busy3)","var(--busy4)","var(--busy5)"];
+const busyLabels=["","Pouco ocupado","Ocupado","Bem ocupado","Muito ocupado","Indisponível"];
+const busyColors=["","var(--busy1)","var(--busy2)","var(--busy3)","var(--busy4)","var(--busy5)"];
 
-/* ══ AREAS ══ */
-let activeAreas=new Set(["Todas"]);
+/* ── AREAS ── */
 const allAreas=["Todas"];
 T.forEach(t=>t.areas.forEach(a=>{if(!allAreas.includes(a))allAreas.push(a);}));
 const areasBtnsEl=document.getElementById("areasBtns");
 allAreas.forEach(area=>{
   const b=document.createElement("button");
   b.className="area-btn"+(area==="Todas"?" selected":"");
-  b.textContent=area; b.dataset.area=area;
+  b.textContent=area;b.dataset.area=area;
   areasBtnsEl.appendChild(b);
 });
 
-/* ══ EVENTS ══ */
+/* ── EVENTOS ── */
 document.getElementById("areaToggleBtn").addEventListener("click",()=>{
-  const p=document.getElementById("areasPanel"), b=document.getElementById("areaToggleBtn");
-  const o=p.classList.toggle("open");
-  b.classList.toggle("open",o);
+  const p=document.getElementById("areasPanel"),b=document.getElementById("areaToggleBtn");
+  const o=p.classList.toggle("open");b.classList.toggle("open",o);
 });
-
 areasBtnsEl.addEventListener("click",e=>{
-  const b=e.target.closest(".area-btn"); if(!b) return;
+  const b=e.target.closest(".area-btn");if(!b)return;
   const area=b.dataset.area;
   if(area==="Todas"){
     activeAreas=new Set(["Todas"]);
@@ -694,274 +1056,392 @@ areasBtnsEl.addEventListener("click",e=>{
     b.classList.add("selected");
   } else {
     activeAreas.delete("Todas");
-    if(b.classList.contains("selected")){ b.classList.remove("selected"); activeAreas.delete(area);
-      if(!activeAreas.size){ activeAreas.add("Todas"); document.querySelector('.area-btn[data-area="Todas"]').classList.add("selected"); }
-    } else { b.classList.add("selected"); activeAreas.add(area); document.querySelector('.area-btn[data-area="Todas"]').classList.remove("selected"); }
+    if(b.classList.contains("selected")){
+      b.classList.remove("selected");activeAreas.delete(area);
+      if(!activeAreas.size){activeAreas.add("Todas");document.querySelector('.area-btn[data-area="Todas"]').classList.add("selected");}
+    } else {
+      b.classList.add("selected");activeAreas.add(area);
+      document.querySelector('.area-btn[data-area="Todas"]').classList.remove("selected");
+    }
   }
-  updateAreaBadge(); renderAll();
+  updateAreaBadge();renderAll();
 });
-
 document.getElementById("clearAreasBtn").addEventListener("click",()=>{
   activeAreas=new Set(["Todas"]);
   document.querySelectorAll(".area-btn").forEach(x=>x.classList.remove("selected"));
   document.querySelector('.area-btn[data-area="Todas"]').classList.add("selected");
-  updateAreaBadge(); renderAll();
+  updateAreaBadge();renderAll();
 });
-
 document.getElementById("searchInput").addEventListener("input",renderAll);
 document.getElementById("nightToggleBtn").addEventListener("click",()=>{
-  showNightOverride=!showNightOverride;
-  updateNightBtn(); renderAll();
+  showNightOverride=!showNightOverride;updateNightToggleBtn();renderAll();
 });
 document.getElementById("copyAllBtn").addEventListener("click",()=>{
   const vis=T.filter(shouldShow);
   copyClip(vis.map(cardText).join("\n\n---\n\n"),()=>showToast(vis.length+" técnico(s) copiados!"));
 });
-document.getElementById("weekendHdr").addEventListener("click",()=>{
-  document.getElementById("weekendPanel").classList.toggle("collapsed");
-  renderWeekend();
+document.getElementById("weekendPanelHdr").addEventListener("click",()=>{
+  document.getElementById("weekendPanel").classList.toggle("collapsed");renderWeekendPanel();
 });
-
 document.getElementById("mainContent").addEventListener("click",e=>{
   const cb=e.target.closest(".copy-btn");
-  if(cb){ const t=T.find(x=>x.nome===cb.dataset.key); if(!t) return;
-    copyClip(cardText(t),()=>{ cb.textContent="✓ Copiado"; cb.classList.add("copied");
-    setTimeout(()=>{ cb.textContent="⧉ Copiar"; cb.classList.remove("copied"); },2000);
-    showToast("Dados copiados!"); }); return; }
-
+  if(cb){const t=T.find(x=>x.nome===cb.dataset.key);if(!t)return;
+    copyClip(cardText(t),()=>{cb.textContent="✓ Copiado";cb.classList.add("copied");
+    setTimeout(()=>{cb.textContent="⧉ Copiar";cb.classList.remove("copied");},2000);showToast("Dados copiados!");});return;}
   const ob=e.target.closest(".offline-btn");
-  if(ob){ const k=ob.dataset.key; offlineState[k]=!offlineState[k]; renderAll(); renderBusy(); return; }
-
-  const bt=e.target.closest(".busy-toggle");
-  if(bt){ busyState[bt.dataset.key]=((busyState[bt.dataset.key]||0)+1)%6; renderAll(); renderBusy(); return; }
-
-  const wk=e.target.closest(".wk-check");
-  if(wk){ const k=wk.dataset.key; wkState[k]=!wkState[k]; renderAll(); renderWeekend(); return; }
-
-  const rh=e.target.closest(".region-hdr");
-  if(rh){ const id=rh.dataset.id; const sec=document.getElementById("rsec-"+id);
-    if(sec){ sec.classList.toggle("collapsed"); const t=sec.querySelector(".region-toggle");
-      if(t) t.textContent=sec.classList.contains("collapsed")?"▶":"▼"; } return; }
+  if(ob){
+    const k=ob.dataset.key;const t=T.find(x=>x.nome===k);
+    const inShift=t&&turnoAtivoAgora(t.turno);
+    if(inShift){offlineState[k]=!offlineState[k];}else{onlineForced[k]=!onlineForced[k];}
+    renderAll();renderBusyPanel();return;
+  }
+  const tb=e.target.closest(".timer-btn");if(tb){openTimerModal(tb.dataset.key);return;}
+  const cu=e.target.closest("[data-clear-unavail]");
+  if(cu){const k=cu.dataset.clearUnavail;if(timerState[k]){timerState[k].unavailUntil=null;timerState[k].unavailReason=null;}renderAll();return;}
+  const cf=e.target.closest("[data-clear-forecast]");
+  if(cf){const k=cf.dataset.clearForecast;if(timerState[k]){timerState[k].forecast=null;timerState[k].forecastReason=null;}renderForecastAlert();renderAll();return;}
+  const bb=e.target.closest(".busy-toggle");
+  if(bb){busyState[bb.dataset.key]=((busyState[bb.dataset.key]||0)+1)%6;renderAll();renderBusyPanel();return;}
+  const wk=e.target.closest(".wk-card-check");
+  if(wk){const k=wk.dataset.key;wkState[k]=!wkState[k];renderAll();renderWeekendPanel();return;}
+  const rh=e.target.closest(".region-header");
+  if(rh){const id=rh.dataset.regid;collapseState[id]=!collapseState[id];
+    const body=document.getElementById("rb-"+id);const arrow=rh.querySelector(".region-collapse-btn");
+    if(body)body.classList.toggle("collapsed",!!collapseState[id]);
+    if(arrow)arrow.textContent=collapseState[id]?"▶":"▼";return;}
+});
+document.getElementById("mainContent").addEventListener("input",e=>{
+  const ci=e.target.closest(".card-comment");if(ci)commentState[ci.dataset.key]=ci.value;
+});
+document.getElementById("plantaoFilterBtn").addEventListener("click",()=>{
+  showOnlyPlantao=!showOnlyPlantao;
+  const b=document.getElementById("plantaoFilterBtn");
+  b.classList.toggle("active",showOnlyPlantao);
+  b.textContent=showOnlyPlantao?"✕ Mostrar todos":"📅 Somente plantão";renderAll();
+});
+document.getElementById("clearPlantaoBtn").addEventListener("click",()=>{
+  T.forEach(t=>{wkState[t.nome]=false;});showOnlyPlantao=false;
+  const fb=document.getElementById("plantaoFilterBtn");
+  fb.classList.remove("active");fb.textContent="📅 Somente plantão";
+  renderAll();renderWeekendPanel();showToast("Plantão limpo.");
 });
 
-/* ══ HELPERS ══ */
+let timerModalTarget=null;
+function openTimerModal(nome){
+  timerModalTarget=nome;
+  document.getElementById("timerModalTitle").textContent="⏱ Horários — "+nome;
+  const ts=timerState[nome]||{};
+  document.getElementById("tmUnavailInput").value=ts.unavailUntil||"";
+  document.getElementById("tmUnavailReason").value=ts.unavailReason||"";
+  document.getElementById("tmForecastInput").value=ts.forecast||"";
+  document.getElementById("tmForecastReason").value=ts.forecastReason||"";
+  document.getElementById("timerModal").classList.add("open");
+}
+function closeTimerModal(){document.getElementById("timerModal").classList.remove("open");timerModalTarget=null;}
+document.getElementById("timerModal").addEventListener("click",e=>{if(e.target===document.getElementById("timerModal"))closeTimerModal();});
+document.getElementById("timerModalCancel").addEventListener("click",closeTimerModal);
+document.getElementById("tmUnavailClear").addEventListener("click",()=>{document.getElementById("tmUnavailInput").value="";document.getElementById("tmUnavailReason").value="";});
+document.getElementById("tmForecastClear").addEventListener("click",()=>{document.getElementById("tmForecastInput").value="";document.getElementById("tmForecastReason").value="";});
+document.getElementById("timerModalSave").addEventListener("click",()=>{
+  if(!timerModalTarget)return;
+  const u=document.getElementById("tmUnavailInput").value;
+  const ur=document.getElementById("tmUnavailReason").value.trim();
+  const f=document.getElementById("tmForecastInput").value;
+  const fr=document.getElementById("tmForecastReason").value.trim();
+  timerState[timerModalTarget]={unavailUntil:u||null,unavailReason:ur||null,forecast:f||null,forecastReason:fr||null};
+  closeTimerModal();renderAll();showToast("Horários salvos para "+timerModalTarget);
+});
+
+/* ── HELPERS ── */
 function updateAreaBadge(){
-  const badge=document.getElementById("areaBadge"), clearBtn=document.getElementById("clearAreasBtn");
-  if(activeAreas.has("Todas")||!activeAreas.size){ badge.textContent="Todas"; clearBtn.style.display="none"; }
-  else { badge.textContent=activeAreas.size===1?[...activeAreas][0]:activeAreas.size+" áreas"; clearBtn.style.display=""; }
+  const badge=document.getElementById("activeAreaBadge"),clearBtn=document.getElementById("clearAreasBtn");
+  if(activeAreas.has("Todas")||!activeAreas.size){badge.textContent="Todas";clearBtn.style.display="none";}
+  else{badge.textContent=activeAreas.size===1?[...activeAreas][0]:activeAreas.size+" áreas";clearBtn.style.display="flex";}
 }
-
-function nightVisible(){
-  if(isEveningMode()) return !showNightOverride;
-  return isNightActive()||showNightOverride;
+function updateNightToggleBtn(){
+  const turno=getTurnoAtual(),b=document.getElementById("nightToggleBtn");
+  b.classList.toggle("active",showNightOverride);
+  if(turno==="madrugada")  b.textContent=showNightOverride?"🌙 Somente madrugada":"🌙 Mostrar dia e noite";
+  else if(turno==="noite") b.textContent=showNightOverride?"🌙 Somente noite":"☀️ Mostrar todos os turnos";
+  else                     b.textContent=showNightOverride?"☀️ Somente dia":"🌙 Mostrar todos os turnos";
 }
-function dayVisible(){
-  if(isEveningMode()) return showNightOverride;
-  return true;
-}
-
 function shouldShow(t){
-  if(t.turno==="noite"&&!nightVisible()) return false;
-  if(t.turno==="dia"&&!dayVisible()) return false;
-  if(!activeAreas.has("Todas")&&!t.areas.some(a=>activeAreas.has(a))) return false;
+  if(!activeAreas.has("Todas")&&!t.areas.some(a=>activeAreas.has(a)))return false;
   const q=document.getElementById("searchInput").value.toLowerCase();
-  if(q&&!t.nome.toLowerCase().includes(q)&&!t.nc.toLowerCase().includes(q)&&!t.areas.some(a=>a.toLowerCase().includes(q))) return false;
+  if(q&&!t.nome.toLowerCase().includes(q)&&!t.nc.toLowerCase().includes(q)&&!t.areas.some(a=>a.toLowerCase().includes(q)))return false;
+  if(showNightOverride&&!turnoAtivoAgora(t.turno))return false;
+  if(showOnlyPlantao&&!wkState[t.nome])return false;
   return true;
 }
-
 function cardText(t){
   const l=["NOME: "+t.nc];
-  if(t.cpf) l.push("CPF: "+t.cpf);
-  if(t.rg)  l.push("RG/IDENTIDADE: "+t.rg);
-  if(t.crea) l.push("CREA: "+t.crea);
+  if(t.cpf)l.push("CPF: "+t.cpf);
+  if(t.rg) l.push("RG/IDENTIDADE: "+t.rg);
+  if(t.crea)l.push("CREA: "+t.crea);
   return l.join("\n");
 }
-
 function copyClip(text,cb){
-  if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(cb).catch(()=>fbCopy(text,cb)); }
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(cb).catch(()=>fbCopy(text,cb));}
   else fbCopy(text,cb);
 }
 function fbCopy(text,cb){
-  const ta=document.createElement("textarea"); ta.value=text;
-  ta.style.cssText="position:fixed;top:0;left:0;opacity:0";
-  document.body.appendChild(ta); ta.focus(); ta.select();
-  try{ document.execCommand("copy"); cb(); } catch(e){}
-  document.body.removeChild(ta);
+  const ta=document.createElement("textarea");ta.value=text;ta.style.cssText="position:fixed;top:0;left:0;opacity:0";
+  document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand("copy");cb();}catch(e){}document.body.removeChild(ta);
+}
+function showToast(m){const el=document.getElementById("toast");el.textContent=m;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2500);}
+
+/* TIMER HELPERS */
+function nowMinutes(){const n=new Date();return n.getHours()*60+n.getMinutes();}
+function hmToMinutes(str){if(!str)return null;const[h,m]=str.split(":").map(Number);return h*60+m;}
+function isUnavailActive(nome){
+  const ts=timerState[nome];if(!ts||!ts.unavailUntil)return false;
+  return nowMinutes()<hmToMinutes(ts.unavailUntil);
+}
+function forecastStatus(nome){
+  const ts=timerState[nome];if(!ts||!ts.forecast)return null;
+  const diff=hmToMinutes(ts.forecast)-nowMinutes();
+  if(diff<0)return"expired";if(diff<=15)return"warn";return"ok";
 }
 
-function showToast(msg){
-  document.getElementById("toastMsg").textContent=msg;
-  const el=document.getElementById("toast"); el.classList.add("show");
-  setTimeout(()=>el.classList.remove("show"),2800);
+/* FORECAST ALERT */
+function renderForecastAlert(){
+  const alert=document.getElementById("forecastAlert"),list=document.getElementById("forecastAlertList");
+  const warns=T.filter(t=>{const fs=forecastStatus(t.nome);return fs==="warn"||fs==="expired";});
+  if(!warns.length){alert.classList.remove("active");return;}
+  alert.classList.add("active");
+  list.innerHTML=warns.map(t=>{
+    const ts=timerState[t.nome],fs=forecastStatus(t.nome);
+    const col=fs==="expired"?"#ff4d4d":"#facc15",lbl=fs==="expired"?"VENCIDA":"VENCENDO";
+    const reason=ts.forecastReason?' — '+ts.forecastReason:'';
+    return'<span data-scroll="'+t.nome+'" style="cursor:pointer;background:'+col+'22;border:1px solid '+col+'55;border-radius:5px;padding:.15rem .5rem;font-size:.68rem;color:'+col+';" '
+      +'onmouseenter="this.style.filter=\'brightness(1.25)\'" onmouseleave="this.style.filter=\'\'">⤵ '
+      +t.nome+' '+lbl+' ('+ts.forecast+')'+reason+'</span>';
+  }).join('');
+}
+document.getElementById("forecastAlertList").addEventListener("click",e=>{
+  const chip=e.target.closest("[data-scroll]");if(!chip)return;
+  const btn=document.querySelector('.copy-btn[data-key="'+chip.dataset.scroll+'"]');if(!btn)return;
+  const card=btn.closest(".tech-card");if(!card)return;
+  card.scrollIntoView({behavior:"smooth",block:"center"});
+  card.style.transition="box-shadow .15s";card.style.boxShadow="0 0 0 3px var(--accent),0 0 24px var(--accent)";
+  setTimeout(()=>{card.style.boxShadow="";},1400);
+});
+
+/* WEEKEND PANEL */
+function renderWeekendPanel(){
+  const slots=document.getElementById("weekendSlots"),panel=document.getElementById("weekendPanel");
+  const wkTechs=T.filter(t=>wkState[t.nome]);
+  document.getElementById("wkCount").textContent=wkTechs.length?"("+wkTechs.length+" confirmado"+(wkTechs.length>1?"s":"")+")" :"";
+  if(!wkTechs.length){slots.innerHTML='<div class="weekend-empty">Nenhum técnico marcado. Marque ✓ no card.</div>';return;}
+  slots.innerHTML=wkTechs.map(t=>'<div class="wk-slot"><div><div class="wk-slot-name">'+t.nome+'</div>'
+    +'<div class="wk-slot-area">'+t.areas.slice(0,3).join(" · ")+(t.areas.length>3?" …":"")+'</div></div></div>').join('');
+  const body=document.getElementById("weekendBody");
+  if(!panel.classList.contains("collapsed"))body.style.maxHeight=body.scrollHeight+50+"px";
 }
 
-function updateNightBtn(){
-  const h=new Date().getHours(), eve=(h>=17||h<7);
-  const b=document.getElementById("nightToggleBtn");
-  b.classList.toggle("on",showNightOverride);
-  b.textContent=eve
-    ?(showNightOverride?"☀️ Ocultar diurnos":"☀️ Mostrar diurnos")
-    :(showNightOverride?"🌙 Ocultar noturnos":"🌙 Mostrar noturnos");
-}
-
-/* ══ WEEKEND ══ */
-function renderWeekend(){
-  const slots=document.getElementById("weekendSlots");
-  const panel=document.getElementById("weekendPanel");
-  const list=T.filter(t=>wkState[t.nome]);
-  document.getElementById("wkCount").textContent=list.length?"("+list.length+" confirmado"+(list.length>1?"s":"")+")" :"";
-  if(!list.length){ slots.innerHTML='<div class="weekend-empty">Nenhum técnico marcado. Marque o ✓ Sáb/Dom no card.</div>'; return; }
-  slots.innerHTML='<div class="weekend-slots">'+list.map(t=>
-    '<div class="wk-slot"><div><div class="wk-slot-name">'+t.nome+'</div>'
-    +'<div class="wk-slot-area">'+t.areas.slice(0,3).join(" · ")+(t.areas.length>3?" …":"")+'</div></div></div>'
-  ).join('')+'</div>';
-  if(!panel.classList.contains("collapsed")){
-    const body=document.getElementById("weekendBody");
-    body.style.maxHeight=body.scrollHeight+50+"px";
-  }
-}
-
-/* ══ BUSY PANEL ══ */
-function renderBusy(){
-  const panel=document.getElementById("busyPanel"), list=document.getElementById("busyList");
+/* BUSY PANEL */
+function renderBusyPanel(){
+  const panel=document.getElementById("busyPanel"),list=document.getElementById("busyList");
   const ones=T.filter(t=>(busyState[t.nome]||0)>0||offlineState[t.nome]);
-  panel.classList.toggle("active",ones.length>0);
-  if(!ones.length) return;
+  if(!ones.length){panel.style.display="none";return;}
+  panel.style.display="";
   list.innerHTML=ones.map(t=>{
-    const off=offlineState[t.nome], lvl=busyState[t.nome]||0;
-    const col=off?"var(--offline)":BUSY_COLORS[lvl];
-    const lbl=off?"🔴 Offline":(lvl>0?BUSY_LABELS[lvl]:"");
-    return`<div class="busy-chip" style="background:${col}1a;border-color:${col};color:${col}">
-      ${t.nome}${lbl?` <span style="font-size:.6rem;opacity:.8">${lbl}</span>`:''}
-    </div>`;
+    const off=offlineState[t.nome],lvl=busyState[t.nome]||0;
+    const col=off?"var(--offline)":busyColors[lvl],lbl=off?"🔴 Offline forçado":(lvl>0?busyLabels[lvl]:"");
+    return'<div class="busy-chip" style="background:'+col+'22;border-color:'+col+';color:'+col+'">'+t.nome+(lbl?' <span style="font-size:.62rem;opacity:.85">'+lbl+'</span>':'')+'</div>';
   }).join('');
 }
 
-/* ══ SHIFT UI ══ */
+/* SHIFT UI */
 function updateShiftUI(){
-  const now=new Date(), h=now.getHours(), m=String(now.getMinutes()).padStart(2,"0");
-  const night=isNightActive();
-  document.body.classList.toggle("theme-night",night);
-  document.getElementById("shiftIcon").textContent=night?"🌙":"☀️";
-  document.getElementById("shiftLabel").textContent=night?"Turno Noturno":"Turno Diurno";
-  document.getElementById("shiftClock").textContent=`${h}:${m}`+(night?" · até 07:00":" · noturno às 15:00");
-  updateNightBtn();
-  const warn=document.getElementById("shiftWarn");
-  if(!night&&!showNightOverride){
-    warn.classList.add("active");
-    document.getElementById("shiftWarnText").textContent=`Técnicos noturnos entram às 15:00 — faltam ${NIGHT_START-h}h. Use 🌙 para visualizá-los.`;
-  } else if(night&&!showNightOverride&&isEveningMode()){
-    warn.classList.add("active");
-    document.getElementById("shiftWarnText").textContent="Turno diurno encerrado. Use ☀️ para visualizá-los.";
-  } else { warn.classList.remove("active"); }
+  const now=new Date(),h=now.getHours(),m=String(now.getMinutes()).padStart(2,"0");
+  const turno=getTurnoAtual(),overlap=isOverlap();
+  document.body.classList.remove("theme-night","theme-dawn");
+  if(turno==="noite")          document.body.classList.add("theme-night");
+  else if(turno==="madrugada") document.body.classList.add("theme-dawn");
+  const badge=document.getElementById("shiftBadge"),warn=document.getElementById("shiftWarn");
+  if(turno==="dia"){
+    badge.className="shift-badge day";
+    document.getElementById("shiftIcon").textContent="☀️";
+    document.getElementById("shiftLabel").textContent="Turno Diurno";
+    document.getElementById("shiftClock").textContent=h+":"+m+" · noturno entra às 15:00";
+    warn.className="shift-warn day";warn.style.display="flex";
+    document.getElementById("shiftWarnIcon").textContent="🌙";
+    document.getElementById("shiftWarnText").textContent="Técnicos de noite e madrugada visíveis mas offline.";
+  } else if(overlap){
+    badge.className="shift-badge night overlap-badge";
+    document.getElementById("shiftIcon").textContent="🌗";
+    document.getElementById("shiftLabel").textContent="Overlap Dia + Noite";
+    document.getElementById("shiftClock").textContent=h+":"+m+" · dia encerra às 17:00";
+    warn.className="shift-warn night";warn.style.display="flex";
+    document.getElementById("shiftWarnIcon").textContent="⚡";
+    document.getElementById("shiftWarnText").textContent="Período de transição (15–17h): turno do dia e da noite estão ambos online simultaneamente.";
+  } else if(turno==="noite"){
+    badge.className="shift-badge night";
+    document.getElementById("shiftIcon").textContent="🌙";
+    document.getElementById("shiftLabel").textContent="Turno Noturno";
+    document.getElementById("shiftClock").textContent=h+":"+m+" · madrugada às 23:00";
+    warn.className="shift-warn night";warn.style.display="flex";
+    document.getElementById("shiftWarnIcon").textContent="🌃";
+    document.getElementById("shiftWarnText").textContent="Turno diurno encerrado (17h). Madrugada (23–07) visível mas offline.";
+  } else {
+    badge.className="shift-badge dawn";
+    document.getElementById("shiftIcon").textContent="🌃";
+    document.getElementById("shiftLabel").textContent="Turno Madrugada";
+    document.getElementById("shiftClock").textContent=h+":"+m+" · diurno às 07:00";
+    warn.className="shift-warn dawn";warn.style.display="flex";
+    document.getElementById("shiftWarnIcon").textContent="☀️";
+    document.getElementById("shiftWarnText").textContent="Dia (07–17) e Noite (15–23) offline — só madrugada em plantão.";
+  }
+  updateNightToggleBtn();
 }
 
-/* ══ MAKE CARD ══ */
+/* SUCCESSOR HINT */
+function getNextTurno(t){if(t==="dia")return"noite";if(t==="noite")return"madrugada";return"dia";}
+function minsUntilNextShift(){
+  const h=new Date().getHours(),m=new Date().getMinutes(),nowM=h*60+m;
+  const bounds=[T_DIA*60,T_DIA_END*60,T_MAD*60];
+  for(const b of bounds){if(b>nowM)return b-nowM;}
+  return(24*60+T_DIA*60)-nowM;
+}
+function buildSuccessorHint(t){
+  const mins=minsUntilNextShift();if(mins>60)return"";
+  const nextTurno=getNextTurno(getTurnoAtual());
+  const overlapping=T.filter(x=>x.turno===nextTurno&&x.nome!==t.nome&&x.areas.some(a=>t.areas.includes(a)));
+  if(!overlapping.length)return"";
+  const label=mins<=15?"⚡ Troca em "+mins+"min":"🔄 Troca em ~"+mins+"min";
+  const names=overlapping.map(x=>{
+    const shared=x.areas.filter(a=>t.areas.includes(a));
+    const preview=shared.slice(0,2).join(", ")+(shared.length>2?" +"+(shared.length-2):"");
+    return'<span style="color:var(--text);font-weight:600;">'+x.nome+'</span>'
+      +' <span style="opacity:.65;">('+preview+')</span>';
+  }).join(' &nbsp;·&nbsp; ');
+  return'<div class="successor-hint"><span class="sh-label">'+label+' — próximo plantão cobre as mesmas áreas:</span>'+names+'</div>';
+}
+
+/* MAKE CARD */
 function makeCard(t){
-  const lvl=busyState[t.nome]||0, isOff=!!offlineState[t.nome];
-  const isWk=!!wkState[t.nome];
-  const st=isOff?"offline":"online";
+  const lvl=busyState[t.nome]||0,online=estaOnline(t),isOff=!online;
+  const isForced=offlineState[t.nome]||false,isForcedOn=onlineForced[t.nome]||false;
+  const inShift=turnoAtivoAgora(t.turno);
+  const offBtnClass="offline-btn"+(isForced||isForcedOn?" is-forced":"");
+  let offBtnLabel;
+  if(inShift){offBtnLabel=isForced?"🟢 Remover offline":"🔴 Forçar offline";}
+  else{offBtnLabel=isForcedOn?"🔴 Remover online":"🟢 Forçar online";}
+  const comment=commentState[t.nome]||"";
   const card=document.createElement("div");
   let cls="tech-card";
-  if(t.turno==="noite") cls+=" night-card";
-  if(isOff) cls+=" is-offline";
+  if(t.turno==="noite")     cls+=" night-card";
+  if(t.turno==="madrugada") cls+=" dawn-card";
+  if(isOff)  cls+=" is-offline";
   else if(lvl>0) cls+=" busy-"+lvl;
-  card.className=cls; card.dataset.region=t.reg;
-
-  const dots='<div class="busy-d"></div>'.repeat(5);
-  const blc=lvl>0?"l"+lvl:"";
-  const blt=lvl>0?BUSY_LABELS[lvl]:"Livre";
+  card.className=cls;card.dataset.region=t.reg;
+  const dots='<div class="busy-dot"></div>'.repeat(5);
+  const blc=lvl>0?"l"+lvl:"",blt=lvl>0?busyLabels[lvl]:"Livre";
   const showFull=t.nc.trim().toUpperCase()!==t.nome.trim().toUpperCase();
-
+  const isWk=wkState[t.nome]||false;
+  const stClass=online?"online":"offline",stText=online?"Online":"Offline";
+  let turnoTag="";
+  if(t.turno==="noite")     turnoTag='<span class="night-tag">🌙 15:00–23:00</span>';
+  if(t.turno==="madrugada") turnoTag='<span class="dawn-tag">🌃 23:00–07:00</span>';
+  const unavail=isUnavailActive(t.nome),fStatus=forecastStatus(t.nome),ts=timerState[t.nome]||{};
+  let timerHTML='<div class="timer-row">';
+  if(unavail){
+    const reason=ts.unavailReason?' · '+ts.unavailReason:'';
+    timerHTML+='<span class="timer-tag unavail">⛔ Indisponível até '+ts.unavailUntil+reason
+      +'<button class="ttag-clear" data-clear-unavail="'+t.nome+'" title="Remover">✕</button></span>';
+  }
+  if(fStatus==="ok"){
+    const reason=ts.forecastReason?' · '+ts.forecastReason:'';
+    timerHTML+='<span class="timer-tag forecast">📋 Prev: '+ts.forecast+reason
+      +'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
+  }
+  if(fStatus==="warn"){
+    const reason=ts.forecastReason?' · '+ts.forecastReason:'';
+    timerHTML+='<span class="timer-tag forecast warn">⚠ Prev: '+ts.forecast+' — vencendo!'+reason
+      +'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
+  }
+  if(fStatus==="expired"){
+    const reason=ts.forecastReason?' · '+ts.forecastReason:'';
+    timerHTML+='<span class="timer-tag forecast expired">❌ Prev vencida: '+ts.forecast+reason
+      +'<button class="ttag-clear" data-clear-forecast="'+t.nome+'" title="Remover">✕</button></span>';
+  }
+  timerHTML+='<button class="timer-btn" data-key="'+t.nome+'">⏱ Horários</button></div>';
+  const successorHTML=buildSuccessorHint(t);
   card.innerHTML=
-    `<div class="card-top">
-      <div class="card-info">
-        <div class="name-row">
-          <div class="status-dot ${st}"></div>
-          <div class="tech-name">${t.nome}</div>
-          <span class="status-txt ${st}">${isOff?"Offline":"Online"}</span>
-        </div>
-        ${showFull?`<div class="tech-fullname">${t.nc}</div>`:''}
-        <div class="tech-role">${t.cargo}</div>
-        <div class="card-tags">
-          ${t.turno==="noite"?'<span class="tag tag-night">🌙 15:00–23:00</span>':''}
-          ${t.obs?`<span class="tag tag-obs">⚠ ${t.obs}</span>`:''}
-        </div>
-      </div>
-      <div class="card-actions">
-        <button class="action-btn copy-btn" data-key="${t.nome}">⧉ Copiar</button>
-        <button class="action-btn offline-btn ${isOff?'offline-on':'offline-off'}" data-key="${t.nome}">${isOff?"🟢 Online":"🔴 Offline"}</button>
-        <div class="wk-check${isWk?' on':''}" data-key="${t.nome}">
-          <div class="wk-box"></div><span class="wk-lbl">Sáb/Dom</span>
-        </div>
-        <div class="busy-row">
-          <button class="busy-toggle" data-lvl="${lvl}" data-key="${t.nome}">${dots}</button>
-          <span class="busy-lbl ${blc}">${blt}</span>
-        </div>
-      </div>
-    </div>
-    ${t.cpf?`<div class="data-row"><span class="data-label">CPF</span><span class="data-val">${t.cpf}</span></div>`:''}
-    ${t.rg?`<div class="data-row"><span class="data-label">RG</span><span class="data-val">${t.rg}</span></div>`:''}
-    ${t.crea?`<div class="data-row"><span class="data-label">CREA</span><span class="data-val">${t.crea}</span></div>`:''}
-    <div class="areas-tags">${t.areas.map(a=>`<span class="area-tag">${a}</span>`).join('')}</div>`;
+    '<div class="card-top"><div class="card-info">'
+    +'<div class="card-name-row">'
+    +'<div class="status-dot '+stClass+'"></div>'
+    +'<div class="tech-name">'+t.nome+'</div>'
+    +'<span class="status-text '+stClass+'">'+stText+'</span>'
+    +'</div>'
+    +(showFull?'<div class="tech-full-name">'+t.nc+'</div>':'')
+    +'<div class="tech-role">'+t.cargo+'</div>'
+    +'<div class="card-tags">'+turnoTag+(t.obs?'<span class="obs-tag">⚠ '+t.obs+'</span>':'')+'</div>'
+    +'</div>'
+    +'<div class="card-actions">'
+    +'<button class="copy-btn" data-key="'+t.nome+'">⧉ Copiar</button>'
+    +'<button class="'+offBtnClass+'" data-key="'+t.nome+'">'+offBtnLabel+'</button>'
+    +'<div class="wk-card-check'+(isWk?" checked":"")+'" data-key="'+t.nome+'">'
+    +'<div class="wk-box"></div><span class="wk-label">Sáb/Dom</span></div>'
+    +'<div class="busy-row"><button class="busy-toggle" data-level="'+lvl+'" data-key="'+t.nome+'">'+dots+'</button>'
+    +'<span class="busy-label '+blc+'">'+blt+'</span></div>'
+    +'</div></div>'
+    +(t.cpf?'<div class="data-row"><span class="data-label">CPF</span><span class="data-val">'+t.cpf+'</span></div>':'')
+    +(t.rg ?'<div class="data-row"><span class="data-label">RG</span><span class="data-val">'+t.rg+'</span></div>':'')
+    +(t.crea?'<div class="data-row"><span class="data-label">CREA</span><span class="data-val">'+t.crea+'</span></div>':'')
+    +'<div class="areas-tags">'+t.areas.map(a=>'<span class="area-tag">'+a+'</span>').join('')+'</div>'
+    +timerHTML+successorHTML
+    +'<textarea class="card-comment" data-key="'+t.nome+'" placeholder="Comentário..." rows="1">'+comment+'</textarea>';
   return card;
 }
 
-function makeDivider(cls, icon, lbl){
-  const d=document.createElement("div"); d.className="turno-div";
-  d.innerHTML=`<div class="turno-div-line"></div><span class="turno-div-pill ${cls}">${icon} ${lbl}</span><div class="turno-div-line"></div>`;
+function makeDiv(cls,icon,lbl){
+  const d=document.createElement("div");d.className="turno-divider";
+  d.innerHTML='<div class="turno-divider-line"></div><span class="turno-divider-label '+cls+'">'+icon+' '+lbl+'</span><div class="turno-divider-line"></div>';
   return d;
 }
 
-/* ══ RENDER ALL ══ */
+/* RENDER ALL */
 function renderAll(){
   updateShiftUI();
-  const content=document.getElementById("mainContent"); content.innerHTML=""; let total=0;
-
+  const content=document.getElementById("mainContent");content.innerHTML="";let total=0;
   REGIOES.forEach(reg=>{
-    const dia=T.filter(t=>t.reg===reg.id&&t.turno==="dia"&&shouldShow(t));
-    const noite=T.filter(t=>t.reg===reg.id&&t.turno==="noite"&&shouldShow(t));
-    if(!dia.length&&!noite.length) return;
-    total+=dia.length+noite.length;
-
-    const isCollapsed=!!collapseState[reg.id];
-    const sec=document.createElement("div");
-    sec.className="region-section"+(isCollapsed?" collapsed":"");
-    sec.id="rsec-"+reg.id;
-
-    const hdr=document.createElement("div");
-    hdr.className="region-hdr"; hdr.dataset.id=reg.id;
-    hdr.innerHTML=
-      `<div class="region-dot" style="background:${reg.color}"></div>
-       <span class="region-name" style="color:${reg.color}">${reg.label}</span>
-       <span class="region-count" style="margin-left:.4rem">${dia.length+noite.length} técnico(s)</span>
-       <span class="region-toggle">${isCollapsed?"▶":"▼"}</span>`;
-    sec.appendChild(hdr);
-
-    const body=document.createElement("div"); body.className="region-body";
-    const grid=document.createElement("div"); grid.className="cards-grid";
-
+    const dia  =T.filter(t=>t.reg===reg.id&&t.turno==="dia"       &&shouldShow(t));
+    const noite=T.filter(t=>t.reg===reg.id&&t.turno==="noite"     &&shouldShow(t));
+    const mad  =T.filter(t=>t.reg===reg.id&&t.turno==="madrugada" &&shouldShow(t));
+    if(!dia.length&&!noite.length&&!mad.length)return;
+    total+=dia.length+noite.length+mad.length;
+    const collapsed=!!collapseState[reg.id];
+    const sec=document.createElement("div");sec.className="region-section";
+    const rh=document.createElement("div");rh.className="region-header";rh.dataset.regid=reg.id;
+    rh.innerHTML='<div class="region-dot" style="background:'+reg.color+'"></div>'
+      +'<span class="region-title" style="color:'+reg.color+'">'+reg.label+'</span>'
+      +'<span class="region-count" style="margin-left:.5rem">'+(dia.length+noite.length+mad.length)+' técnico(s)</span>'
+      +'<button class="region-collapse-btn">'+(collapsed?"▶":"▼")+'</button>';
+    sec.appendChild(rh);
+    const body=document.createElement("div");
+    body.className="region-body"+(collapsed?" collapsed":"");body.id="rb-"+reg.id;
+    const grid=document.createElement("div");grid.className="cards-grid";
     if(dia.length){
-      if(noite.length) grid.appendChild(makeDivider("dia","☀️","08:00 – 17:00"));
+      if(noite.length||mad.length)grid.appendChild(makeDiv("day","☀️","08:00 – 15:00"));
       dia.forEach(t=>grid.appendChild(makeCard(t)));
     }
-    if(noite.length){
-      grid.appendChild(makeDivider("noite","🌙","15:00 – 23:00"));
-      noite.forEach(t=>grid.appendChild(makeCard(t)));
-    }
+    if(noite.length){grid.appendChild(makeDiv("night","🌙","15:00 – 23:00"));noite.forEach(t=>grid.appendChild(makeCard(t)));}
+    if(mad.length){grid.appendChild(makeDiv("dawn","🌃","23:00 – 07:00"));mad.forEach(t=>grid.appendChild(makeCard(t)));}
     body.appendChild(grid);
-    if(!isCollapsed){ requestAnimationFrame(()=>{ body.style.maxHeight=body.scrollHeight+20+"px"; }); }
+    if(!collapsed)requestAnimationFrame(()=>{body.style.maxHeight=body.scrollHeight+20+"px";});
     else body.style.maxHeight="0";
-    sec.appendChild(body); content.appendChild(sec);
+    sec.appendChild(body);content.appendChild(sec);
   });
-
   document.getElementById("countDisplay").textContent=total;
-  if(!total) content.innerHTML='<div class="empty-state"><div class="big">🗺️</div><p>Nenhum técnico encontrado.</p></div>';
+  if(!total)content.innerHTML='<div class="empty-state"><div class="big">🗺️</div><p>Nenhum técnico encontrado.</p></div>';
+  renderForecastAlert();
 }
 
-/* ══ INIT ══ */
-updateShiftUI(); renderAll(); renderBusy(); renderWeekend();
-setInterval(()=>{ renderAll(); renderBusy(); }, 60000);
+/* INIT */
+updateShiftUI();renderAll();renderBusyPanel();renderWeekendPanel();renderForecastAlert();
+setInterval(()=>{renderAll();renderBusyPanel();renderForecastAlert();},60000);
 </script>
 </body>
 </html>
